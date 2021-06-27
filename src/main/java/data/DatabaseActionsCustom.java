@@ -47,7 +47,7 @@ public class DatabaseActionsCustom {
                 }
             }
         } catch (NullPointerException | SQLException var11) {
-            ReportManager.log(var11);
+            ReportManager.log(String.valueOf(var11));
             failAction(reportMessage, var11);
         }
 
@@ -75,7 +75,7 @@ public class DatabaseActionsCustom {
                 }
             }
         } catch (NullPointerException | SQLException var6) {
-            ReportManager.log(var6);
+            ReportManager.log(String.valueOf(var6));
             failAction(var6);
         }
 
@@ -93,7 +93,7 @@ public class DatabaseActionsCustom {
                 resultSet.beforeFirst();
             }
         } catch (SQLException var3) {
-            ReportManager.log(var3);
+            ReportManager.log(String.valueOf(var3));
             failAction(var3);
         }
 
@@ -161,7 +161,7 @@ public class DatabaseActionsCustom {
         }
 
         if (!attachments.equals(new ArrayList())) {
-            ReportManager.log(message, attachments);
+            ReportManager.log(message);
         } else {
             ReportManager.log(message);
         }
@@ -216,7 +216,7 @@ public class DatabaseActionsCustom {
                 str.append(readColumnData(resultSet, columnsCount, lastRowID));
             }
         } catch (NullPointerException | SQLException var5) {
-            ReportManager.log(var5);
+            ReportManager.log(String.valueOf(var5));
             failAction(var5);
         }
 
@@ -229,7 +229,7 @@ public class DatabaseActionsCustom {
         try {
             resultSet = this.createStatement(this.createConnection()).executeQuery(sql);
         } catch (NullPointerException | SQLException var4) {
-            ReportManager.log(var4);
+            ReportManager.log(String.valueOf(var4));
             failAction(this.getReportMessage("SELECT", sql), var4);
         }
 
@@ -250,7 +250,7 @@ public class DatabaseActionsCustom {
             updatedRows = this.createStatement(this.createConnection()).executeUpdate(sql);
             passAction(sql);
         } catch (NullPointerException | SQLException var4) {
-            ReportManager.log(var4);
+            ReportManager.log(String.valueOf(var4));
             failAction(this.getReportMessage("UPDATE", sql), var4);
         }
 
@@ -272,7 +272,7 @@ public class DatabaseActionsCustom {
             connection = DriverManager.getConnection(connectionString, this.username, this.password);
 
         } catch (SQLException var4) {
-            ReportManager.log(var4);
+            ReportManager.log(String.valueOf(var4));
             failAction(connectionString, var4);
         }
 
@@ -293,11 +293,11 @@ public class DatabaseActionsCustom {
             statement.setQueryTimeout(Integer.parseInt(System.getProperty("databaseQueryTimeout")));
         } catch (SQLFeatureNotSupportedException var4) {
             if (!var4.getMessage().contains("org.postgresql.jdbc4.Jdbc4Statement.setQueryTimeout")) {
-                ReportManager.log(var4);
+                ReportManager.log(String.valueOf(var4));
                 failAction(connection.toString(), var4);
             }
         } catch (SQLException var5) {
-            ReportManager.log(var5);
+            ReportManager.log(String.valueOf(var5));
             failAction(connection.toString(), var5);
         }
 
