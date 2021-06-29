@@ -8,10 +8,12 @@ public class CisLoginPage {
 
     By userNameTxt = By.id("j_username");
     By passwordTxt = By.id("j_password");
-    By loginBtn = By.name("submit");
+    By englishLangBtn = By.xpath("//*[@class='en-lang selected-lang']");
+    By loginBtn = By.xpath("//*[@id='sign-in']//*[@name='submit']");
     private WebDriver driver;
     public void login(String username , String password)
     {
+        ElementActions.click(driver,englishLangBtn);
         ElementActions.type(driver , userNameTxt,username);
         ElementActions.type(driver,passwordTxt,password);
         ElementActions.click(driver,loginBtn);

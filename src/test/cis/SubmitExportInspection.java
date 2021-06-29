@@ -8,6 +8,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.cis.CisLoginPage;
+import pages.common.ChromeCertificatePage;
 
 public class SubmitExportInspection {
     private WebDriver driver;
@@ -21,9 +22,9 @@ public class SubmitExportInspection {
     @BeforeMethod()
     public void beforeMethod() {
         driver = BrowserFactory.getBrowser();
-
-        BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("cisURL"),LoadProperties.userData.getProperty("cisURL"));
-
+        BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("cisURL"));
+        ChromeCertificatePage chromeCertificatePage = new ChromeCertificatePage(driver);
+        chromeCertificatePage.skipUnsafePage();
     }
         @AfterMethod()
         public void tearDown() {
