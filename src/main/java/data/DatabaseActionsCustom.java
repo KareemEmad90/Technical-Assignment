@@ -2,6 +2,7 @@ package data;
 
 import com.shaft.tools.io.PropertyFileManager;
 import com.shaft.tools.io.ReportManager;
+import io.qameta.allure.Step;
 import org.testng.Assert;
 
 import java.sql.*;
@@ -12,8 +13,10 @@ import java.util.List;
 public class DatabaseActionsCustom {
 
     private String username = LoadProperties.userData.getProperty("DBUserName");
-    private String password =  LoadProperties.userData.getProperty("DBPassword");
+    private String password = LoadProperties.userData.getProperty("DBPassword");
     private String connectionString = "";
+
+    DbConnection dbConnection = new DbConnection();
 
 
     public static String getResult(ResultSet resultSet) {
@@ -34,10 +37,10 @@ public class DatabaseActionsCustom {
                 int lastRowID = resultSet.getRow();
                 int targetColumnID = resultSet.findColumn(columnName);
 
-                for(int i = 1; i <= lastRowID; ++i) {
+                for (int i = 1; i <= lastRowID; ++i) {
                     resultSet.absolute(i);
                     if (String.valueOf(resultSet.getString(targetColumnID)).trim().equals(knownCellValue.trim())) {
-                        for(int j = 1; j <= columnsCount; ++j) {
+                        for (int j = 1; j <= columnsCount; ++j) {
                             str.append(resultSet.getString(j)).append("\t");
                         }
 
@@ -69,7 +72,7 @@ public class DatabaseActionsCustom {
                 int lastRowID = resultSet.getRow();
                 int targetColumnID = resultSet.findColumn(columnName);
 
-                for(int i = 1; i <= lastRowID; ++i) {
+                for (int i = 1; i <= lastRowID; ++i) {
                     resultSet.absolute(i);
                     str.append(resultSet.getString(targetColumnID)).append("\n");
                 }
@@ -112,16 +115,17 @@ public class DatabaseActionsCustom {
 
     private static void passAction(String testData) {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        passAction(actionName, testData, (String)null);
+        passAction(actionName, testData, (String) null);
     }
 
     private static void passAction() {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        passAction(actionName, (String)null, (String)null);
+        passAction(actionName, (String) null, (String) null);
     }
 
+
     private static void failAction(String actionName, String testData, Exception... rootCauseException) {
-        String message = reportActionResult(actionName, testData, (String)null, false);
+        String message = reportActionResult(actionName, testData, (String) null, false);
         if (rootCauseException != null && rootCauseException.length >= 1) {
             Assert.fail(message, rootCauseException[0]);
         } else {
@@ -137,7 +141,7 @@ public class DatabaseActionsCustom {
 
     private static void failAction(Exception... rootCauseException) {
         String actionName = Thread.currentThread().getStackTrace()[2].getMethodName();
-        failAction(actionName, (String)null, rootCauseException);
+        failAction(actionName, (String) null, rootCauseException);
     }
 
     private static String reportActionResult(String actionName, String testData, String queryResult, Boolean passFailStatus) {
@@ -172,7 +176,7 @@ public class DatabaseActionsCustom {
     private static StringBuilder readColumnHeaders(ResultSet resultSet, boolean readColumnNames, int columnsCount) throws SQLException {
         StringBuilder str = new StringBuilder();
         if (readColumnNames) {
-            for(int i = 1; i <= columnsCount; ++i) {
+            for (int i = 1; i <= columnsCount; ++i) {
                 str.append(resultSet.getMetaData().getColumnName(i));
                 if (i != columnsCount) {
                     str.append("\t");
@@ -188,10 +192,10 @@ public class DatabaseActionsCustom {
     private static StringBuilder readColumnData(ResultSet resultSet, int columnsCount, int lastRowID) throws SQLException {
         StringBuilder str = new StringBuilder();
 
-        for(int i = 1; i <= lastRowID; ++i) {
+        for (int i = 1; i <= lastRowID; ++i) {
             resultSet.absolute(i);
 
-            for(int j = 1; j <= columnsCount; ++j) {
+            for (int j = 1; j <= columnsCount; ++j) {
                 str.append(resultSet.getString(j));
                 if (j != columnsCount) {
                     str.append("\t");
@@ -223,7 +227,7 @@ public class DatabaseActionsCustom {
         return str.toString().trim();
     }
 
-    public ResultSet executeSelectQuery(String sql) {
+    public  ResultSet executeSelectQuery(String sql) {
         ResultSet resultSet = null;
 
         try {
@@ -311,6 +315,31 @@ public class DatabaseActionsCustom {
     }
 
     private String getReportMessage(String queryType, String query) {
-        return "Database Type: \""  + "\"| Server: \"" +  ":"  + "\"| Name: \"" + this.connectionString + "\"| Username: \"" + this.username + "\"| Password: \"" + this.password.replaceAll(".", "*") + "\"| Query Type: \"" + queryType + "\"| Query: \"" + query + "\"";
+        return "Database Type: \"" + "\"| Server: \"" + ":" + "\"| Name: \"" + this.connectionString + "\"| Username: \"" + this.username + "\"| Password: \"" + this.password.replaceAll(".", "*") + "\"| Query Type: \"" + queryType + "\"| Query: \"" + query + "\"";
     }
+
+    @Step("Get Chasis details from DB")
+    public static String[] getChasisDetails() {
+        String[] chasisDetails = new String[4];
+        DatabaseActionsCustom databaseActionsCustom = new DatabaseActionsCustom();
+        ResultSet result = databaseActionsCustom.executeSelectQuery("SELECT * FROM  QC_USERS.GET_VLS_RENEW_DATA where rownum < 10");
+
+        try {
+            // Get Passport number
+            chasisDetails[0] = result.getString(1);
+            // Get Date of birth
+            chasisDetails[1] = result.getString(2);
+            // Get Nationality
+            chasisDetails[2] = result.getString(3);
+            // Get Mobile
+            chasisDetails[3] = result.getString(4);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Chasis number = " + chasisDetails[0] + "  RTA_UNIFIED_NO = " + chasisDetails[1] + " Emirates ID = " + chasisDetails[2]+ " Expiry date = " + chasisDetails[3]);
+
+        return chasisDetails;
+    }
+
 }
