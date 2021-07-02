@@ -15,7 +15,7 @@ public class SearchVehiclePage {
     private WebDriver driver;
     By chasisNumberOption = By.linkText("Chassis Number");
     By chasisNumber = By.id("chassis-no-0");
-    By searchBtn = By.xpath("//*[@id=\"insSlctVhlForm:tabsContentId\"]/div[3]/a[1]");
+    By searchBtn = By.xpath("//div[@id='insSlctVhlForm:tabsContentId']//a[contains(@class,'proceed')]");
 
     public SearchVehiclePage(WebDriver driver) {
         this.driver = driver;

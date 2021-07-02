@@ -10,6 +10,13 @@ public class CisHomePage {
     By navigatorBtn = By.xpath("//*[@title='Navigation']");
     By newVehicleInspectionBtn = By.linkText("New Vehicle Inspection");
 
+    By supervisorQueueBtn = By.xpath("//a[contains(text(),'Supervisor Queue')]");
+
+    @Step("user click on insepctor queueu button")
+    public void clickOnSupervisorQueu(){
+        ElementActions.click(driver,supervisorQueueBtn);
+    }
+
     @Step("Click on navigation button")
     public void clickOnNavigationBtn() {
         ElementActions.click(driver, navigatorBtn);

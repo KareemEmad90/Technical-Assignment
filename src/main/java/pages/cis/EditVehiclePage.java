@@ -1,14 +1,45 @@
 package pages.cis;
 
 import com.shaft.gui.element.ElementActions;
+import data.DatabaseActionsCustom;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
-public class EditVehiclePage {
-    private WebDriver driver;
-    By continueBtn = By.id("formId:btn-continue");
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
+public class EditVehiclePage {
+    By continueBtn = By.id("formId:btn-continue");
+    private WebDriver driver;
+
+    public EditVehiclePage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    @Step("Get Chasis details from DB")
+    public static String[] getChasisDetails() {
+        String[] chasisDetails = new String[4];
+        DatabaseActionsCustom databaseActionsCustom = new DatabaseActionsCustom();
+        ResultSet result = databaseActionsCustom.executeSelectQuery("SELECT * FROM  QC_USERS.GET_VLS_RENEW_DATA where rownum < 10;");
+
+        try {
+            // Get Passport number
+            chasisDetails[0] = result.getString(1);
+            // Get Date of birth
+            chasisDetails[1] = result.getString(2);
+            // Get Nationality
+            chasisDetails[2] = result.getString(3);
+            // Get Mobile
+            chasisDetails[3] = result.getString(4);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Chasis number = " + chasisDetails[0] + "  RTA_UNIFIED_NO = " + chasisDetails[1] + " Emirates ID = " + chasisDetails[2] + " Expiry date = " + chasisDetails[3]);
+
+        return chasisDetails;
+    }
 
     @Step("Click on continue button")
     public void clickContinueBtn() {
@@ -16,7 +47,5 @@ public class EditVehiclePage {
         ElementActions.click(driver, continueBtn);
     }
 
-    public EditVehiclePage(WebDriver driver) {
-        this.driver = driver;
-    }
+
 }

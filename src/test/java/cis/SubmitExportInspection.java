@@ -2,9 +2,11 @@ package cis;
 
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
+import data.DatabaseActionsCustom;
 import data.LoadProperties;
 import io.cucumber.java.tr.Ve;
 import org.openqa.selenium.WebDriver;
+import org.python.modules.thread.thread;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -21,6 +23,13 @@ public class SubmitExportInspection {
     SearchVehiclePage searchVehiclePage;
     EditVehiclePage editVehiclePage;
     VehicleDetails vehicleDetails;
+    LaneSelectionPage laneSelectionPage;
+
+    DatabaseActionsCustom db = new DatabaseActionsCustom();
+
+    String chasisNumber;
+
+
 
     @Test
     public void SubmitNewInspection() throws InterruptedException {
@@ -31,13 +40,16 @@ public class SubmitExportInspection {
         newVehicleInspectionPage.selectExportTest();
         newVehicleInspectionPage.clickContinue();
         searchVehiclePage.selectChasisNumberOption();
-        searchVehiclePage.typeChasisNumber("JN8AY2NY8G9212792");
+        searchVehiclePage.typeChasisNumber("MR1YU59G260004612");
+        Thread.sleep(5000);
         searchVehiclePage.clickSearchButton();
         editVehiclePage.clickContinueBtn();
         vehicleDetails.clickDispatchBtn();
-        vehicleDetails.typeMobileNo("5155849");
-        vehicleDetails.clickSaveBtn();
+        vehicleDetails.proceedWithMobileBtn("0515584988");
         vehicleDetails.clickContinueBtn();
+        cisHomePage.clickOnNavigationBtn();
+        cisHomePage.clickOnSupervisorQueu();
+        laneSelectionPage.proceedWithSelectedCar(vehicleDetails.plateNumber());
     }
 
     @BeforeMethod()
@@ -52,11 +64,14 @@ public class SubmitExportInspection {
         searchVehiclePage = new SearchVehiclePage(driver);
         editVehiclePage = new EditVehiclePage(driver);
         vehicleDetails = new VehicleDetails(driver);
+        laneSelectionPage = new LaneSelectionPage(driver);
+        //chasisNumber = DatabaseActionsCustom.getChasisDetails()[0];
     }
+
 
     @AfterMethod()
     public void tearDown() {
-        BrowserActions.closeCurrentWindow(driver);
+       //BrowserActions.closeCurrentWindow(driver);
     }
 }
 
