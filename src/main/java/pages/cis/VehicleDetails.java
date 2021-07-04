@@ -15,7 +15,6 @@ public class VehicleDetails {
     By saveBtn = By.id("btn-save-id");
     By ProceedWithMobile = By.id("formId:init-jrny-button");
     By continueBtn = By.name("insVhlDetailsForm:j_idt777");
-
     By modelNumber = By.xpath("//label[@for='chassis-no' and (contains(text(),'Plate Details'))]/following-sibling::div/p");
 
     @Step("Click on dispatch button")

@@ -3,6 +3,7 @@ package cis;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
 import data.DatabaseActionsCustom;
+import data.DbQueries;
 import data.LoadProperties;
 import io.cucumber.java.tr.Ve;
 import org.openqa.selenium.WebDriver;
@@ -24,10 +25,12 @@ public class SubmitExportInspection {
     EditVehiclePage editVehiclePage;
     VehicleDetails vehicleDetails;
     LaneSelectionPage laneSelectionPage;
+    OdometerPage odometerPage;
+    VisualInspectionPage visualInspectionPage;
 
     DatabaseActionsCustom db = new DatabaseActionsCustom();
 
-    String chasisNumber;
+    String chassisNumber,plateNo;
 
 
 
@@ -40,7 +43,7 @@ public class SubmitExportInspection {
         newVehicleInspectionPage.selectExportTest();
         newVehicleInspectionPage.clickContinue();
         searchVehiclePage.selectChasisNumberOption();
-        searchVehiclePage.typeChasisNumber("MR1YU59G260004612");
+        searchVehiclePage.typeChasisNumber(chassisNumber);
         Thread.sleep(5000);
         searchVehiclePage.clickSearchButton();
         editVehiclePage.clickContinueBtn();
@@ -49,7 +52,11 @@ public class SubmitExportInspection {
         vehicleDetails.clickContinueBtn();
         cisHomePage.clickOnNavigationBtn();
         cisHomePage.clickOnSupervisorQueu();
-        laneSelectionPage.proceedWithSelectedCar(vehicleDetails.plateNumber());
+        laneSelectionPage.proceedWithSelectedCar(plateNo);
+        laneSelectionPage.startInspection();
+        odometerPage.fillOdometer();
+        visualInspectionPage.visualInsContinue();
+
     }
 
     @BeforeMethod()
@@ -65,7 +72,13 @@ public class SubmitExportInspection {
         editVehiclePage = new EditVehiclePage(driver);
         vehicleDetails = new VehicleDetails(driver);
         laneSelectionPage = new LaneSelectionPage(driver);
+        odometerPage = new OdometerPage(driver);
+        visualInspectionPage = new VisualInspectionPage(driver);
         //chasisNumber = DatabaseActionsCustom.getChasisDetails()[0];
+        DbQueries dbQueries = new DbQueries();
+        String[] vehicle = dbQueries.getVehicle();
+        chassisNumber = vehicle[0];
+        plateNo = vehicle[4];
     }
 
 
