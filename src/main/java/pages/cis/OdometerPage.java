@@ -7,7 +7,7 @@ import org.openqa.selenium.WebDriver;
 public class OdometerPage {
     private WebDriver driver ;
     By odometerReadingTxt = By.id("finishForm:odometerNewReadingInputId:odometerNewReadingInputIdField");
-    By nextBtn = By.xpath("//*[@onclick='goToValidate()']");
+    By nextBtn = By.xpath("//form[@id='defectsForm']//ancestor::div[@class='ui-grid-a custom-ins-odometer']/following-sibling::*[@onclick='goToValidate()']");
 
     public void fillOdometer(){
         ElementActions.type(driver,odometerReadingTxt,"9000");

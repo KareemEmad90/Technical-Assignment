@@ -36,7 +36,7 @@ public class SubmitExportInspection {
 
     @Test
     public void SubmitNewInspection() throws InterruptedException {
-        cisLoginPage.login("shi_koshis", "Qc_123456");
+            cisLoginPage.login("shi_koshis", "Qc_123456");
         cisHomePage.clickOnNavigationBtn();
         cisHomePage.clickOnNewVehicleInspectionMenuItem();
         newVehicleInspectionPage.unselectRenewalTestService();
@@ -56,6 +56,7 @@ public class SubmitExportInspection {
         laneSelectionPage.startInspection();
         odometerPage.fillOdometer();
         visualInspectionPage.visualInsContinue();
+        visualInspectionPage.proceedWithViehcleWhgt("2000","1700");
 
     }
 

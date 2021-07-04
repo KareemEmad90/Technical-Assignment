@@ -11,6 +11,10 @@ public class LaneSelectionPage {
     By startInspectionBtn = By.id("accept-vehicle");
     By startInspectionBtn2 = By.id("insStartInspectionButton1");
     By startInspectionFrame = By.xpath("//*[@id='popupVehicleInfo']/iframe");
+    By axlesTxt = By.id("elementsForm:j_idt15:0:j_idt17:tvl");
+
+    By saveAxlesNumber = By.id("elementsForm:doSaveBtn");
+
     public LaneSelectionPage(WebDriver driver) {
         this.driver = driver;
     }
@@ -27,5 +31,8 @@ public class LaneSelectionPage {
         ElementActions.switchToIframe(driver,startInspectionFrame);
         ElementActions.click(driver,startInspectionBtn);
         ElementActions.click(driver,startInspectionBtn2);
+        ElementActions.type(driver,axlesTxt,"2");
+        ElementActions.click(driver,saveAxlesNumber);
+
     }
 }
