@@ -11,7 +11,7 @@ public class VisualInspectionPage {
 
     By grossWghtVeihcle = By.id("elementsForm:j_idt15:0:j_idt17:tvl");
 
-    By emptyWght = By.id("//input[@id='elementsForm:j_idt15:1:j_idt17:tvl']");
+    By emptyWght = By.id("elementsForm:j_idt15:1:j_idt17:tvl");
 
     By saveBtm = By.id("elementsForm:doSaveBtn");
 
@@ -28,12 +28,14 @@ public class VisualInspectionPage {
     public void proceedWithViehcleWhgt(String groosWeight,String emptyWaght){
         ElementActions.waitForElementToBePresent(driver,entryForm,5,true);
         String grossWghtOrignal = ElementActions.getAttribute(driver,grossWghtVeihcle,"value");
+        String emptyWeightOriginal = ElementActions.getAttribute(driver,emptyWght,"value");
         if (grossWghtOrignal.isEmpty()){
             ElementActions.type(driver,grossWghtVeihcle,groosWeight);
             ElementActions.type(driver,emptyWght,emptyWaght);
             ElementActions.click(driver,saveBtm);
-        }else
-        {
+        }else if (!(grossWghtOrignal.isEmpty() ||emptyWeightOriginal.isEmpty())){
+            ElementActions.click(driver,saveBtm);
+        }else if(emptyWeightOriginal.isEmpty()) {
             ElementActions.type(driver,emptyWght,emptyWaght);
             ElementActions.click(driver,saveBtm);
         }

@@ -9,6 +9,8 @@ public class OdometerPage {
     By odometerReadingTxt = By.id("finishForm:odometerNewReadingInputId:odometerNewReadingInputIdField");
     By nextBtn = By.xpath("//form[@id='defectsForm']//ancestor::div[@class='ui-grid-a custom-ins-odometer']/following-sibling::*[@onclick='goToValidate()']");
 
+    By invalidNextBtn = By.xpath("//div[@id='error-popup']//span[contains(text(),'Next')]//ancestor::a");
+
     public void fillOdometer(){
         ElementActions.type(driver,odometerReadingTxt,"9000");
         ElementActions.click(driver,nextBtn);
