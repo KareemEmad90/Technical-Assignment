@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DbQueries {
-    DatabaseActionsCustom databaseActionsCustom ;
-    public String[] getVehicle (){
+    DatabaseActionsCustom databaseActionsCustom;
+
+    public String[] getVehicle() {
         String[] vehicle = new String[6];
         databaseActionsCustom = new DatabaseActionsCustom();
-        ResultSet result = databaseActionsCustom.executeSelectQuery("SELECT * FROM QC_USERS.GET_EXPIRED_VEHICLE_VLS");
+        ResultSet result = databaseActionsCustom.executeSelectQuery("SELECT * FROM QC_USERS.GET_EXPIRED_VEHICLE_VLS WHERE rownum < 2");
 
         try {
             vehicle[0] = result.getString(1);
@@ -21,8 +22,9 @@ public class DbQueries {
             e.printStackTrace();
         }
 
-        System.out.println("Chassis = " + vehicle[0] + "  --- RTA_UNIFIED_NO ID = " + vehicle[1] + "  --- EID_NUMBER ID = " + vehicle[2] + "  --- EXPIRY_DATE ID = " + vehicle[3]+
-                            "  --- PLATE No = " + vehicle[4]+ "  --- Plate Code = " + vehicle[5]);
+        System.out.println("Chassis = " + vehicle[0] + "  --- RTA_UNIFIED_NO ID = " + vehicle[1] + "  --- EID_NUMBER ID = " + vehicle[2] + "  --- EXPIRY_DATE ID = " + vehicle[3] +
+                "  --- PLATE No = " + vehicle[4] + "  --- Plate Code = " + vehicle[5]);
 
-        return vehicle;    }
+        return vehicle;
+    }
 }

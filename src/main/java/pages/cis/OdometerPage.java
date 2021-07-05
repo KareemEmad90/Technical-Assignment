@@ -14,6 +14,7 @@ public class OdometerPage {
     public void fillOdometer(){
         ElementActions.type(driver,odometerReadingTxt,"9000");
         ElementActions.click(driver,nextBtn);
+
     }
     public OdometerPage(WebDriver driver) {this.driver = driver;}
 }
