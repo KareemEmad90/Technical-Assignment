@@ -15,8 +15,10 @@ import org.testng.annotations.Test;
 import pages.cis.*;
 import pages.common.ChromeCertificatePage;
 import enums.*;
+import utils.Utils;
 
 import java.io.File;
+import java.io.IOException;
 
 public class SubmitRenewalTest {
 
@@ -24,6 +26,7 @@ public class SubmitRenewalTest {
     DefectAnalysisPage defectAnalysisPage;
     VehicleDiscrepanciesPage vehicleDiscrepanciesPage;
     CisLoginPage cisLoginPage;
+    ChasisInspectionPage chasisInspectionPage;
     CisHomePage cisHomePage;
     NewVehicleInspectionPage newVehicleInspectionPage;
     SearchVehiclePage searchVehiclePage;
@@ -49,6 +52,7 @@ public class SubmitRenewalTest {
         vehicleDiscrepanciesPage = new VehicleDiscrepanciesPage(driver);
         cisLoginPage = new CisLoginPage(driver);
         cisHomePage = new CisHomePage(driver);
+        chasisInspectionPage = new ChasisInspectionPage(driver);
         defectAnalysisPage = new DefectAnalysisPage(driver);
         inspectionResultsPage = new inspectionResultsPage(driver);
         newVehicleInspectionPage = new NewVehicleInspectionPage(driver);
@@ -65,7 +69,7 @@ public class SubmitRenewalTest {
     }
 
     @Test
-    public void SubmitRenewalTest(){
+    public void SubmitRenewalTest() throws IOException, InterruptedException {
         cisLoginPage.login("shi_koshis", "Qc_123456");
         cisHomePage.clickOnNavigationBtn();
         cisHomePage.clickOnNewVehicleInspectionMenuItem();
@@ -82,7 +86,9 @@ public class SubmitRenewalTest {
         laneSelectionPage.proceedWithSelectedCar(plateNo);
         laneSelectionPage.StartInspectionRenwalTest("2","3","7");
         odometerPage.fillOdometer();
-
+        Utils.renameInspectionFile(BrowserActions.getCurrentURL(driver));
+        chasisInspectionPage.clickOnRereadBtn();
+        BrowserActions.refreshCurrentPage(driver);
     }
 
     @AfterMethod()
