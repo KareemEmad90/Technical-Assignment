@@ -1,5 +1,6 @@
 package data;
 
+import com.shaft.db.DatabaseActions;
 import io.qameta.allure.*;
 import org.stringtemplate.v4.*;
 
@@ -7,12 +8,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DbQueries {
-    DatabaseActionsCustom databaseActionsCustom ;
+    DatabaseActions databaseActions ;
     String[] vehicle = new String[6];
     public String[] getVehicle (){
 
-        databaseActionsCustom = new DatabaseActionsCustom();
-        ResultSet result = databaseActionsCustom.executeSelectQuery("SELECT * FROM QC_USERS.GET_EXPIRED_VEHICLE_VLS where rownum <2");
+        DBConnections dbConnections = new DBConnections();
+        dbConnections.setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT * FROM QC_USERS.GET_EXPIRED_VEHICLE_VLS  where RTA_UNIFIED_NO not in (11295399) and rownum <2");
 
         try {
             vehicle[0] = result.getString(1);
@@ -33,8 +35,9 @@ public class DbQueries {
 
     @Step("Update Vehicle License Expiry Date")
     public void updatelicenseexpirydate(String chassis_no , String numberofdays) {
-        DatabaseActionsCustom databaseActionsCustom = new DatabaseActionsCustom();
-        databaseActionsCustom.executeUpdateQuery("DECLARE\n" +
+        DBConnections dbConnections = new DBConnections();
+        dbConnections.setConnection();
+        databaseActions.executeUpdateQuery("DECLARE\n" +
                 "            V_PRODUCT_DOCUMENT CLOB;\n" +
                 "            V_JJ JSON := json();\n" +
                 "            BEGIN\n" +
