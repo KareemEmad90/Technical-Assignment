@@ -1,9 +1,12 @@
 package pages.cis;
 
 import com.shaft.gui.element.ElementActions;
+import com.shaft.gui.element.SikuliActions;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.Actions;
 
 public class VehicleDetails {
     private WebDriver driver;
@@ -16,6 +19,8 @@ public class VehicleDetails {
     By ProceedWithMobile = By.id("formId:init-jrny-button");
     By continueBtn = By.name("insVhlDetailsForm:j_idt777");
     By modelNumber = By.xpath("//label[@for='chassis-no' and (contains(text(),'Plate Details'))]/following-sibling::div/p");
+
+    By pageSection = By.id("wrapper");
 
     @Step("Click on dispatch button")
     public void clickDispatchBtn() {
@@ -58,13 +63,19 @@ public class VehicleDetails {
     }
 
 
-    public void proceedWithMobileBtn(String mobileNum){
+    public void proceedWithMobileBtn(String mobileNum) throws InterruptedException {
         ElementActions.switchToIframe(driver, By.xpath("//div[@id='group-modal']/iframe"));
         ElementActions.waitForElementToBePresent(driver, mobileTextField, 10, true);
         ElementActions.type(driver, mobileTextField, mobileNum);
         ElementActions.click(driver,saveBtn);
+        Thread.sleep(6000);
         ElementActions.switchToDefaultContent();
+        SikuliActions action = new SikuliActions();
+        action.click(System.getProperty("user.dir")+"\\src\\test\\resources\\TestDataFiles\\img.png");
+        action.
     }
+
+
 }
 
 

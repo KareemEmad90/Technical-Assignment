@@ -23,7 +23,6 @@ public class DBConnections {
     private String databaseType , ip , port, dbname , username , password ;
 
     public void setConnection(){
-
         username = LoadProperties.userData.getProperty("DBUserName");
         password = LoadProperties.userData.getProperty("DBPassword");
         dbname = LoadProperties.userData.getProperty("dbname");

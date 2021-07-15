@@ -6,6 +6,8 @@ import com.shaft.validation.Assertions;
 import data.DatabaseActionsCustom;
 import data.DbQueries;
 import data.LoadProperties;
+import enums.SearchVehicleType;
+import enums.TestType;
 import io.cucumber.java.tr.Ve;
 import org.openqa.selenium.WebDriver;
 import org.python.modules.thread.thread;
@@ -20,6 +22,7 @@ import java.awt.*;
 
 public class SubmitExportInspection {
 
+    String language = "en";
     String Expected = "Success";
     inspectionResultsPage inspectionResultsPage;
     DefectAnalysisPage defectAnalysisPage;
@@ -39,13 +42,12 @@ public class SubmitExportInspection {
 
     @Test
     public void SubmitNewInspection() throws InterruptedException {
+        cisLoginPage.changeLanguage(language);
         cisLoginPage.login("shi_koshis", "Qc_123456");
         cisHomePage.clickOnNavigationBtn();
         cisHomePage.clickOnNewVehicleInspectionMenuItem();
-        newVehicleInspectionPage.unselectRenewalTestService();
-        newVehicleInspectionPage.selectExportTest();
-        newVehicleInspectionPage.clickContinue();
-        searchVehiclePage.selectChasisNumberOption();
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchVhcleType(SearchVehicleType.ChasisNumber);
         searchVehiclePage.typeChasisNumber(chassisNumber);
         Thread.sleep(5000);
         searchVehiclePage.clickSearchButton();

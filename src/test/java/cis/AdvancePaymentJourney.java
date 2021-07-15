@@ -1,32 +1,26 @@
 package cis;
 
-import com.shaft.driver.DriverFactory;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
+import com.shaft.validation.Assertions;
 import data.DatabaseActionsCustom;
 import data.DbQueries;
 import data.LoadProperties;
+import enums.TestType;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.cis.*;
 import pages.common.ChromeCertificatePage;
-import enums.*;
-import utils.Utils;
 
-import java.io.File;
-import java.io.IOException;
+public class AdvancePaymentJourney {
 
-public class SubmitRenewalTest {
-
+    String Expected = "Success";
     pages.cis.inspectionResultsPage inspectionResultsPage;
     DefectAnalysisPage defectAnalysisPage;
     VehicleDiscrepanciesPage vehicleDiscrepanciesPage;
     CisLoginPage cisLoginPage;
-    ChasisInspectionPage chasisInspectionPage;
     CisHomePage cisHomePage;
     NewVehicleInspectionPage newVehicleInspectionPage;
     SearchVehiclePage searchVehiclePage;
@@ -39,18 +33,43 @@ public class SubmitRenewalTest {
     String chassisNumber, plateNo;
     private WebDriver driver;
 
+    @Test
+    public void SubmitNewInspection() throws InterruptedException {
+        cisLoginPage.login("shi_koshis", "Qc_123456");
+        cisHomePage.clickOnNavigationBtn();
+        cisHomePage.clickOnNewVehicleInspectionMenuItem();
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectChasisNumberOption();
+        searchVehiclePage.typeChasisNumber(chassisNumber);
+        Thread.sleep(5000);
+        searchVehiclePage.clickSearchButton();
+        editVehiclePage.clickContinueBtn();
+        vehicleDetails.clickDispatchBtn();
+        vehicleDetails.proceedWithMobileBtn("0515584988");
+        vehicleDetails.clickContinueBtn();
+        cisHomePage.clickOnNavigationBtn();
+        cisHomePage.clickOnSupervisorQueu();
+        laneSelectionPage.proceedWithSelectedCar(plateNo);
+        laneSelectionPage.startInspection();
+        odometerPage.fillOdometer();
+        visualInspectionPage.visualInsContinue();
+        visualInspectionPage.proceedWithViehcleWhgt("2000", "1700");
+        vehicleDiscrepanciesPage.proceedWithViehcel();
+        defectAnalysisPage.proceedWithDefects();
+        inspectionResultsPage.checkResult();
+        Assertions.assertEquals(Expected,inspectionResultsPage.getResult(),"inspection journey encountered blocker error");
+    }
+
+
     @BeforeMethod()
     public void beforeMethod() {
-        ChromeOptions options = new ChromeOptions();
-        options.addExtensions(new File(System.getProperty("user.dir")+"/extensions/connector.crx"));
-        driver = BrowserFactory.getBrowser(DriverFactory.DriverType.DESKTOP_CHROME,options);
+        driver = BrowserFactory.getBrowser();
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("cisURL"));
         ChromeCertificatePage chromeCertificatePage = new ChromeCertificatePage(driver);
         chromeCertificatePage.skipUnsafePage();
         vehicleDiscrepanciesPage = new VehicleDiscrepanciesPage(driver);
         cisLoginPage = new CisLoginPage(driver);
         cisHomePage = new CisHomePage(driver);
-        chasisInspectionPage = new ChasisInspectionPage(driver);
         defectAnalysisPage = new DefectAnalysisPage(driver);
         inspectionResultsPage = new inspectionResultsPage(driver);
         newVehicleInspectionPage = new NewVehicleInspectionPage(driver);
@@ -66,31 +85,10 @@ public class SubmitRenewalTest {
         plateNo = vehicle[4];
     }
 
-    @Test
-    public void SubmitRenewalTest() throws IOException, InterruptedException {
-        cisLoginPage.login("shi_koshis", "Qc_123456");
-        cisHomePage.clickOnNavigationBtn();
-        cisHomePage.clickOnNewVehicleInspectionMenuItem();
-        newVehicleInspectionPage.SelectTestType(TestType.RenewalTest);
-        searchVehiclePage.selectChasisNumberOption();
-        searchVehiclePage.typeChasisNumber(chassisNumber);
-        searchVehiclePage.clickSearchButton();
-        editVehiclePage.clickContinueBtn();
-        vehicleDetails.clickDispatchBtn();
-        vehicleDetails.proceedWithMobileBtn("0515584988");
-        vehicleDetails.clickContinueBtn();
-        cisHomePage.clickOnNavigationBtn();
-        cisHomePage.clickOnSupervisorQueu();
-        laneSelectionPage.proceedWithSelectedCar(plateNo);
-        laneSelectionPage.StartInspectionRenwalTest("2","3","7");
-        odometerPage.fillOdometer();
-        Utils.renameInspectionFile(BrowserActions.getCurrentURL(driver));
-        chasisInspectionPage.clickOnRereadBtn();
-        BrowserActions.refreshCurrentPage(driver);
-    }
 
     @AfterMethod()
     public void tearDown() {
         //BrowserActions.closeCurrentWindow(driver);
     }
+
 }

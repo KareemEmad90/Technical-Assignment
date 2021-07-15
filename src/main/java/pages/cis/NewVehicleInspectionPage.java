@@ -16,7 +16,7 @@ public class NewVehicleInspectionPage {
 
     By selectedTestBtn = By.xpath("//div[@id='b1']//a[contains(@id,'j_idt800') and (@name)]");
 
-    By SelectedTestTxt = By.xpath("//div[@id='b1']//a[contains(@id,'j_idt800') and (@name)]/span[@class='boothSpanText']");
+    By SelectedTestTxt = By.xpath("//div[@id='b1']//a[(@name)]/span[@class='boothSpanText']");
 
     By proceedBtn = By.xpath("//a[contains(text(),'Continue')]");
 

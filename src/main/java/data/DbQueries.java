@@ -7,13 +7,12 @@ import org.stringtemplate.v4.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class DbQueries {
-    DatabaseActions databaseActions ;
+public class DbQueries extends DBConnections{
+
     String[] vehicle = new String[6];
     public String[] getVehicle (){
-
-        DBConnections dbConnections = new DBConnections();
-        dbConnections.setConnection();
+        //databaseActions = new DatabaseActions();
+     setConnection();
         ResultSet result = databaseActions.executeSelectQuery("SELECT * FROM QC_USERS.GET_EXPIRED_VEHICLE_VLS  where RTA_UNIFIED_NO not in (11295399) and rownum <2");
 
         try {
