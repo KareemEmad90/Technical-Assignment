@@ -10,7 +10,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class EditVehiclePage {
+
     By continueBtn = By.id("formId:btn-continue");
+
+    By chasisLbl = By.xpath("//label[@for='chassis-no-0']");
+
+    By chasisNumber = By.xpath("//label[@for='chassis-no-0']/following-sibling::div//span");
+
+    By validationMsg = By.xpath("//li[contains(text(),'Integration with traffic is Success No Records')]");
+
     private WebDriver driver;
 
     public EditVehiclePage(WebDriver driver) {
@@ -47,5 +55,19 @@ public class EditVehiclePage {
         ElementActions.click(driver, continueBtn);
     }
 
+    @Step("check that chasis number is displayed")
+    public boolean verifyChasisNumberDisplyed(){
+        return ElementActions.isElementDisplayed(driver,chasisLbl);
+    }
 
+    @Step("check validation message appeared")
+    public boolean verifyValidationMsg(){
+        return ElementActions.isElementDisplayed(driver,validationMsg);
+    }
+
+
+    @Step("get chasis number")
+    public String getChasisNumber() {
+        return ElementActions.getText(driver,chasisNumber);
+    }
 }

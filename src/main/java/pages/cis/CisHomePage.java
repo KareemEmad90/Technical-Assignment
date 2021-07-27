@@ -12,6 +12,8 @@ public class CisHomePage {
 
     By supervisorQueueBtn = By.xpath("//a[contains(text(),'Supervisor Queue')]");
 
+    By superAction(String Action){return By.xpath("//div[@data-role='panel']//ul/li//a[text()='"+Action+"']");}
+
     @Step("user click on insepctor queueu button")
     public void clickOnSupervisorQueu(){
         ElementActions.click(driver,supervisorQueueBtn);
@@ -26,6 +28,12 @@ public class CisHomePage {
     public void clickOnNewVehicleInspectionMenuItem() {
         ElementActions.waitForElementToBePresent(driver, newVehicleInspectionBtn, 3, true);
         ElementActions.click(driver, newVehicleInspectionBtn);
+    }
+
+    @Step("supeviser user open side menu and choose action")
+    public void supervisorAction(String action){
+        ElementActions.click(driver, navigatorBtn);
+        ElementActions.click(driver,superAction(action));
     }
 
 

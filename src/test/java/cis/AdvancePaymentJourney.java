@@ -91,4 +91,9 @@ public class AdvancePaymentJourney {
         //BrowserActions.closeCurrentWindow(driver);
     }
 
+    public static void main(String[] args) {
+        DbQueries dbQueries = new DbQueries();
+        dbQueries.getVehicle();
+    }
+
 }

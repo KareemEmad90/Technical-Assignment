@@ -72,7 +72,7 @@ public class VehicleDetails {
         ElementActions.switchToDefaultContent();
         SikuliActions action = new SikuliActions();
         action.click(System.getProperty("user.dir")+"\\src\\test\\resources\\TestDataFiles\\img.png");
-        action.
+        //action.
     }
 
 

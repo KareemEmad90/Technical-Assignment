@@ -2,9 +2,11 @@ package pages.cis;
 
 import com.shaft.gui.element.ElementActions;
 import enums.SearchVehicleType;
+import enums.TestType;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.python.modules.jffi.Structure$exposed___new__;
 
 public class SearchVehiclePage {
     private final WebDriver driver;
@@ -12,6 +14,8 @@ public class SearchVehiclePage {
     By chasisNumber = By.id("chassis-no-0");
     By searchBtn = By.xpath("//div[@id='insSlctVhlForm:tabsContentId']//a[contains(@class,'proceed')]");
     By selectedSearchType = By.xpath("//ul[@id='shift-tabs']/li[@class='active']/a");
+    By searchContainer = By.id("shift-tabs");
+    By searchTypeBtn(String searchType){return By.xpath(""+searchType+"");}
 
     public SearchVehiclePage(WebDriver driver) {
         this.driver = driver;
@@ -23,7 +27,8 @@ public class SearchVehiclePage {
 
 
     @Step("user select search type")
-    public void selectSearchVhcleType(SearchVehicleType searchType) {
+    public void selectSearchType(SearchVehicleType searchType) {
+        ElementActions.waitForElementToBePresent(driver,searchContainer,4,true);
         if (!ElementActions.getText(driver, selectedSearchType).equals(searchType)) {
             ElementActions.click(driver, searchVhcleType(String.valueOf(searchType)));
         }else{
@@ -46,5 +51,10 @@ public class SearchVehiclePage {
     @Step("Click search button")
     public void clickSearchButton() {
         ElementActions.click(driver, searchBtn);
+    }
+
+    @Step("Select search type")
+    public void selectSearchType(TestType testType){
+
     }
 }
