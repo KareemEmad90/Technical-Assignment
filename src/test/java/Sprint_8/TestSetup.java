@@ -33,9 +33,14 @@ public class TestSetup {
     String passWrd = "Qc_123456";
     String newInspection = "New Vehicle Inspection";
     String invalidChasisNumber = "xxxxxxxxxxxxxxxxxxxx";
-
     String [] vehicle;
+    String [] certificate;
     String plateNo;
+
+
+    String docNum;
+    String NotExisting_docNum;
+    String Date;
     WebDriver driver;
 
     @BeforeSuite
@@ -70,18 +75,24 @@ public class TestSetup {
         return vehicle;
     }
 
+    private String[] getCertificate(){
+        certificate = dbQueries.getCertificate();
+        return certificate;
+    }
+
     public String getChassisNumber(){
         chassisNumber = getVehicle()[0];
         return chassisNumber;
     }
-
-
 
     public String getPlateNo() {
         plateNo = getVehicle()[4];
         return plateNo;
     }
 
+    public String getDocNum() {
+        return docNum;
+    }
 
 
 }

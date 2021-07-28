@@ -1,12 +1,11 @@
 package pages.cis;
 
 import com.shaft.gui.element.ElementActions;
+import enums.CertificateType;
 import enums.SearchVehicleType;
-import enums.TestType;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.python.modules.jffi.Structure$exposed___new__;
 
 public class SearchVehiclePage {
     private final WebDriver driver;
@@ -15,7 +14,15 @@ public class SearchVehiclePage {
     By searchBtn = By.xpath("//div[@id='insSlctVhlForm:tabsContentId']//a[contains(@class,'proceed')]");
     By selectedSearchType = By.xpath("//ul[@id='shift-tabs']/li[@class='active']/a");
     By searchContainer = By.id("shift-tabs");
-    By searchTypeBtn(String searchType){return By.xpath(""+searchType+"");}
+    By certificateDDl = By.id("insSlctVhlForm:certificateType:certificateTypeField");
+    By documentNumebrTxt = By.id("insSlctVhlForm:documentNumber:documentNumberField");
+    By certificateDateTxt = By.id("insSlctVhlForm:certificateDate:certificateDateField");
+    By emirateDDL = By.xpath("//div[@id='s2id_test-emirate']/a");
+    By selecetedEmire = By.xpath("//div[@id='select2-drop']/ul/li[contains(@class,'highlighted')]");
+    By emirateSearchBox = By.xpath("//div[@id='select2-drop']//input");
+    By emirateDDLItem(String emirate){return By.xpath("//div[@id='select2-drop']//div[contains(text(),'"+emirate+"')]");}
+
+
 
     public SearchVehiclePage(WebDriver driver) {
         this.driver = driver;
@@ -28,11 +35,11 @@ public class SearchVehiclePage {
 
     @Step("user select search type")
     public void selectSearchType(SearchVehicleType searchType) {
-        ElementActions.waitForElementToBePresent(driver,searchContainer,4,true);
+        ElementActions.waitForElementToBePresent(driver, searchContainer, 4, true);
         if (!ElementActions.getText(driver, selectedSearchType).equals(searchType)) {
             ElementActions.click(driver, searchVhcleType(String.valueOf(searchType)));
-        }else{
-            System.out.println(searchType+" selected allready user proceed to provide search data");
+        } else {
+            System.out.println(searchType + " selected allready user proceed to provide search data");
         }
     }
 
@@ -53,8 +60,29 @@ public class SearchVehiclePage {
         ElementActions.click(driver, searchBtn);
     }
 
-    @Step("Select search type")
-    public void selectSearchType(TestType testType){
-
+    @Step("User select certificate type")
+    public void selectCertificate(CertificateType certificateType, String docNum) {
+        ElementActions.select(driver, certificateDDl, certificateType.toString());
+        ElementActions.type(driver, documentNumebrTxt, docNum);
     }
+
+    @Step("User select certificate type")
+    public void selectCustomCertificate(String docNum, String date) {
+        ElementActions.select(driver, certificateDDl, CertificateType.CustomCertificate.toString());
+        ElementActions.type(driver, documentNumebrTxt, docNum);
+        ElementActions.type(driver, certificateDateTxt, date);
+    }
+
+    @Step("user select emirate")
+    public void selectEmirate(String emirate){
+        if (!ElementActions.getText(driver,selecetedEmire).equals(emirate)){
+            ElementActions.click(driver,emirateDDL);
+            ElementActions.type(driver,emirateSearchBox,emirate);
+            ElementActions.click(driver,emirateDDLItem(emirate));
+        }else {
+            System.out.println("targated emirate allready selected");
+        }
+    }
+
 }
+

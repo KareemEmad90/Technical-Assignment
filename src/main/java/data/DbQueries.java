@@ -54,6 +54,11 @@ public class DbQueries extends DBConnections{
                 "            END;");
     }
 
+    public String[] getCertificate() {
+        String [] certificate = new String[6];
+        return certificate;
+    }
+
 
   /*  @Step("Update Vehicle Empity Weight")
     public void updatevehicleempityweight(chassis_no , weight) {
