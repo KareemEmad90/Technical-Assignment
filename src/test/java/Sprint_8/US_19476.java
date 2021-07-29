@@ -4,6 +4,8 @@ import enums.CertificateType;
 import enums.SearchVehicleType;
 import enums.TestType;
 import org.testng.Assert;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 
@@ -71,94 +73,192 @@ public class US_19476 extends TestSetup {
          */
     }
 
-    @Test(description = "Test Case 26222: Check activity code when user operator attempt to submit new vehicle using Existed Transfer Certificate and active integration with E-traffic",priority = 7)
+    @Test(description = "Test Case 26222: Check activity code when user operator attempt to submit new vehicle using Existed Transfer Certificate and active integration with E-traffic", priority = 7)
     public void TC_26222() {
         cisLoginPage.login(userName, passWrd);
         cisHomePage.supervisorAction(newInspection);
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
         searchVehiclePage.selectSearchType(SearchVehicleType.Certificate);
-        searchVehiclePage.selectCertificate(CertificateType.TransferCertificate,docNum);
+        searchVehiclePage.selectCertificate(CertificateType.TransferCertificate, docNum);
         searchVehiclePage.clickSearchButton();
         //assertion goes here
     }
 
-    @Test(description = "Test Case 26224: Check activity code when user operator attempt to submit new vehicle using Not Existed Transfer Certificate and active integration with E-traffic",priority = 8)
+    @Test(description = "Test Case 26224: Check activity code when user operator attempt to submit new vehicle using Not Existed Transfer Certificate and active integration with E-traffic", priority = 8)
     public void TC_26224() {
         cisLoginPage.login(userName, passWrd);
         cisHomePage.supervisorAction(newInspection);
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
         searchVehiclePage.selectSearchType(SearchVehicleType.Certificate);
-        searchVehiclePage.selectCertificate(CertificateType.TransferCertificate,NotExisting_docNum);
+        searchVehiclePage.selectCertificate(CertificateType.TransferCertificate, NotExisting_docNum);
         searchVehiclePage.clickSearchButton();
         //assertion goes here
     }
 
-    @Test(description = "Test Case 26228: Check activity code when user operator attempt to submit new vehicle using Existed Transfer Certificate and Inactive integration with E-traffic",priority = 9)
+    @Test(description = "Test Case 26228: Check activity code when user operator attempt to submit new vehicle using Existed Transfer Certificate and Inactive integration with E-traffic", priority = 9)
     public void TC_26228() {
         /*
         tbd for cutting connectivity on Etraffic
          */
     }
 
-    @Test(description = "Test Case 26229: Check activity code when user operator attempt to submit new vehicle using Existed Possession Certificate and active integration with E-traffic",priority = 10)
+    @Test(description = "Test Case 26229: Check activity code when user operator attempt to submit new vehicle using Existed Possession Certificate and active integration with E-traffic", priority = 10)
     public void TC_26229() {
         cisLoginPage.login(userName, passWrd);
         cisHomePage.supervisorAction(newInspection);
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
         searchVehiclePage.selectSearchType(SearchVehicleType.Certificate);
-        searchVehiclePage.selectCertificate(CertificateType.PossessionCertificate,docNum);
+        searchVehiclePage.selectCertificate(CertificateType.PossessionCertificate, docNum);
         searchVehiclePage.clickSearchButton();
         //assertion goes here
     }
 
-    @Test(description = "",priority = 11)
+    @Test(description = "Test Case 26230: Check activity code when user operator attempt to submit new vehicle using Not Existed Possession Certificate and active integration with E-traffic", priority = 11)
     public void TC_26230() {
         cisLoginPage.login(userName, passWrd);
         cisHomePage.supervisorAction(newInspection);
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
         searchVehiclePage.selectSearchType(SearchVehicleType.Certificate);
-        searchVehiclePage.selectCertificate(CertificateType.PossessionCertificate,NotExisting_docNum);
+        searchVehiclePage.selectCertificate(CertificateType.PossessionCertificate, NotExisting_docNum);
         searchVehiclePage.clickSearchButton();
         //assertion goes here
     }
 
-    @Test(description = "",priority = 12)
+    @Test(description = "", priority = 12)
     public void TC_26231() {
          /*
         tbd for cutting connectivity on Etraffic
          */
     }
 
-    @Test(description = "Test Case 26240: Check activity code when user operator attempt to submit new vehicle using Existed Export Certificate and active integration with E-traffic",priority = 13)
+    @Test(description = "Test Case 26240: Check activity code when user operator attempt to submit new vehicle using Existed Export Certificate and active integration with E-traffic", priority = 13)
     public void TC_26240() {
         cisLoginPage.login(userName, passWrd);
         cisHomePage.supervisorAction(newInspection);
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
         searchVehiclePage.selectSearchType(SearchVehicleType.Certificate);
-        searchVehiclePage.selectCertificate(CertificateType.ExportCertificate,docNum);
+        searchVehiclePage.selectCertificate(CertificateType.ExportCertificate, docNum);
         searchVehiclePage.clickSearchButton();
         //assertion goes here
     }
 
-    @Test(description = "Test Case 26241: Check activity code when user operator attempt to submit new vehicle using Not Existed Export Certificate and active integration with E-traffic",priority = 14)
+    @Test(description = "Test Case 26241: Check activity code when user operator attempt to submit new vehicle using Not Existed Export Certificate and active integration with E-traffic", priority = 14)
     public void TC_26241() {
         cisLoginPage.login(userName, passWrd);
         cisHomePage.supervisorAction(newInspection);
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
         searchVehiclePage.selectSearchType(SearchVehicleType.Certificate);
-        searchVehiclePage.selectCertificate(CertificateType.ExportCertificate,NotExisting_docNum);
+        searchVehiclePage.selectCertificate(CertificateType.ExportCertificate, NotExisting_docNum);
         searchVehiclePage.clickSearchButton();
         //assertion goes here
     }
 
-    @Test(description = "Test Case 26242: Check activity code when user operator attempt to submit new vehicle using Existed Export Certificate and Inactive integration with E-traffic",priority = 15)
+    @Test(description = "Test Case 26242: Check activity code when user operator attempt to submit new vehicle using Existed Export Certificate and Inactive integration with E-traffic", priority = 15)
     public void TC_26242() {
          /*
         tbd for cutting connectivity on Etraffic
          */
     }
 
-    @Test(description = "",priority = 16)
-    public void TC_() {
+    @Test(description = "Test Case 26337: Check activity code when user operator attempt to submit new vehicle using Valid Plate Number(Dubai) and active connection with Etraffic", priority = 16)
+    @Parameters({"Emirate"})
+    public void TC_26337(@Optional("Dubai") String Emirate) {
+        cisLoginPage.login(userName, passWrd);
+        cisHomePage.supervisorAction(newInspection);
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchType(SearchVehicleType.PlateNumber);
+        searchVehiclePage.selectEmirate(Emirate);
+        searchVehiclePage.TypePlateNumber(getPlateNo());
+        searchVehiclePage.ClickOnSearchForPlateNum();
+        //validation goes here
+    }
+
+    @Test(description = "Test Case 26338: Check activity code when user operator attempt to submit new vehicle using Valid Plate Number(Sharjah) and active connection with Etraffic", priority = 17)
+    @Parameters({"Emirate"})
+    public void TC_26338(@Optional("Sharjah") String Emirate) {
+        cisLoginPage.login(userName, passWrd);
+        cisHomePage.supervisorAction(newInspection);
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchType(SearchVehicleType.PlateNumber);
+        searchVehiclePage.selectEmirate(Emirate);
+        searchVehiclePage.TypePlateNumber(getPlateNo());
+        searchVehiclePage.ClickOnSearchForPlateNum();
+        //validation goes here
+    }
+
+    @Test(description = "Test Case 26338: Check activity code when user operator attempt to submit new vehicle using Valid Plate Number(Sharjah) and active connection with Etraffic", priority = 18)
+    @Parameters({"Emirate"})
+    public void TC_26339(@Optional("Abu Dhabi") String Emirate) {
+        cisLoginPage.login(userName, passWrd);
+        cisHomePage.supervisorAction(newInspection);
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchType(SearchVehicleType.PlateNumber);
+        searchVehiclePage.selectEmirate(Emirate);
+        searchVehiclePage.TypePlateNumber(getPlateNo());
+        searchVehiclePage.ClickOnSearchForPlateNum();
+        //validation goes here
+    }
+
+    @Test(description = "Test Case 26345: Check activity code when user operator attempt to submit new vehicle using InValid Plate Number(Dubai) and active connection with Etraffic", priority = 19)
+    @Parameters({"Emirate", "PlateNumber"})
+    public void TC_26345(@Optional("Dubai") String Emirate, @Optional("121212121") String PlateNumber) {
+        cisLoginPage.login(userName, passWrd);
+        cisHomePage.supervisorAction(newInspection);
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchType(SearchVehicleType.PlateNumber);
+        searchVehiclePage.selectEmirate(Emirate);
+        searchVehiclePage.TypePlateNumber(PlateNumber);
+        searchVehiclePage.ClickOnSearchForPlateNum();
+        //validation goes here
+    }
+
+    @Test(description = "Test Case 26344: Check activity code when user operator attempt to submit new vehicle using InValid Plate Number(Sharjah) and active connection with Etraffic", priority = 20)
+    @Parameters({"Emirate", "PlateNumber"})
+    public void TC_26344(@Optional("Sharjah") String Emirate, @Optional("12121212") String PlateNumber) {
+        cisLoginPage.login(userName, passWrd);
+        cisHomePage.supervisorAction(newInspection);
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchType(SearchVehicleType.PlateNumber);
+        searchVehiclePage.selectEmirate(Emirate);
+        searchVehiclePage.TypePlateNumber(PlateNumber);
+        searchVehiclePage.ClickOnSearchForPlateNum();
+        //validation goes here
+    }
+
+    @Test(description = "Test Case 26340: Check activity code when user operator attempt to submit new vehicle using InValid Plate Number(Sharjah) and active connection with Etraffic", priority = 21)
+    @Parameters({"Emirate", "PlateNumber"})
+    public void TC_26340(@Optional("Abu Dhabi") String Emirate, @Optional("12121212") String PlateNumber) {
+        cisLoginPage.login(userName, passWrd);
+        cisHomePage.supervisorAction(newInspection);
+        newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
+        searchVehiclePage.selectSearchType(SearchVehicleType.PlateNumber);
+        searchVehiclePage.selectEmirate(Emirate);
+        searchVehiclePage.TypePlateNumber(PlateNumber);
+        searchVehiclePage.ClickOnSearchForPlateNum();
+        //validation goes here
+    }
+
+    @Test(description = "Test Case 26343: Check activity code when user operator attempt to submit new vehicle using InValid Plate Number(Sharjah) and Inactive connection with Etraffic", priority = 22)
+    @Parameters({"Emirate", "PlateNumber"})
+    public void TC_26343(@Optional("Sharjah") String Emirate, @Optional("12121212") String PlateNumber) {
+         /*
+        tbd for cutting connectivity on Etraffic
+         */
+    }
+
+    @Test(description = "Test Case 26340: Check activity code when user operator attempt to submit new vehicle using InValid Plate Number(Dubai) and active connection with Etraffic", priority = 23)
+    @Parameters({"Emirate", "PlateNumber"})
+    public void TC_26342(@Optional("Dubai") String Emirate, @Optional("12121212") String PlateNumber) {
+         /*
+        tbd for cutting connectivity on Etraffic
+         */
+    }
+
+    @Test(description = "Test Case 26340: Check activity code when user operator attempt to submit new vehicle using InValid Plate Number(Sharjah) and active connection with Etraffic", priority = 24)
+    @Parameters({"Emirate", "PlateNumber"})
+    public void TC_26341(@Optional("Abu Dhabi") String Emirate, @Optional("12121212") String PlateNumber) {
+         /*
+        tbd for cutting connectivity on Etraffic
+         */
     }
 }

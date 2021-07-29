@@ -13,6 +13,9 @@ import pages.cis.*;
 import pages.common.ChromeCertificatePage;
 
 public class TestSetup {
+
+
+    //<editor-fold desc=" Testing properties">
     SoftAssert softAssert;
     pages.cis.inspectionResultsPage inspectionResultsPage;
     DefectAnalysisPage defectAnalysisPage;
@@ -36,13 +39,14 @@ public class TestSetup {
     String [] vehicle;
     String [] certificate;
     String plateNo;
-
-
     String docNum;
     String NotExisting_docNum;
     String Date;
+    String Emirate;
     WebDriver driver;
+    //</editor-fold>
 
+    //<editor-fold desc="Test Setup">
     @BeforeSuite
     public void setup(){
         ChromeCertificatePage chromeCertificatePage = new ChromeCertificatePage(driver);
@@ -68,7 +72,9 @@ public class TestSetup {
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("cisURL"));
         ChromeCertificatePage chromeCertificatePage = new ChromeCertificatePage(driver);
         chromeCertificatePage.skipUnsafePage();
+        getVehicle();
     }
+    //</editor-fold>
 
     private String[] getVehicle() {
         vehicle = dbQueries.getVehicle();
@@ -88,6 +94,10 @@ public class TestSetup {
     public String getPlateNo() {
         plateNo = getVehicle()[4];
         return plateNo;
+    }
+
+    public String getEmirate() {
+        return Emirate;
     }
 
     public String getDocNum() {

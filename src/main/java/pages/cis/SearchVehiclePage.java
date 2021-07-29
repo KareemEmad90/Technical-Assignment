@@ -9,6 +9,8 @@ import org.openqa.selenium.WebDriver;
 
 public class SearchVehiclePage {
     private final WebDriver driver;
+
+
     By chasisNumberOption = By.linkText("Chassis Number");
     By chasisNumber = By.id("chassis-no-0");
     By searchBtn = By.xpath("//div[@id='insSlctVhlForm:tabsContentId']//a[contains(@class,'proceed')]");
@@ -20,16 +22,23 @@ public class SearchVehiclePage {
     By emirateDDL = By.xpath("//div[@id='s2id_test-emirate']/a");
     By selecetedEmire = By.xpath("//div[@id='select2-drop']/ul/li[contains(@class,'highlighted')]");
     By emirateSearchBox = By.xpath("//div[@id='select2-drop']//input");
-    By emirateDDLItem(String emirate){return By.xpath("//div[@id='select2-drop']//div[contains(text(),'"+emirate+"')]");}
+    By plateNumberTxt = By.id("test-plate-no");
+    By searchPlateNumBtn = By.xpath("//a[@id='insSlctVhlForm:j_idt939']/parent::div/a[1]");
 
 
-
-    public SearchVehiclePage(WebDriver driver) {
-        this.driver = driver;
+    //<editor-fold desc="dynamic UI">
+    By emirateDDLItem(String emirate) {
+        return By.xpath("//div[@id='select2-drop']//div[contains(text(),'" + emirate + "')]");
     }
 
     By searchVhcleType(String Searhctype) {
         return By.xpath("//ul[@id='shift-tabs']/li[not(@class='active')]/a[text()='" + Searhctype + "']");
+    }
+    //</editor-fold>
+
+
+    public SearchVehiclePage(WebDriver driver) {
+        this.driver = driver;
     }
 
 
@@ -74,14 +83,24 @@ public class SearchVehiclePage {
     }
 
     @Step("user select emirate")
-    public void selectEmirate(String emirate){
-        if (!ElementActions.getText(driver,selecetedEmire).equals(emirate)){
-            ElementActions.click(driver,emirateDDL);
-            ElementActions.type(driver,emirateSearchBox,emirate);
-            ElementActions.click(driver,emirateDDLItem(emirate));
-        }else {
+    public void selectEmirate(String emirate) {
+        if (!ElementActions.getText(driver, selecetedEmire).equals(emirate)) {
+            ElementActions.click(driver, emirateDDL);
+            ElementActions.type(driver, emirateSearchBox, emirate);
+            ElementActions.click(driver, emirateDDLItem(emirate));
+        } else {
             System.out.println("targated emirate allready selected");
         }
+    }
+
+    @Step("user attempt to type plate number")
+    public void TypePlateNumber(String plateNumber){
+        ElementActions.type(driver,plateNumberTxt,plateNumber);
+    }
+
+    @Step("user click on search")
+    public void ClickOnSearchForPlateNum(){
+        ElementActions.click(driver,searchPlateNumBtn);
     }
 
 }
