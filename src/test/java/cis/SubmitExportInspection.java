@@ -47,7 +47,7 @@ public class SubmitExportInspection {
         cisHomePage.clickOnNavigationBtn();
         cisHomePage.clickOnNewVehicleInspectionMenuItem();
         newVehicleInspectionPage.SelectTestType(TestType.ExportTest);
-        searchVehiclePage.selectSearchVhcleType(SearchVehicleType.ChasisNumber);
+        searchVehiclePage.selectSearchType(SearchVehicleType.ChasisNumber);
         searchVehiclePage.typeChasisNumber(chassisNumber);
         Thread.sleep(5000);
         searchVehiclePage.clickSearchButton();

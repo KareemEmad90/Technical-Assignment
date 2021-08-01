@@ -13,8 +13,7 @@ public class DbQueries extends DBConnections{
     public String[] getVehicle (){
         //databaseActions = new DatabaseActions();
      setConnection();
-        ResultSet result = databaseActions.executeSelectQuery("SELECT * FROM QC_USERS.GET_EXPIRED_VEHICLE_VLS  where RTA_UNIFIED_NO not in (11295399) and rownum <2");
-
+        ResultSet result = databaseActions.executeSelectQuery("select * from QC_USERS.GET_EXPIRED_VEHICLES_VW_CIS");
         try {
             vehicle[0] = result.getString(1);
             vehicle[1] = result.getString(2);
@@ -25,7 +24,6 @@ public class DbQueries extends DBConnections{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         System.out.println("Chassis = " + vehicle[0] + "  --- RTA_UNIFIED_NO ID = " + vehicle[1] + "  --- EID_NUMBER ID = " + vehicle[2] + "  --- EXPIRY_DATE ID = " + vehicle[3]+
                 "  --- PLATE No = " + vehicle[4]+ "  --- Plate Code = " + vehicle[5]);
 

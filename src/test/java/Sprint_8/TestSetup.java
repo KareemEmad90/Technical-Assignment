@@ -15,7 +15,8 @@ import pages.common.ChromeCertificatePage;
 public class TestSetup {
 
 
-    //<editor-fold desc=" Testing properties">
+
+    //<editor-fold desc="Page Objects">
     SoftAssert softAssert;
     pages.cis.inspectionResultsPage inspectionResultsPage;
     DefectAnalysisPage defectAnalysisPage;
@@ -29,6 +30,10 @@ public class TestSetup {
     LaneSelectionPage laneSelectionPage;
     OdometerPage odometerPage;
     VisualInspectionPage visualInspectionPage;
+    SideBar sideBar;
+    //</editor-fold>
+
+    //<editor-fold desc="Test artifcats">
     DbQueries dbQueries;
     DatabaseActionsCustom db = new DatabaseActionsCustom();
     String chassisNumber;
@@ -52,6 +57,7 @@ public class TestSetup {
         ChromeCertificatePage chromeCertificatePage = new ChromeCertificatePage(driver);
         vehicleDiscrepanciesPage = new VehicleDiscrepanciesPage(driver);
         cisLoginPage = new CisLoginPage(driver);
+        sideBar = new SideBar(driver);
         cisHomePage = new CisHomePage(driver);
         defectAnalysisPage = new DefectAnalysisPage(driver);
         inspectionResultsPage = new inspectionResultsPage(driver);

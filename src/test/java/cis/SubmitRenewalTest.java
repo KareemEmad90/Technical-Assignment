@@ -30,6 +30,9 @@ public class SubmitRenewalTest {
     CisHomePage cisHomePage;
     NewVehicleInspectionPage newVehicleInspectionPage;
     SearchVehiclePage searchVehiclePage;
+    VerificationDocumentPage verificationDocumentPage;
+    VehicleInspectionPage vehicleInspectionPage;
+    paymentPage paymentPage;
     EditVehiclePage editVehiclePage;
     VehicleDetails vehicleDetails;
     LaneSelectionPage laneSelectionPage;
@@ -51,7 +54,10 @@ public class SubmitRenewalTest {
         cisLoginPage = new CisLoginPage(driver);
         cisHomePage = new CisHomePage(driver);
         chasisInspectionPage = new ChasisInspectionPage(driver);
+        vehicleInspectionPage = new VehicleInspectionPage(driver);
         defectAnalysisPage = new DefectAnalysisPage(driver);
+        verificationDocumentPage  = new VerificationDocumentPage(driver);
+        paymentPage = new paymentPage(driver);
         inspectionResultsPage = new inspectionResultsPage(driver);
         newVehicleInspectionPage = new NewVehicleInspectionPage(driver);
         searchVehiclePage = new SearchVehiclePage(driver);
@@ -62,8 +68,8 @@ public class SubmitRenewalTest {
         visualInspectionPage = new VisualInspectionPage(driver);
         DbQueries dbQueries = new DbQueries();
         String[] vehicle = dbQueries.getVehicle();
-        chassisNumber = vehicle[0];
-        plateNo = vehicle[4];
+        chassisNumber = vehicle[4];
+        plateNo = vehicle[0];
     }
 
     @Test
@@ -84,9 +90,18 @@ public class SubmitRenewalTest {
         laneSelectionPage.proceedWithSelectedCar(plateNo);
         laneSelectionPage.StartInspectionRenwalTest("2","3","7");
         odometerPage.fillOdometer();
-        Utils.renameInspectionFile(BrowserActions.getCurrentURL(driver));
-        chasisInspectionPage.clickOnRereadBtn();
-        BrowserActions.refreshCurrentPage(driver);
+        //Utils.renameInspectionFile(BrowserActions.getCurrentURL(driver));
+        //chasisInspectionPage.clickOnRereadBtn();
+        chasisInspectionPage.clickOnNext();
+        chasisInspectionPage.clickOnStartInspection();
+        vehicleInspectionPage.clickOnContinue();
+        vehicleDiscrepanciesPage.proceedWithViehcel();
+        defectAnalysisPage.proceedWithDefects();
+        inspectionResultsPage.clickOnFinish();
+        verificationDocumentPage.proceedWithVerificationDocs();
+        paymentPage.selectPaymentMethod("Cash");
+        paymentPage.enterPhoneNum("0515584988");
+        paymentPage.clickOnPaymentRecieved();
     }
 
     @AfterMethod()

@@ -14,7 +14,7 @@ public class NewVehicleInspectionPage {
     By exportTestService = By.xpath("//*[@id=\"insSlctSrvForm:j_idt799:3:j_idt800\"]/span[text()='Export Test']");
     By continueBtn = By.xpath("//*[@id=\"insSlctSrvForm:proceedBtnDivId\"]/div[1]/div/a[1]");
 
-    By selectedTestBtn = By.xpath("//div[@id='b1']//a[contains(@id,'j_idt800') and (@name)]");
+    By selectedTestBtn = By.xpath("//div[@id='b1']//a[contains(@id,'j_idt') and (@name)]");
 
     By SelectedTestTxt = By.xpath("//div[@id='b1']//a[(@name)]/span[@class='boothSpanText']");
 

@@ -17,7 +17,7 @@ public class VehicleDetails {
     By mobileTextField = By.id("formId:mobileNo:mobileNoField");
     By saveBtn = By.id("btn-save-id");
     By ProceedWithMobile = By.id("formId:init-jrny-button");
-    By continueBtn = By.name("insVhlDetailsForm:j_idt777");
+    By continueBtn = By.xpath("//input[@value='Continue']");
     By modelNumber = By.xpath("//label[@for='chassis-no' and (contains(text(),'Plate Details'))]/following-sibling::div/p");
 
     By pageSection = By.id("wrapper");

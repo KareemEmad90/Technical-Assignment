@@ -12,7 +12,7 @@ public class OdometerPage {
     By invalidNextBtn = By.xpath("//div[@id='error-popup']//span[contains(text(),'Next')]//ancestor::a");
 
     public void fillOdometer(){
-        ElementActions.type(driver,odometerReadingTxt,"9000");
+        ElementActions.type(driver,odometerReadingTxt,"900000");
         ElementActions.click(driver,nextBtn);
 
     }

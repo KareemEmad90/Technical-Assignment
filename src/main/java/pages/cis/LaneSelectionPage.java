@@ -9,12 +9,13 @@ import org.openqa.selenium.WebDriver;
 public class LaneSelectionPage {
     WebDriver driver;
     By startInspectionBtn = By.id("accept-vehicle");
-    By startInspectionBtn2 = By.id("insStartInspectionButton1");
+    By startInspectionBtn2 = By.xpath("//*[@id='ipCamerasImages']/following-sibling::a");
     By startInspectionFrame = By.xpath("//*[@id='popupVehicleInfo']/iframe");
     By axlesTxt = By.id("elementsForm:j_idt15:0:j_idt17:tvl");
     By saveAxlesNumber = By.id("elementsForm:doSaveBtn");
     By missingInfoCont = By.id("missing-elements-ul-details");
     By WidthTxt = By.id("elementsForm:j_idt15:1:j_idt17:tvl");
+    By odometerReadingTxt = By.id("finishForm:odometerNewReadingInputId:odometerNewReadingInputIdField");
     By lengthTxt = By.id("elementsForm:j_idt15:2:j_idt17:tvl");
 
     public LaneSelectionPage(WebDriver driver) {
@@ -48,10 +49,14 @@ public class LaneSelectionPage {
         ElementActions.switchToIframe(driver, startInspectionFrame);
         ElementActions.click(driver, startInspectionBtn);
         ElementActions.click(driver, startInspectionBtn2);
-        ElementActions.waitForElementToBePresent(driver, missingInfoCont, 5, true);
-        ElementActions.type(driver, axlesTxt, Axles);
-        ElementActions.type(driver,WidthTxt,width);
-        ElementActions.type(driver,lengthTxt,Length);
-        ElementActions.click(driver, saveAxlesNumber);
+        if (ElementActions.getElementsCount(driver,odometerReadingTxt,5)==1) {
+            System.out.println("no missing info for the vehicle");
+            //ElementActions.waitForElementToBePresent(driver, missingInfoCont, 5, true);
+        } else {
+            ElementActions.type(driver, axlesTxt, Axles);
+            ElementActions.type(driver, WidthTxt, width);
+            ElementActions.type(driver, lengthTxt, Length);
+            ElementActions.click(driver, saveAxlesNumber);
+        }
     }
 }
