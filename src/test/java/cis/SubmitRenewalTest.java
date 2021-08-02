@@ -3,6 +3,8 @@ package cis;
 import com.shaft.driver.DriverFactory;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
+import com.shaft.validation.Assertions;
+import com.shaft.validation.Verifications;
 import data.DatabaseActionsCustom;
 import data.DbQueries;
 import data.LoadProperties;
@@ -12,6 +14,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
 import pages.cis.*;
 import pages.common.ChromeCertificatePage;
 import enums.*;
@@ -34,12 +37,18 @@ public class SubmitRenewalTest {
     VehicleInspectionPage vehicleInspectionPage;
     paymentPage paymentPage;
     EditVehiclePage editVehiclePage;
+    String TransactionSummary = "Transaction Summary";
     VehicleDetails vehicleDetails;
+    SoftAssert softAssert;
+    SideBar sideBar;
     LaneSelectionPage laneSelectionPage;
+    TransactionSummaryPage transactionSummaryPage;
     OdometerPage odometerPage;
     VisualInspectionPage visualInspectionPage;
     DatabaseActionsCustom db = new DatabaseActionsCustom();
     String chassisNumber, plateNo;
+    String ExpectedTraficStatus = "passed";
+    String ExpectedStatus = "confirmed";
     private WebDriver driver;
 
     @BeforeMethod()
@@ -57,7 +66,9 @@ public class SubmitRenewalTest {
         vehicleInspectionPage = new VehicleInspectionPage(driver);
         defectAnalysisPage = new DefectAnalysisPage(driver);
         verificationDocumentPage  = new VerificationDocumentPage(driver);
+        sideBar = new SideBar(driver);
         paymentPage = new paymentPage(driver);
+        transactionSummaryPage = new TransactionSummaryPage(driver);
         inspectionResultsPage = new inspectionResultsPage(driver);
         newVehicleInspectionPage = new NewVehicleInspectionPage(driver);
         searchVehiclePage = new SearchVehiclePage(driver);
@@ -88,7 +99,7 @@ public class SubmitRenewalTest {
         cisHomePage.clickOnNavigationBtn();
         cisHomePage.clickOnSupervisorQueu();
         laneSelectionPage.proceedWithSelectedCar(plateNo);
-        laneSelectionPage.StartInspectionRenwalTest("2","3","7");
+        laneSelectionPage.StartInspectionRenwalTest();
         odometerPage.fillOdometer();
         //Utils.renameInspectionFile(BrowserActions.getCurrentURL(driver));
         //chasisInspectionPage.clickOnRereadBtn();
@@ -100,8 +111,12 @@ public class SubmitRenewalTest {
         inspectionResultsPage.clickOnFinish();
         verificationDocumentPage.proceedWithVerificationDocs();
         paymentPage.selectPaymentMethod("Cash");
-        paymentPage.enterPhoneNum("0515584988");
+        paymentPage.enterPhoneNum("05015584988");
         paymentPage.clickOnPaymentRecieved();
+        sideBar.clickMenuItem(TransactionSummary);
+        transactionSummaryPage.searchTransactionNumber(laneSelectionPage.getReferenceNumber());
+        Assertions.assertEquals(ExpectedTraficStatus,transactionSummaryPage.getTrafficStatus(),"traffic status for transaction with referance number "+ laneSelectionPage.getReferenceNumber()+" is incorrect");
+        Assertions.assertEquals(ExpectedStatus,transactionSummaryPage.getPaymentStatus(),"payment status for transaction with referance number "+ laneSelectionPage.getReferenceNumber()+" is incorrect");
     }
 
     @AfterMethod()

@@ -15,7 +15,7 @@ public class SideBar {
 
 
     By oneBtn(String menuItem) {
-        return By.xpath("//ul[@class='main-menu']/li//a[@title='" + menuItem + "']");
+        return By.xpath("//ul[@class='main-menu']/li//a/span[contains(text(),'" + menuItem + "')]");
     }
 
     By twoBtn(String menuItem, String secondMenuItem) {
@@ -37,7 +37,7 @@ public class SideBar {
 
     @Step("User click on side menu item")
     public void clickMenuItem(String menuItem) {
-        ElementActions.waitForElementToBePresent(driver, sideMenuCont, 3, true);
+        ElementActions.click(driver, toggleBtn);
         ElementActions.click(driver, oneBtn(menuItem));
     }
 
