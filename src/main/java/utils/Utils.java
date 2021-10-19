@@ -1,11 +1,15 @@
 package utils;
 
+import com.shaft.gui.browser.BrowserFactory;
 import data.LoadProperties;
+import io.qameta.allure.Step;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.testng.asserts.SoftAssert;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,16 +18,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
+
 public class Utils {
     private WebDriver driver;
+    private SoftAssert softAssert;
 
     public Utils(WebDriver driver) {
+        this.softAssert = new SoftAssert();
         this.driver = driver;
     }
 
     private static String GetCodeFrom(String Url) {
         String code = Url.split("=")[1];
         return code;
+    }
+
+    public static WebDriver initializeWebDriverWithOptions(WebDriver driver, String option) {
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("incognito");
+        driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
+        return driver;
     }
 
     public static void renameInspectionFile(String codeFromUrl) throws IOException {
@@ -102,5 +117,14 @@ public class Utils {
 
     public void editElementAttributeValue(By locator, String attribute, String value) {
         ((JavascriptExecutor) driver).executeScript("arguments[0].setAttribute('" + attribute + "', '" + value + "')", driver.findElement(locator));
+    }
+
+    @Step("Soft assertions")
+    public void verifyValues(String actual , String expected) {
+        softAssert.assertEquals(actual, expected);
+    }
+
+    public void confirmSoftAssertion() {
+        softAssert.assertAll();
     }
 }
