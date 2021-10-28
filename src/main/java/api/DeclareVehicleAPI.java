@@ -14,12 +14,12 @@ public class DeclareVehicleAPI {
 
     private String declareEndpoint = "/declare";
     String chassisNo;
-    public Response declareSerivceResponse() throws ParseException {
+    public Response declareSerivceResponse(String weight  ,String vehicleClassCode, String arName, String enName , String year) throws ParseException {
         Response response;
          chassisNo=ChassisGeneration.ChassisNo();
         System.out.println("chassisNo "+chassisNo);
         JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(VehicleDeclarePayLoad.declarePayLoad(chassisNo));
+        JSONObject jsonObject = (JSONObject) parser.parse(VehicleDeclarePayLoad.declarePayLoad(chassisNo,weight,vehicleClassCode,arName ,enName,year) );
         System.out.println(jsonObject);
         response = RestActions.buildNewRequest("https://vlsgw.external.apps.qa.licensing.rta.ae/external/buynewvehicle/api/application/vehicle" , declareEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(jsonObject)

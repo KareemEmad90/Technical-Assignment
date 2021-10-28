@@ -2,12 +2,12 @@ package payLoads;
 
 public class VehicleDeclarePayLoad {
 
-    public static String declarePayLoad(String chassisNo) {
+    public static String declarePayLoad(String chassisNo , String weight  ,String vehicleClassCode, String arName, String enName , String year) {
         String declareJSONBody = "{\n" +
                 "    \"vehicleSpecs\": {\n" +
                 "        \"chassisNumber\": \""+chassisNo+"\",\n" +
                 "        \"numberOfDoors\": 5,\n" +
-                "        \"emptyWeight\": 2004,\n" +
+                "        \"emptyWeight\": "+weight+",\n" +
                 "        \"grossWeight\": 2722,\n" +
                 "        \"numberOfAxles\": 2,\n" +
                 "        \"odometerReading\": 65909,\n" +
@@ -32,10 +32,10 @@ public class VehicleDeclarePayLoad {
                 "            \"wheelDriveType\": \"FOUR_WD\"\n" +
                 "        },\n" +
                 "        \"class\": {\n" +
-                "            \"code\": \"VCL_ID_3\",\n" +
+                "            \"code\": \""+vehicleClassCode+"\",\n" +
                 "            \"name\": {\n" +
-                "                \"ar\": \"مركبة خفيفة\",\n" +
-                "                \"en\": \"Light Vehicle\"\n" +
+                "                \"ar\": \""+arName+"\",\n" +
+                "                \"en\": \""+enName+"\"\n" +
                 "            }\n" +
                 "        },\n" +
                 "        \"manufacturer\": {\n" +
@@ -44,7 +44,7 @@ public class VehicleDeclarePayLoad {
                 "            \"model\": {\n" +
                 "                \"code\": \"VSM_ID_9730007161\",\n" +
                 "                \"name\": \"JX35\",\n" +
-                "                \"year\": 2021\n" +
+                "                \"year\": "+year+"\n" +
                 "            },\n" +
                 "            \"origin\": {\n" +
                 "                \"code\": \"USA\",\n" +

@@ -6,7 +6,7 @@ public class AddInsourancePayLoad {
 
         String insouranceJSONPayload="{\n" +
                 "  \"customerInfo\": {\n" +
-                "    \"rtaUnifiedNo\": "+rtaUnifiedNo+",\n" +
+                "    \"rtaUnifiedNo\": \""+rtaUnifiedNo+"\",\n" +
                 "    \"arabicFullName\": \"سيف على احمد حسن المسلمى\",\n" +
                 "    \"englishFullName\": \"SAIF ALI AHMED HASAN ALMUSALLAMI\",\n" +
                 "    \"gender\": \"MALE\",\n" +

@@ -434,4 +434,99 @@ public class DbQueries extends DBConnections{
           setConnection();
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_BLACK_POINTS(" + traffic_no + ");END;");
     }
+
+
+    public String getDeclaredVehicle(String chassis, String DeclareApplicationRefNo) {
+
+        String declaredVehicleProductDocument = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT PRODUCT_DOCUMENT\n" +
+                "  FROM VLS_VEHICLE_LICENSE.PRD_VEHICLE_CERTIFICATE\n" +
+                " WHERE     JSON_VALUE (\"PRODUCT_DOCUMENT\" FORMAT JSON,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.chassisNumber'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR) = '"+chassis+"'\n" +
+                "       AND APPLICATION_REF_NO = '"+DeclareApplicationRefNo+"' ");
+
+        try {
+            declaredVehicleProductDocument= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return declaredVehicleProductDocument;
+
+    }
+
+    public String getDeclaredVehicleStatus(String DeclareApplicationRefNo , String chassis,String weight  ,String vehicleClassCode, String arName, String enName , String year) {
+
+        String declareStatus = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT DISTINCT 'SUCCESS'\n" +
+                "  FROM VLS_BUY_NEW_VEHICLE.TRN_APPLICATION          APP,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_CERTIFICATE  CER,\n" +
+                "       VLS_VEHICLE.REP_VEHICLE                      ERP\n" +
+                " WHERE     APP.APPLICATION_REF_NO = '"+DeclareApplicationRefNo+"'\n" +
+                "       AND ERP.APPLICATION_REF_NO = APP.APPLICATION_REF_NO\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,\n" +
+                "                       '$.parameters.chassisNumber') =\n" +
+                "           '"+chassis+"'\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,\n" +
+                "                       '$.parameters.chassisNumber') =\n" +
+                "           JSON_VALUE (ERP.product_document,\n" +
+                "                       '$.vehicleInfo.vehicleSpecs.chassisNumber')\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,\n" +
+                "                       '$.parameters.chassisNumber') =\n" +
+                "           JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.chassisNumber')\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.emptyWeight')="+weight+"\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.class.code')='"+vehicleClassCode+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.class.name.ar')='"+arName+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.class.name.en')='"+enName+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.manufacturer.model.year')='"+year+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.declaredBy')='AGENCY'\n" +
+                "       AND JSON_VALUE (ERP.product_document,\n" +
+                "                       '$.vehicleInfo.statusDetails.value')='DECLARED'");
+
+        try {
+            declareStatus= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return declareStatus;
+
+    }
+
+
+    public String getInsuranceVehicleStatus(String chassisNo,String status, String eID) {
+
+        String declareStatus = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT DISTINCT 'SUCCESS'\n" +
+                "  FROM VLS_INSURANCE.PRD_INSURANCE_POLICY INS\n" +
+                " WHERE JSON_VALUE (INS.product_document, '$.policyInfo.chassisNumber') ='"+chassisNo+"'\n" +
+                "       AND JSON_VALUE (INS.product_document, '$.policyInfo.status') ='"+status+"'\n" +
+                "       AND JSON_VALUE (INS.product_document, '$.customerInfo.rtaUnifiedNo') ='"+eID+"'");
+
+        try {
+            declareStatus= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return declareStatus;
+
+    }
+
 }

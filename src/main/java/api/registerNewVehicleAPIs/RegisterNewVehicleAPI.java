@@ -14,7 +14,7 @@ public class RegisterNewVehicleAPI {
 
     private String declareEndpoint = "/register";
 
-    public Response registerVehicleResponse(String chassisNo,String EID ) throws ParseException {
+    public Response registerVehicleResponse(String chassisNo,String EID) throws ParseException {
 
         Response insuranceResponse;
         JSONParser parser = new JSONParser();
