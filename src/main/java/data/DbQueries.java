@@ -435,31 +435,6 @@ public class DbQueries extends DBConnections{
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_BLACK_POINTS(" + traffic_no + ");END;");
     }
 
-
-    public String getDeclaredVehicle(String chassis, String DeclareApplicationRefNo) {
-
-        String declaredVehicleProductDocument = null;
-        setConnection();
-        ResultSet result = databaseActions.executeSelectQuery("SELECT PRODUCT_DOCUMENT\n" +
-                "  FROM VLS_VEHICLE_LICENSE.PRD_VEHICLE_CERTIFICATE\n" +
-                " WHERE     JSON_VALUE (\"PRODUCT_DOCUMENT\" FORMAT JSON,\n" +
-                "                       '$.certificateInfo.vehicleSummaryInfo.chassisNumber'\n" +
-                "                       RETURNING VARCHAR2 (200)\n" +
-                "                       NULL ON ERROR) = '"+chassis+"'\n" +
-                "       AND APPLICATION_REF_NO = '"+DeclareApplicationRefNo+"' ");
-
-        try {
-            declaredVehicleProductDocument= result.getString(1);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-
-        return declaredVehicleProductDocument;
-
-    }
-
     public String getDeclaredVehicleStatus(String DeclareApplicationRefNo , String chassis,String weight  ,String vehicleClassCode, String arName, String enName , String year) {
 
         String declareStatus = null;
