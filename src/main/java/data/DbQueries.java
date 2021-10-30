@@ -504,4 +504,73 @@ public class DbQueries extends DBConnections{
 
     }
 
+
+
+    public String getRegisterVehicleStatus(String APPLICATION_REF_NO,String chassisNo, String rtaUnifiedNo,String weight ,String mortgageStatus ,String vehicleClassCode, String arName, String enName , String year,String plateCategory, String logoType,String frontPlateSize ,String BackPlateSize) {
+
+        String declareStatus = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT DISTINCT 'SUCCESS'\n" +
+                "  FROM VLS_BUY_NEW_VEHICLE.TRN_APPLICATION          APP,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_CERTIFICATE  CER,\n" +
+                "       VLS_VEHICLE.REP_VEHICLE                      ERP,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE LIC       \n" +
+                " WHERE     APP.APPLICATION_REF_NO = '"+APPLICATION_REF_NO+"'\n" +
+                "       AND ERP.APPLICATION_REF_NO = APP.APPLICATION_REF_NO\n" +
+                "       AND LIC.APPLICATION_REF_NO=APP.APPLICATION_REF_NO\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') ='"+chassisNo+"'\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') =JSON_VALUE(ERP.product_document,'$.vehicleInfo.vehicleSpecs.chassisNumber')\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') =JSON_VALUE(CER.product_document, '$.certificateInfo.vehicleSummaryInfo.chassisNumber')\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') =JSON_VALUE(LIC.PRODUCT_DOCUMENT, '$.vehicleLicenseInfo.vehicleSummaryInfo.chassisNumber')\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.customerInfo.rtaUnifiedNo')='"+rtaUnifiedNo+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.emptyWeight')="+weight+"\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.class.code')='"+vehicleClassCode+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.class.name.ar')='"+arName+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.class.name.en')='"+enName+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.manufacturer.model.year')='"+year+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.declaredBy')='AGENCY' \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.mortgage')='"+mortgageStatus+"'  \n" +
+                "       AND JSON_VALUE (ERP.product_document,'$.vehicleInfo.statusDetails.value')='LICENSED'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.code')='"+plateCategory+"'   \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.plateLogoType')='"+logoType+"'  \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.frontPlateSize')='"+frontPlateSize+"'    \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.backPlateSize')='"+BackPlateSize+"' ");
+
+        try {
+            declareStatus= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return declareStatus;
+
+    }
+
+
+
+    public String[] getRTAUnitfiedIdAndEid() {
+
+        setConnection();
+        String[] customerDetails = new String[2];
+
+        ResultSet result = databaseActions.executeSelectQuery("SELECT JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') rtaUnifiedNo,\n" +
+                "       JSON_VALUE (PROFILE_DOCUMENT,'$.customerInfo.categoryInfo.eidNumber') eid\n" +
+                "  FROM LS_UAA.UM_INDIVIDUAL_PROFILE UM\n" +
+                " WHERE JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.eidExpiryDate' ) > to_char (sysdate+60,'yyyy-mm-dd')\n" +
+                " and JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') is not null\n" +
+                " AND JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.category')='DXB_RESIDENT'\n" +
+                " and ROWNUM  =1");
+
+        try {
+            customerDetails[0] = result.getString(1);
+            customerDetails[1] = result.getString(2);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+         return customerDetails;
+    }
+
 }

@@ -14,11 +14,11 @@ public class RegisterNewVehicleAPI {
 
     private String declareEndpoint = "/register";
 
-    public Response registerVehicleResponse(String chassisNo,String EID) throws ParseException {
+    public Response registerVehicleResponse(String chassisNo,String EID, String plateCategory , String frontPlateSize, String backPlateSize) throws ParseException {
 
         Response insuranceResponse;
         JSONParser parser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) parser.parse(RegisterNewVehiclePayLoad.registerPayLoad(chassisNo, EID));
+        JSONObject jsonObject = (JSONObject) parser.parse(RegisterNewVehiclePayLoad.registerPayLoad(chassisNo, EID,plateCategory,frontPlateSize,backPlateSize));
         insuranceResponse = RestActions.buildNewRequest("https://vlsgw.external.apps.qa.licensing.rta.ae/external/buynewvehicle/api/application/vehicle" , declareEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(jsonObject)
                 .setContentType(ContentType.JSON)

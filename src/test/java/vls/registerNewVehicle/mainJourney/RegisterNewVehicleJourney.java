@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class RegisterNewVehicleJourney {
     String ExcelfileName, sheetname = "NewVehicleDetails";
-    int TotalNumberOfCols = 6;
+    int TotalNumberOfCols = 11;
 
     ExcelReader ER = new ExcelReader();
     Response declareRes;
@@ -53,9 +53,10 @@ public class RegisterNewVehicleJourney {
 
     @Step("Declare Vehicle Test case")
     @Test(dataProvider = "NewVehicleDetailsExcel")
-    public void declareVehicleAPITestCase(String persona_No	,String vehicleWeight, String vehicleClassCode,
-                                          String	arabicName, String	englishName, String	year) throws ParseException, InterruptedException {
-        System.out.println(vehicleWeight + "  "+vehicleClassCode+"  "+arabicName+"  "+englishName+"  "+year);
+    public void declareVehicleAPITestCase(String persona_No	,String vehicleWeight, String mortgageStatus,String vehicleClassCode,
+                                          String arabicName, String	englishName, String	year,
+                                          String plateCategory , String frontPlateSize, String backPlateSize, String logoType) throws ParseException {
+        System.out.println(vehicleWeight + "  "+vehicleClassCode+" " + mortgageStatus+"  "+arabicName+"  "+englishName+"  "+year +" " +plateCategory +" "+frontPlateSize+" "+backPlateSize + " "+logoType);
         AddInsuranceAPI addInsourance = new AddInsuranceAPI();
 
         DeclareVehicleAPI declare= new DeclareVehicleAPI();
@@ -79,19 +80,24 @@ public class RegisterNewVehicleJourney {
 
         //  --------------------------------- Add Insurance To The Vehicle --------------------------------
         addInsuranceRes = addInsourance.AddInsuranceResponse(rtaUnifiedNumber,chassisNo,eidNUMBER);
-        String insuranceStatus =dbQueries.getInsuranceVehicleStatus(chassisNo,"AVAILABLE",eidNUMBER);
+        String insuranceStatus =dbQueries.getInsuranceVehicleStatus(chassisNo,"AVAILABLE",rtaUnifiedNumber);
         Assert.assertEquals(insuranceStatus,"SUCCESS");
 
-        /*
+
         //  --------------------------------- Register The Vehicle --------------------------------
-        String vehicleWeight;
-        registerNewVehicleRes=registerNewVehicleAPI.registerVehicleResponse(chassisNo,eidNUMBER);
+
+        registerNewVehicleRes=registerNewVehicleAPI.registerVehicleResponse(chassisNo,eidNUMBER,plateCategory,frontPlateSize,backPlateSize);
         registerApplicationReferenceNo=RestActions.getResponseJSONValue(registerNewVehicleRes,"applicationReferenceNo");
 
+        String registerStatus =  dbQueries.getRegisterVehicleStatus(registerApplicationReferenceNo,chassisNo,rtaUnifiedNumber,vehicleWeight,mortgageStatus,vehicleClassCode,arabicName,englishName,year,plateCategory,logoType,frontPlateSize,backPlateSize);
+        Assert.assertEquals(registerStatus,"SUCCESS");
+/*
         //  --------------------------------- Pay Fees For Registered The Vehicle --------------------------------
         payApplicationRes=payApplicationAPI.payApplicationResponse(registerApplicationReferenceNo);
         Assert.assertTrue(declareApplicationReferenceNo.contains("BNJ-"));
         Assert.assertEquals(payApplicationRes.getStatusCode() , 200);
+        String insuranceAfterRegisterStatus =dbQueries.getInsuranceVehicleStatus(chassisNo,"CONSUMED",eidNUMBER);
+        Assert.assertEquals(insuranceAfterRegisterStatus,"SUCCESS");
 
         //  --------------------------------- The Receipt For The Pay Fees For Registered The Vehicle --------------------------------
         applicationReceiptRes=applicationReceiptAPI.getReceiptResponse(registerApplicationReferenceNo);
@@ -104,9 +110,9 @@ public class RegisterNewVehicleJourney {
     @BeforeTest()
     public void beforeMethod() throws InterruptedException {
 
-        String[] vehicle = dbQueries.getVehicleNotMortgaged("false");
-        eidNUMBER = vehicle[2];
-        rtaUnifiedNumber = vehicle[1];
+        String[] customerDetails = dbQueries.getRTAUnitfiedIdAndEid();
+        eidNUMBER = customerDetails[1];
+        rtaUnifiedNumber = customerDetails[0];
         dbQueries.resetviloation(rtaUnifiedNumber, "");
     }
 
