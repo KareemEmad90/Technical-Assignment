@@ -26,8 +26,7 @@ import java.io.IOException;
 
 public class RegisterNewVehicleJourney {
     String ExcelfileName, sheetname = "NewVehicleDetails";
-    int TotalNumberOfCols = 11;
-
+    int TotalNumberOfCols = 15;
     ExcelReader ER = new ExcelReader();
     Response declareRes;
     Response addInsuranceRes;
@@ -41,6 +40,7 @@ public class RegisterNewVehicleJourney {
     String eidNUMBER ;
     String rtaUnifiedNumber;
     String chassisNo ;
+    Boolean toRunValue = true;
     static Logger log = Logger.getLogger(RegisterNewVehicleJourney.class.getName());
 
 
@@ -55,42 +55,48 @@ public class RegisterNewVehicleJourney {
     @Test(dataProvider = "NewVehicleDetailsExcel")
     public void declareVehicleAPITestCase(String persona_No	,String vehicleWeight, String mortgageStatus,String vehicleClassCode,
                                           String arabicName, String	englishName, String	year,
-                                          String plateCategory , String frontPlateSize, String backPlateSize, String logoType) throws ParseException {
+                                          String plateCategory , String frontPlateSize, String backPlateSize, String logoType,
+                                          String insurancePeriod,String licensePeriod,String inspectedStatus,String toRun) throws ParseException {
         System.out.println(vehicleWeight + "  "+vehicleClassCode+" " + mortgageStatus+"  "+arabicName+"  "+englishName+"  "+year +" " +plateCategory +" "+frontPlateSize+" "+backPlateSize + " "+logoType);
-        AddInsuranceAPI addInsourance = new AddInsuranceAPI();
+        toRunValue=Boolean.parseBoolean(toRun);
+        if (toRunValue) {
+            AddInsuranceAPI addInsourance = new AddInsuranceAPI();
 
-        DeclareVehicleAPI declare= new DeclareVehicleAPI();
+            DeclareVehicleAPI declare = new DeclareVehicleAPI();
 
-        RegisterNewVehicleAPI registerNewVehicleAPI= new RegisterNewVehicleAPI();
-        PayApplicationAPI  payApplicationAPI= new PayApplicationAPI();
-        ApplicationReceiptAPI applicationReceiptAPI= new ApplicationReceiptAPI();
+            RegisterNewVehicleAPI registerNewVehicleAPI = new RegisterNewVehicleAPI();
+            PayApplicationAPI payApplicationAPI = new PayApplicationAPI();
+            ApplicationReceiptAPI applicationReceiptAPI = new ApplicationReceiptAPI();
 
-        //  --------------------------------- declare Vehicle --------------------------------
-        declareRes = declare.declareSerivceResponse(vehicleWeight , vehicleClassCode,arabicName,englishName,year);
-        Assert.assertEquals(declareRes.getStatusCode() , 200);
-        declareApplicationReferenceNo= RestActions.getResponseJSONValue(declareRes,"applicationReferenceNo");
-        System.out.println(declareRes.getBody().toString());
-        Assert.assertTrue(declareApplicationReferenceNo.contains("BNJ-"));
-        declarationCertificateRefNo= RestActions.getResponseJSONValue(declareRes,"declarationCertificateRefNo");
-        Assert.assertTrue(declarationCertificateRefNo.contains("VLS-"));
-        chassisNo =declare.getChassisNo();
-        String declarationStatus =dbQueries.getDeclaredVehicleStatus(declareApplicationReferenceNo,chassisNo ,vehicleWeight,vehicleClassCode,arabicName,englishName,year);
-       // Thread.sleep(5000);
-        Assert.assertEquals(declarationStatus,"SUCCESS");
+            //  --------------------------------- declare Vehicle --------------------------------
+            declareRes = declare.declareSerivceResponse(vehicleWeight, vehicleClassCode, arabicName, englishName, year);
+            Assert.assertEquals(declareRes.getStatusCode(), 200);
+            declareApplicationReferenceNo = RestActions.getResponseJSONValue(declareRes, "applicationReferenceNo");
+            System.out.println(declareRes.getBody().toString());
+            Assert.assertTrue(declareApplicationReferenceNo.contains("BNJ-"));
+            declarationCertificateRefNo = RestActions.getResponseJSONValue(declareRes, "declarationCertificateRefNo");
+            Assert.assertTrue(declarationCertificateRefNo.contains("VLS-"));
+            chassisNo = declare.getChassisNo();
+            String declarationStatus = dbQueries.getDeclaredVehicleStatus(declareApplicationReferenceNo, chassisNo, vehicleWeight, vehicleClassCode, arabicName, englishName, year);
+            Assert.assertEquals(declarationStatus, "SUCCESS");
 
-        //  --------------------------------- Add Insurance To The Vehicle --------------------------------
-        addInsuranceRes = addInsourance.AddInsuranceResponse(rtaUnifiedNumber,chassisNo,eidNUMBER);
-        String insuranceStatus =dbQueries.getInsuranceVehicleStatus(chassisNo,"AVAILABLE",rtaUnifiedNumber);
-        Assert.assertEquals(insuranceStatus,"SUCCESS");
+            //  --------------------------------- Add Insurance To The Vehicle --------------------------------
+            addInsuranceRes = addInsourance.AddInsuranceResponse(rtaUnifiedNumber, chassisNo, eidNUMBER);
+            String insuranceStatus = dbQueries.getInsuranceVehicleStatus(chassisNo, "AVAILABLE", rtaUnifiedNumber);
+            Assert.assertEquals(insuranceStatus, "SUCCESS");
 
 
-        //  --------------------------------- Register The Vehicle --------------------------------
+            //  --------------------------------- Register The Vehicle --------------------------------
 
-        registerNewVehicleRes=registerNewVehicleAPI.registerVehicleResponse(chassisNo,eidNUMBER,plateCategory,frontPlateSize,backPlateSize);
-        registerApplicationReferenceNo=RestActions.getResponseJSONValue(registerNewVehicleRes,"applicationReferenceNo");
+            registerNewVehicleRes = registerNewVehicleAPI.registerVehicleResponse(chassisNo, eidNUMBER, plateCategory, frontPlateSize, backPlateSize);
+            registerApplicationReferenceNo = RestActions.getResponseJSONValue(registerNewVehicleRes, "applicationReferenceNo");
 
-        String registerStatus =  dbQueries.getRegisterVehicleStatus(registerApplicationReferenceNo,chassisNo,rtaUnifiedNumber,vehicleWeight,mortgageStatus,vehicleClassCode,arabicName,englishName,year,plateCategory,logoType,frontPlateSize,backPlateSize);
-        Assert.assertEquals(registerStatus,"SUCCESS");
+            String registerStatus = dbQueries.getRegisterVehicleStatus(registerApplicationReferenceNo, chassisNo, rtaUnifiedNumber,
+                    vehicleWeight, mortgageStatus, vehicleClassCode,
+                    arabicName, englishName, year, plateCategory, logoType,
+                    frontPlateSize, backPlateSize, insurancePeriod, licensePeriod, inspectedStatus);
+
+            Assert.assertEquals(registerStatus, "SUCCESS");
 /*
         //  --------------------------------- Pay Fees For Registered The Vehicle --------------------------------
         payApplicationRes=payApplicationAPI.payApplicationResponse(registerApplicationReferenceNo);
@@ -105,6 +111,9 @@ public class RegisterNewVehicleJourney {
 
 
  */
+        }else {
+            log.info(persona_No +  " Has Ignored");
+        }
     }
 
     @BeforeTest()

@@ -469,7 +469,9 @@ public class DbQueries extends DBConnections{
                 "       AND JSON_VALUE (CER.product_document,\n" +
                 "                       '$.certificateInfo.vehicleSummaryInfo.declaredBy')='AGENCY'\n" +
                 "       AND JSON_VALUE (ERP.product_document,\n" +
-                "                       '$.vehicleInfo.statusDetails.value')='DECLARED'");
+                "                       '$.vehicleInfo.statusDetails.value')='DECLARED'" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                '$. certificateInfo.status')='ACTIVE'");
 
         try {
             declareStatus= result.getString(1);
@@ -506,7 +508,11 @@ public class DbQueries extends DBConnections{
 
 
 
-    public String getRegisterVehicleStatus(String APPLICATION_REF_NO,String chassisNo, String rtaUnifiedNo,String weight ,String mortgageStatus ,String vehicleClassCode, String arName, String enName , String year,String plateCategory, String logoType,String frontPlateSize ,String BackPlateSize) {
+    public String getRegisterVehicleStatus(String APPLICATION_REF_NO,String chassisNo, String rtaUnifiedNo,
+                                           String weight ,String mortgageStatus ,String vehicleClassCode,
+                                           String arName, String enName , String year,String plateCategory,
+                                           String logoType,String frontPlateSize ,String BackPlateSize,
+                                           String insurancePeriod ,String licensePeriod, String inspectedStatus) {
 
         String declareStatus = null;
         setConnection();
@@ -534,7 +540,14 @@ public class DbQueries extends DBConnections{
                 "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.code')='"+plateCategory+"'   \n" +
                 "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.plateLogoType')='"+logoType+"'  \n" +
                 "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.frontPlateSize')='"+frontPlateSize+"'    \n" +
-                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.backPlateSize')='"+BackPlateSize+"' ");
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.backPlateSize')='"+BackPlateSize+"'" +
+                "       AND MONTHS_BETWEEN (TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.insuranceSummaryInfo.expiryDate'),'YYYY-MM-DD'),\n" +
+                "       TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.insuranceSummaryInfo.startDate'),'YYYY-MM-DD'))="+insurancePeriod+" " +
+                "       AND length (JSON_VALUE(LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code'))=1\n" +
+                "       AND JSON_VALUE(LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber') is not null" +
+                "       AND MONTHS_BETWEEN (TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.expiryDate'),'YYYY-MM-DD')," +
+                "       TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.issueDate'),'YYYY-MM-DD'))="+licensePeriod+"\n" +
+                "       AND JSON_VALUE(LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.inspected')='"+inspectedStatus+"'");
 
         try {
             declareStatus= result.getString(1);
