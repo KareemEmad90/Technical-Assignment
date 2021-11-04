@@ -218,6 +218,7 @@ public class DbQueries extends DBConnections{
                 "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber' RETURNING VARCHAR2(200) NULL ON ERROR) Plate,\n" +
                 "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code' RETURNING VARCHAR2(200) NULL ON ERROR) Code,\n" +
                 "INPR.RTA_ID,\n" +
+                "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code' RETURNING VARCHAR2(200) NULL ON ERROR) VCL_TYPE," +
                 "JSON_VALUE(\"PROFILE_DOCUMENT\" FORMAT JSON , '$.customerInfo.categoryInfo.eidExpiryDate' RETURNING VARCHAR2(200) NULL ON ERROR) EID_ExpiryDate\n" +
                 "\n" +
                 "FROM LS_UAA.UM_INDIVIDUAL_PROFILE INPR,\n" +
@@ -300,6 +301,18 @@ public class DbQueries extends DBConnections{
     public void addpayablefine(String traffic_no, String ChassisNo) {
           setConnection();
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,5);END;");
+    }
+
+    @Step("ADD Payable Dubai , AbuDhabi And Parking Fines")
+    public void addUAEAndGCCFines(String traffic_no, String ChassisNo) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2);END;");
+    }
+
+    @Step("ADD Payable And Salik Fines")
+    public void hasUAEandSalikFines(String traffic_no, String ChassisNo) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1);END;");
     }
 
     @Step("Cancel application for vehicle renewal")

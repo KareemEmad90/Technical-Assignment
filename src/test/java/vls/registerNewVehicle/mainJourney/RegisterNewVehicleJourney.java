@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class RegisterNewVehicleJourney {
     String ExcelfileName, sheetname = "NewVehicleDetails";
-    int TotalNumberOfCols = 15;
+    int TotalNumberOfCols = 21;
     ExcelReader ER = new ExcelReader();
     Response declareRes;
     Response addInsuranceRes;
@@ -53,15 +53,35 @@ public class RegisterNewVehicleJourney {
 
     @Step("Declare Vehicle Test case")
     @Test(dataProvider = "NewVehicleDetailsExcel")
-    public void declareVehicleAPITestCase(String persona_No	,String vehicleWeight, String mortgageStatus,String vehicleClassCode,
-                                          String arabicName, String	englishName, String	year,
-                                          String plateCategory , String frontPlateSize, String backPlateSize, String logoType,
-                                          String insurancePeriod,String licensePeriod,String inspectedStatus,String toRun) throws ParseException {
-        System.out.println(vehicleWeight + "  "+vehicleClassCode+" " + mortgageStatus+"  "+arabicName+"  "+englishName+"  "+year +" " +plateCategory +" "+frontPlateSize+" "+backPlateSize + " "+logoType);
+    public void declareVehicleAPITestCase(String persona_No	,String vehicleDecleared	,String vehicleWeight	,String mortgageStatus
+            ,String inspectedStatus	,String vehicleClassCode	,String arabicName	,String englishName	,String year
+            ,String plateCategory	,String frontPlateSize	,String backPlateSize	,String logoType	,String insurancePeriod
+            ,String licensePeriod	,String hasUAEAndGCCFines	,String hasUAEFines	,String hasUAEandSalikFines	,String licenseStatus
+            ,String profileClassification	,String toRun) throws ParseException {
+
+        System.out.println(persona_No	+ "  "+ vehicleDecleared	+ "  "+ vehicleWeight	+ "  "+ mortgageStatus
+                + "  "+ inspectedStatus	+ "  "+ vehicleClassCode	+ "  "+ arabicName	+ "  "+ englishName	+ "  "+ year
+                + "  "+ plateCategory	+ "  "+ frontPlateSize	+ "  "+ backPlateSize	+ "  "+ logoType	+ "  "+ insurancePeriod
+                + "  "+ licensePeriod	+ "  "+ hasUAEAndGCCFines	+ "  "+ hasUAEFines	+ "  "+ hasUAEandSalikFines	+ "  "+ licenseStatus
+                + "  "+ profileClassification	+ "  "+ toRun);
+
         toRunValue=Boolean.parseBoolean(toRun);
         if (toRunValue) {
-            AddInsuranceAPI addInsourance = new AddInsuranceAPI();
 
+            if (hasUAEAndGCCFines.equals("true")){
+                dbQueries.addUAEAndGCCFines(rtaUnifiedNumber,chassisNo);
+            }
+
+            if (hasUAEFines.equals("true")){
+                dbQueries.addpayablefine(rtaUnifiedNumber,chassisNo);
+            }
+
+            if (hasUAEandSalikFines.equals("true")){
+
+                dbQueries.hasUAEandSalikFines(rtaUnifiedNumber,chassisNo);
+            }
+
+            AddInsuranceAPI addInsourance = new AddInsuranceAPI();
             DeclareVehicleAPI declare = new DeclareVehicleAPI();
 
             RegisterNewVehicleAPI registerNewVehicleAPI = new RegisterNewVehicleAPI();
