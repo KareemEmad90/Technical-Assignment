@@ -218,6 +218,7 @@ public class DbQueries extends DBConnections{
                 "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber' RETURNING VARCHAR2(200) NULL ON ERROR) Plate,\n" +
                 "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code' RETURNING VARCHAR2(200) NULL ON ERROR) Code,\n" +
                 "INPR.RTA_ID,\n" +
+                "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code' RETURNING VARCHAR2(200) NULL ON ERROR) VCL_TYPE," +
                 "JSON_VALUE(\"PROFILE_DOCUMENT\" FORMAT JSON , '$.customerInfo.categoryInfo.eidExpiryDate' RETURNING VARCHAR2(200) NULL ON ERROR) EID_ExpiryDate\n" +
                 "\n" +
                 "FROM LS_UAA.UM_INDIVIDUAL_PROFILE INPR,\n" +
@@ -300,6 +301,18 @@ public class DbQueries extends DBConnections{
     public void addpayablefine(String traffic_no, String ChassisNo) {
           setConnection();
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,5);END;");
+    }
+
+    @Step("ADD Payable Dubai , AbuDhabi And Parking Fines")
+    public void addUAEAndGCCFines(String traffic_no, String ChassisNo) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2);END;");
+    }
+
+    @Step("ADD Payable And Salik Fines")
+    public void hasUAEandSalikFines(String traffic_no, String ChassisNo) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,2,1,1,1,1,1,1,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1);END;");
     }
 
     @Step("Cancel application for vehicle renewal")
@@ -434,4 +447,156 @@ public class DbQueries extends DBConnections{
           setConnection();
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_BLACK_POINTS(" + traffic_no + ");END;");
     }
+
+    public String getDeclaredVehicleStatus(String DeclareApplicationRefNo , String chassis,String weight  ,String vehicleClassCode, String arName, String enName , String year) {
+
+        String declareStatus = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT DISTINCT 'SUCCESS'\n" +
+                "  FROM VLS_BUY_NEW_VEHICLE.TRN_APPLICATION          APP,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_CERTIFICATE  CER,\n" +
+                "       VLS_VEHICLE.REP_VEHICLE                      ERP\n" +
+                " WHERE     APP.APPLICATION_REF_NO = '"+DeclareApplicationRefNo+"'\n" +
+                "       AND ERP.APPLICATION_REF_NO = APP.APPLICATION_REF_NO\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,\n" +
+                "                       '$.parameters.chassisNumber') =\n" +
+                "           '"+chassis+"'\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,\n" +
+                "                       '$.parameters.chassisNumber') =\n" +
+                "           JSON_VALUE (ERP.product_document,\n" +
+                "                       '$.vehicleInfo.vehicleSpecs.chassisNumber')\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,\n" +
+                "                       '$.parameters.chassisNumber') =\n" +
+                "           JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.chassisNumber')\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.emptyWeight')="+weight+"\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.class.code')='"+vehicleClassCode+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.class.name.ar')='"+arName+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.class.name.en')='"+enName+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.manufacturer.model.year')='"+year+"'\n" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                       '$.certificateInfo.vehicleSummaryInfo.declaredBy')='AGENCY'\n" +
+                "       AND JSON_VALUE (ERP.product_document,\n" +
+                "                       '$.vehicleInfo.statusDetails.value')='DECLARED'" +
+                "       AND JSON_VALUE (CER.product_document,\n" +
+                "                '$. certificateInfo.status')='ACTIVE'");
+
+        try {
+            declareStatus= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return declareStatus;
+
+    }
+
+
+    public String getInsuranceVehicleStatus(String chassisNo,String status, String eID) {
+
+        String declareStatus = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT DISTINCT 'SUCCESS'\n" +
+                "  FROM VLS_INSURANCE.PRD_INSURANCE_POLICY INS\n" +
+                " WHERE JSON_VALUE (INS.product_document, '$.policyInfo.chassisNumber') ='"+chassisNo+"'\n" +
+                "       AND JSON_VALUE (INS.product_document, '$.policyInfo.status') ='"+status+"'\n" +
+                "       AND JSON_VALUE (INS.product_document, '$.customerInfo.rtaUnifiedNo') ='"+eID+"'");
+
+        try {
+            declareStatus= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return declareStatus;
+
+    }
+
+
+
+    public String getRegisterVehicleStatus(String APPLICATION_REF_NO,String chassisNo, String rtaUnifiedNo,
+                                           String weight ,String mortgageStatus ,String vehicleClassCode,
+                                           String arName, String enName , String year,String plateCategory,
+                                           String logoType,String frontPlateSize ,String BackPlateSize,
+                                           String insurancePeriod ,String licensePeriod, String inspectedStatus) {
+
+        String declareStatus = null;
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT DISTINCT 'SUCCESS'\n" +
+                "  FROM VLS_BUY_NEW_VEHICLE.TRN_APPLICATION          APP,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_CERTIFICATE  CER,\n" +
+                "       VLS_VEHICLE.REP_VEHICLE                      ERP,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE LIC       \n" +
+                " WHERE     APP.APPLICATION_REF_NO = '"+APPLICATION_REF_NO+"'\n" +
+                "       AND ERP.APPLICATION_REF_NO = APP.APPLICATION_REF_NO\n" +
+                "       AND LIC.APPLICATION_REF_NO=APP.APPLICATION_REF_NO\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') ='"+chassisNo+"'\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') =JSON_VALUE(ERP.product_document,'$.vehicleInfo.vehicleSpecs.chassisNumber')\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') =JSON_VALUE(CER.product_document, '$.certificateInfo.vehicleSummaryInfo.chassisNumber')\n" +
+                "       AND JSON_VALUE (APP.APPLICATION_CRITERIA,'$.parameters.chassisNumber') =JSON_VALUE(LIC.PRODUCT_DOCUMENT, '$.vehicleLicenseInfo.vehicleSummaryInfo.chassisNumber')\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.customerInfo.rtaUnifiedNo')='"+rtaUnifiedNo+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.emptyWeight')="+weight+"\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.class.code')='"+vehicleClassCode+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.class.name.ar')='"+arName+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.class.name.en')='"+enName+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.manufacturer.model.year')='"+year+"'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.vehicleSummaryInfo.declaredBy')='AGENCY' \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.mortgage')='"+mortgageStatus+"'  \n" +
+                "       AND JSON_VALUE (ERP.product_document,'$.vehicleInfo.statusDetails.value')='LICENSED'\n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.code')='"+plateCategory+"'   \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.plateLogoType')='"+logoType+"'  \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.frontPlateSize')='"+frontPlateSize+"'    \n" +
+                "       AND JSON_VALUE (LIC.product_document,'$.vehicleLicenseInfo.plateSummaryInfo.metalPlateDetails.backPlateSize')='"+BackPlateSize+"'" +
+                "       AND MONTHS_BETWEEN (TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.insuranceSummaryInfo.expiryDate'),'YYYY-MM-DD'),\n" +
+                "       TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.insuranceSummaryInfo.startDate'),'YYYY-MM-DD'))="+insurancePeriod+" " +
+                "       AND length (JSON_VALUE(LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code'))=1\n" +
+                "       AND JSON_VALUE(LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber') is not null" +
+                "       AND MONTHS_BETWEEN (TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.expiryDate'),'YYYY-MM-DD')," +
+                "       TO_DATE (JSON_VALUE (LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.issueDate'),'YYYY-MM-DD'))="+licensePeriod+"\n" +
+                "       AND JSON_VALUE(LIC.PRODUCT_DOCUMENT,'$.vehicleLicenseInfo.inspected')='"+inspectedStatus+"'");
+
+        try {
+            declareStatus= result.getString(1);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return declareStatus;
+
+    }
+
+
+
+    public String[] getRTAUnitfiedIdAndEid() {
+
+        setConnection();
+        String[] customerDetails = new String[2];
+
+        ResultSet result = databaseActions.executeSelectQuery("SELECT JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') rtaUnifiedNo,\n" +
+                "       JSON_VALUE (PROFILE_DOCUMENT,'$.customerInfo.categoryInfo.eidNumber') eid\n" +
+                "  FROM LS_UAA.UM_INDIVIDUAL_PROFILE UM\n" +
+                " WHERE JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.eidExpiryDate' ) > to_char (sysdate+60,'yyyy-mm-dd')\n" +
+                " and JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') is not null\n" +
+                " AND JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.category')='DXB_RESIDENT'\n" +
+                " and ROWNUM  =1");
+
+        try {
+            customerDetails[0] = result.getString(1);
+            customerDetails[1] = result.getString(2);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+         return customerDetails;
+    }
+
 }
