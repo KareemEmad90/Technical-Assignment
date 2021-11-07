@@ -21,6 +21,7 @@ import org.testng.ITestContext;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import utils.ChassisGeneration;
 
 import java.io.IOException;
 
@@ -37,10 +38,11 @@ public class RegisterNewVehicleJourney {
     String declarationCertificateRefNo;
     String registerApplicationReferenceNo;
     DbQueries dbQueries = new DbQueries();
-    String eidNUMBER ;
+    String eidNUMBER;
     String rtaUnifiedNumber;
-    String chassisNo ;
+    String chassisNo;
     Boolean toRunValue = true;
+    RegisterNewVehicleAPI registerNewVehicleAPI = new RegisterNewVehicleAPI();
     static Logger log = Logger.getLogger(RegisterNewVehicleJourney.class.getName());
 
 
@@ -53,50 +55,53 @@ public class RegisterNewVehicleJourney {
 
     @Step("Declare Vehicle Test case")
     @Test(dataProvider = "NewVehicleDetailsExcel")
-    public void declareVehicleAPITestCase(String persona_No	,String vehicleDecleared	,String vehicleWeight	,String mortgageStatus
-            ,String inspectedStatus	,String vehicleClassCode	,String arabicName	,String englishName	,String year
-            ,String plateCategory	,String frontPlateSize	,String backPlateSize	,String logoType	,String insurancePeriod
-            ,String licensePeriod	,String hasUAEAndGCCFines	,String hasUAEFines	,String hasUAEandSalikFines	,String licenseStatus
-            ,String profileClassification	,String toRun) throws ParseException {
+    public void declareVehicleAPITestCase(String persona_No, String vehicleDecleared, String vehicleWeight, String mortgageStatus
+            , String inspectedStatus, String vehicleClassCode, String arabicName, String englishName, String year
+            , String plateCategory, String frontPlateSize, String backPlateSize, String logoType, String insurancePeriod
+            , String licensePeriod, String hasUAEAndGCCFines, String hasUAEFines, String hasUAEandSalikFines, String licenseStatus
+            , String profileClassification, String toRun) throws ParseException {
 
-        System.out.println(persona_No	+ "  "+ vehicleDecleared	+ "  "+ vehicleWeight	+ "  "+ mortgageStatus
-                + "  "+ inspectedStatus	+ "  "+ vehicleClassCode	+ "  "+ arabicName	+ "  "+ englishName	+ "  "+ year
-                + "  "+ plateCategory	+ "  "+ frontPlateSize	+ "  "+ backPlateSize	+ "  "+ logoType	+ "  "+ insurancePeriod
-                + "  "+ licensePeriod	+ "  "+ hasUAEAndGCCFines	+ "  "+ hasUAEFines	+ "  "+ hasUAEandSalikFines	+ "  "+ licenseStatus
-                + "  "+ profileClassification	+ "  "+ toRun);
+        System.out.println(persona_No + "  " + vehicleDecleared + "  " + vehicleWeight + "  " + mortgageStatus
+                + "  " + inspectedStatus + "  " + vehicleClassCode + "  " + arabicName + "  " + englishName + "  " + year
+                + "  " + plateCategory + "  " + frontPlateSize + "  " + backPlateSize + "  " + logoType + "  " + insurancePeriod
+                + "  " + licensePeriod + "  " + hasUAEAndGCCFines + "  " + hasUAEFines + "  " + hasUAEandSalikFines + "  " + licenseStatus
+                + "  " + profileClassification + "  " + toRun);
 
-        toRunValue=Boolean.parseBoolean(toRun);
+        toRunValue = Boolean.parseBoolean(toRun);
         if (toRunValue) {
 
-            if (hasUAEAndGCCFines.equals("true")){
-                dbQueries.addUAEAndGCCFines(rtaUnifiedNumber,chassisNo);
+            if (hasUAEAndGCCFines.equals("true")) {
+                //need to add chassis details
+                dbQueries.addUAEAndGCCFines(rtaUnifiedNumber, chassisNo);
             }
 
-            if (hasUAEFines.equals("true")){
-                dbQueries.addpayablefine(rtaUnifiedNumber,chassisNo);
+            if (hasUAEFines.equals("true")) {
+                //need to add chassis details
+                dbQueries.addpayablefine(rtaUnifiedNumber, chassisNo);
             }
 
-            if (hasUAEandSalikFines.equals("true")){
-
-                dbQueries.hasUAEandSalikFines(rtaUnifiedNumber,chassisNo);
+            if (hasUAEandSalikFines.equals("true")) {
+                //need to add chassis details
+                dbQueries.hasUAEandSalikFines(rtaUnifiedNumber, chassisNo);
             }
 
             AddInsuranceAPI addInsourance = new AddInsuranceAPI();
             DeclareVehicleAPI declare = new DeclareVehicleAPI();
+            chassisNo = ChassisGeneration.ChassisNo();
 
-            RegisterNewVehicleAPI registerNewVehicleAPI = new RegisterNewVehicleAPI();
+
             PayApplicationAPI payApplicationAPI = new PayApplicationAPI();
             ApplicationReceiptAPI applicationReceiptAPI = new ApplicationReceiptAPI();
 
             //  --------------------------------- declare Vehicle --------------------------------
-            declareRes = declare.declareSerivceResponse(vehicleWeight, vehicleClassCode, arabicName, englishName, year);
+            declareRes = declare.declareSerivceResponse(chassisNo, vehicleWeight, vehicleClassCode, arabicName, englishName, year);
             Assert.assertEquals(declareRes.getStatusCode(), 200);
             declareApplicationReferenceNo = RestActions.getResponseJSONValue(declareRes, "applicationReferenceNo");
             System.out.println(declareRes.getBody().toString());
             Assert.assertTrue(declareApplicationReferenceNo.contains("BNJ-"));
             declarationCertificateRefNo = RestActions.getResponseJSONValue(declareRes, "declarationCertificateRefNo");
             Assert.assertTrue(declarationCertificateRefNo.contains("VLS-"));
-            chassisNo = declare.getChassisNo();
+            //chassisNo = declare.getChassisNo();
             String declarationStatus = dbQueries.getDeclaredVehicleStatus(declareApplicationReferenceNo, chassisNo, vehicleWeight, vehicleClassCode, arabicName, englishName, year);
             Assert.assertEquals(declarationStatus, "SUCCESS");
 
@@ -108,7 +113,7 @@ public class RegisterNewVehicleJourney {
 
             //  --------------------------------- Register The Vehicle --------------------------------
 
-            registerNewVehicleRes = registerNewVehicleAPI.registerVehicleResponse(chassisNo, eidNUMBER, plateCategory, frontPlateSize, backPlateSize);
+            registerNewVehicleRes = registerNewVehicleAPI.registerVehicleResponse(chassisNo, eidNUMBER, plateCategory, frontPlateSize, backPlateSize,logoType);
             registerApplicationReferenceNo = RestActions.getResponseJSONValue(registerNewVehicleRes, "applicationReferenceNo");
 
             String registerStatus = dbQueries.getRegisterVehicleStatus(registerApplicationReferenceNo, chassisNo, rtaUnifiedNumber,
@@ -131,15 +136,18 @@ public class RegisterNewVehicleJourney {
 
 
  */
-        }else {
-            log.info(persona_No +  " Has Ignored");
+
+        } else {
+            log.info(persona_No + " Has Ignored");
         }
+
+
     }
 
     @BeforeTest()
     public void beforeMethod() throws InterruptedException {
 
-        String[] customerDetails = dbQueries.getRTAUnitfiedIdAndEid();
+        String[] customerDetails = dbQueries.getRTAUnitfiedIdAndEid(">");
         eidNUMBER = customerDetails[1];
         rtaUnifiedNumber = customerDetails[0];
         dbQueries.resetviloation(rtaUnifiedNumber, "");

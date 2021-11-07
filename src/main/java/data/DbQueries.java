@@ -575,7 +575,7 @@ public class DbQueries extends DBConnections{
 
 
 
-    public String[] getRTAUnitfiedIdAndEid() {
+    public String[] getRTAUnitfiedIdAndEid(String eIdStatus) {
 
         setConnection();
         String[] customerDetails = new String[2];
@@ -583,7 +583,7 @@ public class DbQueries extends DBConnections{
         ResultSet result = databaseActions.executeSelectQuery("SELECT JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') rtaUnifiedNo,\n" +
                 "       JSON_VALUE (PROFILE_DOCUMENT,'$.customerInfo.categoryInfo.eidNumber') eid\n" +
                 "  FROM LS_UAA.UM_INDIVIDUAL_PROFILE UM\n" +
-                " WHERE JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.eidExpiryDate' ) > to_char (sysdate+60,'yyyy-mm-dd')\n" +
+                " WHERE JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.eidExpiryDate' ) "+eIdStatus+" to_char (sysdate+60,'yyyy-mm-dd')\n" +
                 " and JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') is not null\n" +
                 " AND JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.category')='DXB_RESIDENT'\n" +
                 " and ROWNUM  =1");
