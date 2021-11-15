@@ -19,7 +19,7 @@ import java.io.IOException;
 
 public class NegativeRegisterNewVehicleJournies {
 
-    String ExcelfileName, sheetname = "AlternativeDataRegisterVehicle";
+    String excelFileName, sheetName = "AlternativeDataRegisterVehicle";
     int TotalNumberOfCols = 12;
     ExcelReader ER = new ExcelReader();
 
@@ -35,8 +35,8 @@ public class NegativeRegisterNewVehicleJournies {
     @DataProvider(name = "NewVehicleDetailsExcel")
     public Object[][] vehicleData(ITestContext context) throws IOException {
 
-        ExcelfileName = LoadProperties.userData.getProperty("NewVehicleDetails");
-        return ER.getExcelData(ExcelfileName, sheetname, TotalNumberOfCols);
+        excelFileName = LoadProperties.userData.getProperty("NewVehicleDetails");
+        return ER.getExcelData(excelFileName, sheetName, TotalNumberOfCols);
     }
 
 

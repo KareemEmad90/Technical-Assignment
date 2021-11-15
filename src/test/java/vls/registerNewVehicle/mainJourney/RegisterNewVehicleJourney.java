@@ -26,7 +26,7 @@ import utils.ChassisGeneration;
 import java.io.IOException;
 
 public class RegisterNewVehicleJourney {
-    String ExcelfileName, sheetname = "NewVehicleDetails";
+    String excelFileName, sheetName= "NewVehicleDetails";
     int TotalNumberOfCols = 21;
     ExcelReader ER = new ExcelReader();
     Response declareRes;
@@ -49,8 +49,8 @@ public class RegisterNewVehicleJourney {
     @DataProvider(name = "NewVehicleDetailsExcel")
     public Object[][] vehicleData(ITestContext context) throws IOException {
 
-        ExcelfileName = LoadProperties.userData.getProperty("NewVehicleDetails");
-        return ER.getExcelData(ExcelfileName, sheetname, TotalNumberOfCols);
+        excelFileName = LoadProperties.userData.getProperty("NewVehicleDetails");
+        return ER.getExcelData(excelFileName, sheetName, TotalNumberOfCols);
     }
 
     @Step("Declare Vehicle Test case")
@@ -133,8 +133,6 @@ public class RegisterNewVehicleJourney {
         //  --------------------------------- The Receipt For The Pay Fees For Registered The Vehicle --------------------------------
         applicationReceiptRes=applicationReceiptAPI.getReceiptResponse(registerApplicationReferenceNo);
         Assert.assertEquals(applicationReceiptRes.getStatusCode() , 200);
-
-
  */
 
         } else {

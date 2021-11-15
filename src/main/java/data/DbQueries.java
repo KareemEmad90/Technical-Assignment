@@ -599,4 +599,119 @@ public class DbQueries extends DBConnections{
          return customerDetails;
     }
 
+
+
+    public String[] getExpiredVehicle(String vehicle_Class,String morgageStatus,String vehicleWeight,String vehicleLicenseStatus , String profileClassification) {
+
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                   '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                   RETURNING VARCHAR2 (200)\n" +
+                "                   NULL ON ERROR)\n" +
+                "           CHASSIS_NO,\n" +
+                "       JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                   '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                   RETURNING NUMBER (15, 0)\n" +
+                "                   NULL ON ERROR)\n" +
+                "           RTA_UNIFIED_NO,\n" +
+                "       JSON_VALUE (PROFILE_DOCUMENT,\n" +
+                "                   '$.customerInfo.categoryInfo.eidNumber'\n" +
+                "                   RETURNING NUMBER (15, 0)\n" +
+                "                   NULL ON ERROR)\n" +
+                "           EID_NUMBER,\n" +
+                "       JSON_VALUE (VELI.PRODUCT_DOCUMENT,\n" +
+                "                   '$.vehicleLicenseInfo.expiryDate'\n" +
+                "                   RETURNING VARCHAR2 (200)\n" +
+                "                   NULL ON ERROR)\n" +
+                "           EXPIRY_DATE,\n" +
+                "       JSON_VALUE (\n" +
+                "           VELI.PRODUCT_DOCUMENT,\n" +
+                "           '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber'\n" +
+                "           RETURNING VARCHAR2 (200)\n" +
+                "           NULL ON ERROR)\n" +
+                "           Plate,\n" +
+                "       JSON_VALUE (\n" +
+                "           VELI.PRODUCT_DOCUMENT,\n" +
+                "           '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code'\n" +
+                "           RETURNING VARCHAR2 (200)\n" +
+                "           NULL ON ERROR)\n" +
+                "           Code,\n" +
+                "       INPR.ID\n" +
+                "           RTA_ID,\n" +
+                "       JSON_VALUE (VELI.PRODUCT_DOCUMENT,\n" +
+                "                   '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code')\n" +
+                "           VCL_TYPE,\n" +
+                "       JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                   '$.customerInfo.categoryInfo.eidExpiryDate'\n" +
+                "                   RETURNING VARCHAR2 (200)\n" +
+                "                   NULL ON ERROR)\n" +
+                "           EID_EXPIRY_DATE\n" +
+                "  --,VCL_TYPE\n" +
+                "  FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "       VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
+                "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
+                " WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                       '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                       RETURNING NUMBER (15, 0)\n" +
+                "                       NULL ON ERROR) =\n" +
+                "           JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                       '$.customerInfo.rtaUnifiedNo'\n" +
+                "                       RETURNING NUMBER (15, 0)\n" +
+                "                       NULL ON ERROR)\n" +
+                "       AND JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                       '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR) =\n" +
+                "           JSON_VALUE (\n" +
+                "               VELI.PRODUCT_DOCUMENT,\n" +
+                "               '$.vehicleLicenseInfo.vehicleSummaryInfo.chassisNumber'\n" +
+                "               RETURNING VARCHAR2 (200)\n" +
+                "               NULL ON ERROR)\n" +
+                "        AND JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                       '$.customerInfo.categoryInfo.category'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR)='"+profileClassification+"'\n" +
+                "        AND JSON_VALUE (VELI.PRODUCT_DOCUMENT,\n" +
+                "                       '$.vehicleLicenseInfo.vehicleSummaryInfo.emptyWeight'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR) between 1000 and "+vehicleWeight+" --\n" +
+                "        AND JSON_VALUE (VELI.PRODUCT_DOCUMENT,\n" +
+                "                       '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR)='"+vehicle_Class+"'\n" +
+                "        AND JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "AND JSON_VALUE (VELI.PRODUCT_DOCUMENT,\n" +
+                "                       '$.vehicleLicenseInfo.mortgage'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR)='"+morgageStatus+"'"+
+                "                       '$.vehicleInfo.statusDetails.value'\n" +
+                "                       RETURNING VARCHAR2 (200)\n" +
+                "                       NULL ON ERROR) ='"+vehicleLicenseStatus+"' \n" +
+                "       AND TO_DATE (JSON_value (VELI.PRODUCT_DOCUMENT,\n" +
+                "                                '$.vehicleLicenseInfo.expiryDate'\n" +
+                "                                RETURNING VARCHAR2 (200)\n" +
+                "                                NULL ON ERROR),\n" +
+                "                    'yyyy-mm-dd') < SYSDATE\n" +
+                "       /*Fetch first 1 rows only;*/\n" +
+                "--vehicleLicenseStatus is  UNLICENSED or LICENSED or DECLARED"+
+                "       AND ROWNUM < 2");
+
+        try {
+            vehicle[0] = result.getString(1);
+            vehicle[1] = result.getString(2);
+            vehicle[2] = result.getString(3);
+            vehicle[3] = result.getString(4);
+            vehicle[4] = result.getString(5);
+            vehicle[5] = result.getString(6);
+            vehicle[6] = result.getString(7);
+            vehicle[7] = result.getString(8);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Chassis = " + vehicle[0] + "  --- RTA_UNIFIED_NO ID = " + vehicle[1] + "  --- EID_NUMBER ID = " + vehicle[2] + "  --- EXPIRY_DATE ID = " + vehicle[3] +
+                "  --- PLATE No = " + vehicle[4] + "  --- Plate Code = " + vehicle[5]+ "  --- RTA ID = " + vehicle[6]+ " --- EID ExpiryDate = " + vehicle[7]);
+        return vehicle;
+    }
+
 }
