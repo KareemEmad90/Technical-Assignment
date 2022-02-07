@@ -20,7 +20,7 @@ public class CheckEligibilityAPI extends BaseApi {
 
         checkEligibilityJourneyRequestBody.put("journeyCode", "RENEW_VEHICLE");
         checkEligibilityJourneyRequestBody.put("chassisNumber", chassisNo);
-        response = RestActions.buildNewRequest("https://vlsgw.external.qa.rta.ae/external/vehiclerenewaljourney/api/vehicle-renewal" , eligibilityEndpoint, RestActions.RequestType.POST)
+        response = RestActions.buildNewRequest(LoadProperties.userData.getProperty("VLS_Vehicle_Renewal"), eligibilityEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(checkEligibilityJourneyRequestBody)
                 .setContentType(ContentType.JSON)
                 .addHeader("rta-unified-number",rtaUnifiedNumber)

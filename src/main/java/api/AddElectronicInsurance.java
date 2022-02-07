@@ -2,6 +2,7 @@ package api;
 
 
 
+import data.LoadProperties;
 import io.restassured.RestAssured;
 import io.restassured.config.EncoderConfig;
 import io.restassured.path.xml.XmlPath;
@@ -30,7 +31,7 @@ public class AddElectronicInsurance {
             .relaxedHTTPSValidation().headers(headersMap)
             .body(payload)
             .when()
-            .post("https://test12c:7783/traffic/services/TrafficElectronicInsuranceService");
+            .post(LoadProperties.userData.getProperty("Electronic_Insurance"));
 
         Assert.assertEquals(getElectronicInsuranceResponse.statusCode(),200);
         XmlPath xml = new XmlPath(getElectronicInsuranceResponse.asString());

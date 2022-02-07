@@ -2,6 +2,7 @@ package api;
 
 import com.shaft.api.RequestBuilder;
 import com.shaft.api.RestActions;
+import data.LoadProperties;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.simple.JSONObject;
@@ -36,7 +37,7 @@ public class DeclareVehicleAPI {
               .and().auth().preemptive().basic("FUTAIM_NEW_VEHILCE_DEALER", "mrxT1Xj3RFDo9LOfJkRP9A==")
               .body(jsonObjectx)
               .when()
-              .post("https://vlsgw.external.apps.qa.licensing.rta.ae/external/buynewvehicle/api/application/vehicle/declare")
+              .post(LoadProperties.userData.getProperty("Declare_Vehicle"))
               .then()
               .extract().response();
 

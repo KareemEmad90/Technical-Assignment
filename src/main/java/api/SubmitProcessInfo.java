@@ -30,7 +30,7 @@ public class SubmitProcessInfo extends BaseApi{
         System.out.println("submitPrcessInfoReq "+submitPrcessInfoReq);
         System.out.println("processInfoObject "+processInfoObject);
 
-        response = RestActions.buildNewRequest("https://vlsgw.external.qa.rta.ae/external/vehiclerenewaljourney/api/vehicle-renewal" , submitProcessInfoEndpoint, RestActions.RequestType.POST)
+        response = RestActions.buildNewRequest(LoadProperties.userData.getProperty("VLS_Vehicle_Renewal") , submitProcessInfoEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(submitPrcessInfoReq)
                 .setContentType(ContentType.JSON)
                 .addHeader("rta-unified-number",rtaUnifiedNumber)

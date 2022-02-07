@@ -67,7 +67,7 @@ public class SubmitInspectionResult extends BaseApi {
         JSONParser parser = new JSONParser();
         JSONObject submitInspectionResultReq = (JSONObject) parser.parse(SubmitInspectionResultPayLoad.SubmitInspectionPayLoad(applicationReferenceNumber,chassisNumber,result));
         System.out.println("submitInspectionResultReq  >>>> "+submitInspectionResultReq);
-        response = RestActions.buildNewRequest("https://vlsgw.external.qa.rta.ae/external/vehiclerenewaljourney/api/vehicle-renewal" , submitInspectionResultEndpoint, RestActions.RequestType.POST)
+        response = RestActions.buildNewRequest(LoadProperties.userData.getProperty("VLS_Vehicle_Renewal") , submitInspectionResultEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(submitInspectionResultReq)
                 .setContentType(ContentType.JSON)
                 .addHeader("rta-unified-number",rtaUnifiedNumber)
