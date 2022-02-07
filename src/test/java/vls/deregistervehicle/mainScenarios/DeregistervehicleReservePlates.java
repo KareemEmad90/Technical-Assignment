@@ -1,7 +1,8 @@
-package vls.deregistervehicle;
+package vls.deregistervehicle.mainScenarios;
 
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
+import com.shaft.validation.Assertions;
 import data.DbQueries;
 import data.LoadProperties;
 import io.qameta.allure.Step;
@@ -16,6 +17,7 @@ import pages.vls.SelectVehicle;
 import pages.vls.PaymentPage;
 import utils.DateFormatter;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
@@ -29,7 +31,7 @@ public class DeregistervehicleReservePlates {  DbQueries dbQueries = new DbQueri
 
     @Step("DeRegester Vehicle Test case")
     @Test
-    public void deregistervehicleTestCase() throws ParseException {
+    public void deregistervehicleTestCase() throws ParseException, SQLException, ClassNotFoundException {
         DxLogin dxLogin = new DxLogin(driver);
         dxLogin.fillUserEIDInfo(eidNUMBER.substring(3), DateFormatter.dateFormat(eidExpiryDate));
         dxLogin.verifyOTP("correct");
@@ -41,22 +43,24 @@ public class DeregistervehicleReservePlates {  DbQueries dbQueries = new DbQueri
 
         PaymentPage paymentPage = new PaymentPage(driver);
         paymentPage.clickOnPayNowForDeregister();
-        //paymentPage.checkTotalAmount("350");
-        // Assertions.assertEquals("550",paymentPage.getResult(),"380");
-        //paymentPage.payment();
+       // paymentPage.checkTotalAmount("350");
+       // Assertions.assertEquals("550",paymentPage.getResult(),"380");
+        paymentPage.payUsingRms();
+        System.out.println("Done");
+
     }
 
     @BeforeTest()
     public void beforeMethod() {
-       // String[] vehicle = dbQueries.getVehicleNotMortgaged("false");
-//        eidNUMBER = vehicle[2];
-//        chassisNo = vehicle[0];
-//        rtaUnifiedNumber = vehicle[1];
-//        eidExpiryDate  = vehicle[7];
-        eidNUMBER = "784198520761689";
-        chassisNo = "2C3CDZAG4JH276362";
-        rtaUnifiedNumber = "12595017";
-        eidExpiryDate  = "2022-01-23";
+        String[] vehicle = dbQueries.getVehicleNotMortgaged("false");
+        eidNUMBER = vehicle[2];
+       chassisNo = vehicle[0];
+       rtaUnifiedNumber = vehicle[1];
+       eidExpiryDate  = vehicle[8];
+     //   eidNUMBER = "784198520761689";
+     //   chassisNo = "2C3CDZAG4JH276362";
+     //   rtaUnifiedNumber = "12595017";
+      //  eidExpiryDate  = "2022-01-23";
         dbQueries.resetviloation(rtaUnifiedNumber, chassisNo);
 
         ChromeOptions options = new ChromeOptions();

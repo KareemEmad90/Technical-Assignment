@@ -5,14 +5,19 @@ import com.shaft.api.RestActions;
 import data.LoadProperties;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import payLoads.renewalAPIPayLoads.SubmitInspectionResultPayLoad;
 
 public class SubmitInspectionResult extends BaseApi {
     private String submitInspectionResultEndpoint = "/submit-inspection-result";
-
-    public Response submitInspectionResult(String applicationReferenceNumber, String rtaUnifiedNumber, String chassisNumber, String result) {
+    static Logger log = Logger.getLogger(SubmitInspectionResult.class.getName());
+    public Response submitInspectionResult(String applicationReferenceNumber, String rtaUnifiedNumber, String chassisNumber, String result) throws ParseException {
         Response response;
+        /*
         JSONObject submitInspectionResultReq = new JSONObject();
         JSONObject vehicleSpecsObject = new JSONObject();
         JSONObject originName = new JSONObject();
@@ -58,13 +63,18 @@ public class SubmitInspectionResult extends BaseApi {
         submitInspectionResultReq.put("inspectionInfo", inspectionInfoObject);
 
 
-
-        response = RestActions.buildNewRequest("http://vlsgw.external.apps.qa.licensing.rta.ae/external/vehiclerenewaljourney/api/vehicle-renewal" , submitInspectionResultEndpoint, RestActions.RequestType.POST)
+         */
+        JSONParser parser = new JSONParser();
+        JSONObject submitInspectionResultReq = (JSONObject) parser.parse(SubmitInspectionResultPayLoad.SubmitInspectionPayLoad(applicationReferenceNumber,chassisNumber,result));
+        System.out.println("submitInspectionResultReq  >>>> "+submitInspectionResultReq);
+        response = RestActions.buildNewRequest(LoadProperties.userData.getProperty("VLS_Vehicle_Renewal") , submitInspectionResultEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(submitInspectionResultReq)
                 .setContentType(ContentType.JSON)
                 .addHeader("rta-unified-number",rtaUnifiedNumber)
-                .setAuthentication("CIS_USER","lVzBSZ2S/oGkN6WYbe+QhA==", RequestBuilder.AuthenticationType.BASIC)
+                .setAuthentication(LoadProperties.userData.getProperty("CIS_UserName"),LoadProperties.userData.getProperty("CIS_Password"), RequestBuilder.AuthenticationType.BASIC)
                 .performRequest();
+
+        log.info("SubmitInspectionResult Response is >> "+response.getBody().prettyPrint());
         return response;
     }
 }

@@ -7,6 +7,7 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeTest;
@@ -42,7 +43,7 @@ public class CheckVehicleBlocker {
     }
 
     @BeforeTest()
-    public void beforeMethod() throws InterruptedException {
+    public void beforeMethod() throws InterruptedException, ParseException {
         checkEligibilityAPI = new CheckEligibilityAPI();
         String[] vehicle = dbQueries.getVehicle("VCL_ID_3");
         eidNUMBER = vehicle[2];

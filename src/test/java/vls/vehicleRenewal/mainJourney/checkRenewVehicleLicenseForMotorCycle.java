@@ -8,6 +8,7 @@ import data.DbQueries;
 import data.LoadProperties;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
@@ -17,6 +18,8 @@ import pages.vls.LoginPage;
 import pages.vls.PaymentPage;
 import pages.vls.RenewVehiclePage;
 import utils.Utils;
+
+import java.sql.SQLException;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
@@ -37,7 +40,7 @@ public class checkRenewVehicleLicenseForMotorCycle {
 
     @Step("Renewal Vehicle Test case")
     @Test
-    public void Persona31TestCase()  {
+    public void Persona31TestCase() throws SQLException, ClassNotFoundException {
         LoginPage vlsLoginPage = new LoginPage(driver);
         renewVehiclePage = new RenewVehiclePage(driver);
         utils = new Utils(driver);
@@ -54,7 +57,7 @@ public class checkRenewVehicleLicenseForMotorCycle {
     }
 
     @BeforeTest()
-    public void beforeMethod() throws InterruptedException {
+    public void beforeMethod() throws InterruptedException, ParseException {
         checkEligibilityAPI = new CheckEligibilityAPI();
         initiateRenewVehicleJourney = new InitiateRenewVehicleJourney();
         submitProcessInfo = new SubmitProcessInfo();

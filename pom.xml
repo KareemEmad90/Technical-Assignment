@@ -2,17 +2,22 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>io.github.mohabmohie</groupId>
+	<groupId>org.isoft.automation</groupId>
 	<artifactId>vls-frontend-automation</artifactId>
 	<version>5.3.20210621</version>
-	<name>trf-sddi-automation</name>
-	<description>This project includes all master test cases related to traffic SDDI .
+	<name>vls-frontend-automation</name>
+	<description>This project includes all master test cases related to VLS .
     </description>
+
+
 	<properties>
+
 		<!-- Make sure you point to the latest in-house version: https://bintray.com/mohabmohie/SHAFT/SHAFT_Engine -->
 		<shaft_engine.version>5.3.20210621</shaft_engine.version>
 	</properties>
 	<repositories>
+
+
 		<repository>
 			<id>automatest-artifactory</id>
 			<url>https://automatest.jfrog.io/artifactory/SHAFT_ENGINE</url>
@@ -21,8 +26,10 @@
 			<id>central-2</id>
 			<url>https://repo.maven.apache.org/maven2</url>
 		</repository>
+
 	</repositories>
 	<dependencies>
+
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -46,6 +53,29 @@
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.14.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.isoft.automation</groupId>
+			<artifactId>uaa-frontend-automation</artifactId>
+			<version>5.3.20210621</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.8</version>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc7</artifactId>
+			<version>12.2.0.1</version>
 		</dependency>
 
 	</dependencies>

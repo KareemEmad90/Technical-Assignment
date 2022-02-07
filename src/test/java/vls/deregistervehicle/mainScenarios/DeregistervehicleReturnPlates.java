@@ -1,4 +1,4 @@
-package vls.deregistervehicle;
+package vls.deregistervehicle.mainScenarios;
 
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
@@ -16,6 +16,7 @@ import pages.vls.SelectVehicle;
 import pages.vls.PaymentPage;
 import utils.DateFormatter;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
@@ -30,7 +31,7 @@ public class DeregistervehicleReturnPlates {
 
         @Step("DeRegester Vehicle Test case")
         @Test
-        public void deregistervehicleTestCase() throws ParseException {
+        public void deregistervehicleTestCase() throws ParseException, SQLException, ClassNotFoundException {
             DxLogin dxLogin = new DxLogin(driver);
             dxLogin.fillUserEIDInfo(eidNUMBER.substring(3), DateFormatter.dateFormat(eidExpiryDate));
             dxLogin.verifyOTP("correct");
@@ -44,7 +45,8 @@ public class DeregistervehicleReturnPlates {
             paymentPage.clickOnPayNowForDeregister();
             //paymentPage.checkTotalAmount("350");
            // Assertions.assertEquals("550",paymentPage.getResult(),"380");
-            //paymentPage.payment();
+            paymentPage.payUsingRms();
+            System.out.println("Done");
         }
 
         @BeforeTest()

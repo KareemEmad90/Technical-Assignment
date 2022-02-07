@@ -3,13 +3,22 @@ package pages.vls;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.element.*;
 import com.shaft.validation.*;
+import data.DbQueries;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.*;
 import utils.Utils;
+
+import java.sql.SQLException;
 
 public class PaymentPage {
     private WebDriver driver;
     public String result;
+
     Utils utils = new Utils(driver);
+
+    DbQueries dbQueries = new DbQueries();
+    String flag = dbQueries.PaymentFlag();
+    static Logger log = Logger.getLogger(PaymentPage.class.getName());
 
     By totalAmount = By.xpath("//*[@class=\'row TFooter\']/div[last()]");
     By payNowBtn = By.xpath("//div[@id='processing']//div[contains(@class,'paymentActins')]/button");
@@ -27,25 +36,47 @@ public class PaymentPage {
     By rmsPayButton = By.id("payButton");
     By sendAnyWayButton = By.id("proceed-button");
     By deregisterPayNowBtn = By.id("payNowId");
+    By renewalPayNoButton = By.xpath("//button[contains(text(),'Pay now')]");
+    By transactionNoText = By.xpath("//span[@class='heading__transactionNumber']");
+    String getRenewalTransactionNo;
 
-    public PaymentPage(WebDriver driver){
-        this.driver = driver ;
+    public PaymentPage(WebDriver driver) throws SQLException, ClassNotFoundException {
+        this.driver = driver;
     }
 
     public void clickOnPayNowForDeregister() {
         ElementActions.click(driver, deregisterPayNowBtn);
     }
 
+    public void clickOnPayNowForRenewal() {
+        ElementActions.click(driver, renewalPayNoButton);
+    }
+
+    public String getRenewalTransactionNo() {
+        ElementActions.waitForElementToBePresent(driver,transactionNoText,5,true);
+        String renewalTransactionNo = ElementActions.getText(driver, transactionNoText);
+        String[] TransactionNo = renewalTransactionNo.split("#");
+        getRenewalTransactionNo = TransactionNo[1];
+        return getRenewalTransactionNo;
+    }
+
     public void payUsingRms() {
-        BrowserActions.refreshCurrentPage(driver);
-        ElementActions.click(driver, rmsPayNow);
-        BrowserActions.refreshCurrentPage(driver);
-        ElementActions.type(driver, creditCardTextField, "4111111111111111");
-        ElementActions.type(driver, dateMonth, "10");
-        ElementActions.type(driver, dateYear, "26");
-        ElementActions.type(driver, cvvField, "123");
-        ElementActions.click(driver, rmsPayButton);
-        ElementActions.click(driver, sendAnyWayButton);
+
+        if (flag.equals("true")) {
+            System.out.println("Flag is true");
+            ElementActions.click(driver, rmsPayNow);
+            ElementActions.type(driver, creditCardTextField, "4111111111111111");
+            ElementActions.type(driver, dateMonth, "10");
+            ElementActions.type(driver, dateYear, "26");
+            ElementActions.type(driver, cvvField, "123");
+            ElementActions.click(driver, rmsPayButton);
+            ElementActions.click(driver, sendAnyWayButton);
+            System.out.println("am Here");
+        } else {
+            System.out.println("----------------Auto Payment done successfully ----------------");
+            log.info("=========================Auto Payment done successfully=======================");
+        }
+
     }
 
 
