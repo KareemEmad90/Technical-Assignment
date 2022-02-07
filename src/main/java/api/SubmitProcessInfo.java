@@ -5,12 +5,13 @@ import com.shaft.api.RestActions;
 import data.LoadProperties;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.python.antlr.ast.Str;
 
 public class SubmitProcessInfo extends BaseApi{
     private String submitProcessInfoEndpoint = "/inspection-process-info";
-
+    static Logger log = Logger.getLogger(SubmitProcessInfo.class.getName());
     public Response submitProcessInfoResponse(String applicationReferenceNo, String rtaUnifiedNumber, String processInfoCode) {
         Response response;
         JSONObject submitPrcessInfoReq = new JSONObject();
@@ -25,12 +26,18 @@ public class SubmitProcessInfo extends BaseApi{
         submitPrcessInfoReq.put("applicationRefNo", applicationReferenceNo);
         submitPrcessInfoReq.put("processInfo", processInfoObject);
 
-        response = RestActions.buildNewRequest("http://vlsgw.external.apps.qa.licensing.rta.ae/external/vehiclerenewaljourney/api/vehicle-renewal" , submitProcessInfoEndpoint, RestActions.RequestType.POST)
+
+        System.out.println("submitPrcessInfoReq "+submitPrcessInfoReq);
+        System.out.println("processInfoObject "+processInfoObject);
+
+        response = RestActions.buildNewRequest("https://vlsgw.external.qa.rta.ae/external/vehiclerenewaljourney/api/vehicle-renewal" , submitProcessInfoEndpoint, RestActions.RequestType.POST)
                 .setRequestBody(submitPrcessInfoReq)
                 .setContentType(ContentType.JSON)
                 .addHeader("rta-unified-number",rtaUnifiedNumber)
-                .setAuthentication("CIS_USER","lVzBSZ2S/oGkN6WYbe+QhA==", RequestBuilder.AuthenticationType.BASIC)
+                .setAuthentication(LoadProperties.userData.getProperty("CIS_UserName"),LoadProperties.userData.getProperty("CIS_Password"), RequestBuilder.AuthenticationType.BASIC)
                 .performRequest();
+
+        log.info("SubmitProcessInfo Response is >>> "+response.getBody().prettyPrint());
         return response;
     }
 }

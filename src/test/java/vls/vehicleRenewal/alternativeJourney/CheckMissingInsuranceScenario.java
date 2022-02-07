@@ -10,6 +10,7 @@ import io.qameta.allure.Epic;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import org.json.simple.parser.ParseException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
@@ -45,7 +46,7 @@ public class CheckMissingInsuranceScenario {
     }
 
     @BeforeTest()
-    public void beforeMethod() {
+    public void beforeMethod() throws ParseException {
         checkEligibilityAPI = new CheckEligibilityAPI();
         initiateRenewVehicleJourney = new InitiateRenewVehicleJourney();
         submitProcessInfo = new SubmitProcessInfo();

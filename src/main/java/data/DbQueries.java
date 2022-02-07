@@ -1,12 +1,15 @@
 package data;
 
 import io.qameta.allure.Step;
+import org.apache.log4j.Logger;
+import org.testng.Assert;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class DbQueries extends DBConnections{
-
+    static Logger log = Logger.getLogger(DbQueries.class.getName());
     String[] vehicle = new String[9];
     public String[] getVehicle(String Vehicle_Type) {
 
@@ -54,7 +57,6 @@ public class DbQueries extends DBConnections{
                 "                      RETURNING VARCHAR2 (200)\n" +
                 "                       NULL ON ERROR)\n" +
                 "               EID_EXPIRY_DATE\n" +
-                "\n" +
                 "                                                     --,VCL_TYPE\n" +
                 "      FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
                 "           VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
@@ -95,9 +97,7 @@ public class DbQueries extends DBConnections{
                 "                                           RETURNING VARCHAR2 (200)\n" +
                 "                                           NULL ON ERROR)\n" +
                 "                           AND STATUS NOT IN ('COMPLETED'))\n" +
-                "\n" +
                 "                          AND NOT EXISTS (SELECT 1\n" +
-                "\n" +
                 "  FROM VLS_SYNC.SYNC_INSPECTION SYIN,\n" +
                 "       TRAFFIC.TF_STP_VEHICLE_TESTS VHT\n" +
                 " WHERE VHT.ID = SYIN.ENTITY_ID\n" +
@@ -106,7 +106,6 @@ public class DbQueries extends DBConnections{
                 "                     RETURNING VARCHAR2 (200)\n" +
                 "                     NULL ON ERROR)\n" +
                 "   AND SYIN.STATUS <> 'SYNCED_TO_DESTINATION'\n" +
-                "\n" +
                 ")\n" +
                 "AND NOT EXISTS (SELECT 1\n" +
                 "\n" +
@@ -143,9 +142,6 @@ public class DbQueries extends DBConnections{
                 "   AND SYMO.SOURCE_TABLE = 'MORTGAGE'\n" +
                 "   AND SYMO.STATUS <> 'SYNCED_TO_DESTINATION'\n" +
                 ")\n" +
-                "\n" +
-                "\n" +
-                "\n" +
                 "           AND NOT EXISTS\n" +
                 "                   (SELECT 1\n" +
                 "                      FROM VLS_SYNC.SYNC_VEHICLE    SYVE,\n" +
@@ -183,9 +179,6 @@ public class DbQueries extends DBConnections{
                 "                                   NULL ON ERROR)\n" +
                 "                           AND SYMO.SOURCE_TABLE = 'RELEASE_MORTGAGE'\n" +
                 "                           AND SYMO.STATUS <> 'SYNCED_TO_DESTINATION')\n" +
-                "\n" +
-                "\n" +
-                "\n" +
                 "/*Fetch first 1 rows only;*/\n" +
                 " AND ROWNUM < 2");
 
@@ -206,7 +199,12 @@ public class DbQueries extends DBConnections{
                 "  --- PLATE No = " + vehicle[4] + "  --- Plate Code = " + vehicle[5]+ "  --- RTA ID = " + vehicle[6]+ " --- EID ExpiryDate = " + vehicle[7]);
         return vehicle;
     }
-
+    public String PaymentFlag() throws SQLException, ClassNotFoundException {
+        setConnection();
+        ResultSet result  = databaseActions.executeSelectQuery("select value from TF_STP_TRAFFIC_PROPERTIES where property = 'ae.rta.deg.payment.active'");
+        String payFlag = result.getString(1);
+        return payFlag;
+    }
 
     public String[] getVehicleNotMortgaged(String mortgageStatus) {
 
@@ -259,9 +257,9 @@ public class DbQueries extends DBConnections{
     }
 
     @Step("Update Vehicle License Expiry Date")
-    public void updatelicenseexpirydate(String ChassisNo, String numberofdays) {
+    public void updatelicenseexpirydate(String ChassisNo, String numberOfDays) {
           setConnection();
-        databaseActions.executeUpdateQuery("BEGIN QC_USERS.UPDATE_VEHICLE_EXPIRYDATE ('"+ChassisNo+"', '"+numberofdays+"');END;");
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.UPDATE_VEHICLE_EXPIRYDATE ('"+ChassisNo+"', '"+numberOfDays+"');END;");
     }
 
     @Step("Update Vehicle License Future Expiry Date")
@@ -304,9 +302,9 @@ public class DbQueries extends DBConnections{
     }
 
     @Step("ADD Payable Dubai , AbuDhabi And Parking Fines")
-    public void addUAEAndGCCFines(String traffic_no, String ChassisNo) {
+    public void addUAEAndGCCANDSALIKFines(String traffic_no, String ChassisNo) {
         setConnection();
-        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,2,1,1,1,1,1,1,2,2,1,1,1,1,1,1,1,1,1,1,2,2,2);END;");
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_ADD_FINES(" + traffic_no + ",'" + ChassisNo + "',2,1,1,1,1,1,1,1,2,1,1,1,1,1,2,1,1,1,1,1,2,1,2);END;");
     }
 
     @Step("ADD Payable And Salik Fines")
@@ -714,4 +712,202 @@ public class DbQueries extends DBConnections{
         return vehicle;
     }
 
+
+    public ArrayList<String>  getVehicleBasedOnExcel(String VehicleWeightFrom, String VehicleWeightTo ,
+                                                     String vehicleClassCode , String mortgageStatus ) throws SQLException {
+        ArrayList<String> getValueFromDb = new ArrayList<>();
+        String dbQuery= "SELECT JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                                   '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                   RETURNING VARCHAR2 (200)\n" +
+                "                                   NULL ON ERROR)\n" +
+                "                          CHASSIS_NO,\n" +
+                "                       JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                                   '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                                   RETURNING NUMBER (15, 0)\n" +
+                "                                       NULL ON ERROR)\n" +
+                "                               RTA_UNIFIED_NO,\n" +
+                "                           JSON_VALUE (PROFILE_DOCUMENT,\n" +
+                "                                       '$.customerInfo.categoryInfo.eidNumber'\n" +
+                "                                       RETURNING NUMBER (15, 0)\n" +
+                "                                       NULL ON ERROR)\n" +
+                "                               EID_NUMBER,\n" +
+                "                           JSON_VALUE (VELI.PRODUCT_DOCUMENT,\n" +
+                "                                       '$.vehicleLicenseInfo.expiryDate'\n" +
+                "                                       RETURNING VARCHAR2 (200)\n" +
+                "                                       NULL ON ERROR)\n" +
+                "                               EXPIRY_DATE,\n" +
+                "                           JSON_VALUE (\n" +
+                "                               VELI.PRODUCT_DOCUMENT,\n" +
+                "                               '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber'\n" +
+                "                               RETURNING VARCHAR2 (200)\n" +
+                "                               NULL ON ERROR)\n" +
+                "                               PLATE_NO,\n" +
+                "                           JSON_VALUE (\n" +
+                "                               VELI.PRODUCT_DOCUMENT,\n" +
+                "                               '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code'\n" +
+                "                               RETURNING VARCHAR2 (200)\n" +
+                "                               NULL ON ERROR)\n" +
+                "                               Code,\n" +
+                "                          JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                                      '$.customerInfo.categoryInfo.eidExpiryDate'\n" +
+                "                                      RETURNING VARCHAR2 (200)\n" +
+                "                                       NULL ON ERROR)\n" +
+                "                               EID_EXPIRY_DATE\n" +
+                "                      FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "                           VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
+                "                           VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
+                "                     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                                           '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                                           RETURNING NUMBER (15, 0)\n" +
+                "                                           NULL ON ERROR) =\n" +
+                "                               JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                                           '$.customerInfo.rtaUnifiedNo'\n" +
+                "                                           RETURNING NUMBER (15, 0)\n" +
+                "                                           NULL ON ERROR)\n" +
+                "                           AND JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                                           '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                           RETURNING VARCHAR2 (200)\n" +
+                "                                           NULL ON ERROR) =\n" +
+                "                               JSON_VALUE (\n" +
+                "                                   VELI.PRODUCT_DOCUMENT,\n" +
+                "                                   '$.vehicleLicenseInfo.vehicleSummaryInfo.chassisNumber'\n" +
+                "                                   RETURNING VARCHAR2 (200)\n" +
+                "                                   NULL ON ERROR)\n" +
+                "                           AND (JSON_VALUE(VELI.PRODUCT_DOCUMENT  , '$.vehicleLicenseInfo.vehicleSummaryInfo.emptyWeight' RETURNING VARCHAR2(200) NULL ON ERROR)) between "+VehicleWeightFrom+" and "+VehicleWeightTo+"\n" +
+                "                           AND JSON_VALUE(VELI.PRODUCT_DOCUMENT  , '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code' RETURNING VARCHAR2(200) NULL ON ERROR) = '"+vehicleClassCode+"'\n" +
+                "                           AND JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.mortgage' RETURNING VARCHAR2(200) NULL ON ERROR) = '"+mortgageStatus+"'\n" +
+                "                           AND TO_DATE (JSON_value (VELI.PRODUCT_DOCUMENT,\n" +
+                "                                                    '$.vehicleLicenseInfo.expiryDate'\n" +
+                "                                                    RETURNING VARCHAR2 (200)\n" +
+                "                                                    NULL ON ERROR),\n" +
+                "                                        'yyyy-mm-dd') < SYSDATE\n" +
+                "                           AND NOT EXISTS\n" +
+                "                                   (SELECT 1\n" +
+                "                                      FROM VLS_RENEW_VEHICLE.TRN_APPLICATION TRN\n" +
+                "                                     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                                                           '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                                                           RETURNING NUMBER (15, 0)\n" +
+                "                                                           NULL ON ERROR) =\n" +
+                "                                               JSON_VALUE (TRN.CUSTOMER_INFO,\n" +
+                "                                                           '$.rtaUnifiedNo'\n" +
+                "                                                           RETURNING VARCHAR2 (200)\n" +
+                "                                                           NULL ON ERROR)\n" +
+                "                                           AND STATUS NOT IN ('COMPLETED'))\n" +
+                "                                          AND NOT EXISTS (SELECT 1\n" +
+                "                  FROM VLS_SYNC.SYNC_INSPECTION SYIN,\n" +
+                "                       TRAFFIC.TF_STP_VEHICLE_TESTS VHT\n" +
+                "                 WHERE VHT.ID = SYIN.ENTITY_ID\n" +
+                "                   AND VHT.CHASISS_NO =  JSON_VALUE (VEHE.PRODUCT_DOCUMENT ,\n" +
+                "                                     '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                     RETURNING VARCHAR2 (200)\n" +
+                "                                     NULL ON ERROR)\n" +
+                "                   AND SYIN.STATUS <> 'SYNCED_TO_DESTINATION'\n" +
+                "                )\n" +
+                "                AND NOT EXISTS (SELECT 1\n" +
+                "                  FROM VLS_SYNC.SYNC_INSURANCE_POLICY SYIP,\n" +
+                "                       TRAFFIC.TF_VHL_ELECTRONIC_INSURANCES EIR\n" +
+                "                 WHERE EIR.ID = SYIP.ENTITY_ID\n" +
+                "                   AND EIR.CHASISS_NO = JSON_VALUE (VEHE.PRODUCT_DOCUMENT ,\n" +
+                "                                     '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                     RETURNING VARCHAR2 (200)\n" +
+                "                                     NULL ON ERROR)\n" +
+                "                   AND SYIP.STATUS <> 'SYNCED_TO_DESTINATION')\n" +
+                "                   AND NOT EXISTS ( SELECT 1\n" +
+                "                  FROM VLS_SYNC.SYNC_MORTGAGE SYMO,\n" +
+                "                       TRAFFIC.TF_VHL_BOOKLETS BKT\n" +
+                "                 WHERE BKT.ID = SYMO.ENTITY_ID\n" +
+                "                   AND BKT.CHASISS_NO = JSON_VALUE (VEHE.PRODUCT_DOCUMENT ,\n" +
+                "                                     '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                     RETURNING VARCHAR2 (200)\n" +
+                "                                     NULL ON ERROR)\n" +
+                "                   AND SYMO.SOURCE_TABLE = 'BOOKLET'\n" +
+                "                   AND SYMO.STATUS <> 'SYNCED_TO_DESTINATION'\n" +
+                "                )\n" +
+                "                 AND NOT EXISTS ( SELECT 1\n" +
+                "                  FROM VLS_SYNC.SYNC_MORTGAGE SYMO,\n" +
+                "                       TRAFFIC.TF_VHL_ELECTRONIC_MORTGAGES VEM\n" +
+                "                 WHERE VEM.ID = SYMO.ENTITY_ID\n" +
+                "                   AND VEM.CHASSIS_Number = JSON_VALUE (VEHE.PRODUCT_DOCUMENT ,\n" +
+                "                                     '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                     RETURNING VARCHAR2 (200)\n" +
+                "                                     NULL ON ERROR)\n" +
+                "                   AND SYMO.SOURCE_TABLE = 'MORTGAGE'\n" +
+                "                   AND SYMO.STATUS <> 'SYNCED_TO_DESTINATION') \n" +
+                "                                             AND NOT EXISTS\n" +
+                "                                   (SELECT 1\n" +
+                "                                      FROM VLS_SYNC.SYNC_VEHICLE    SYVE,\n" +
+                "                                           TRAFFIC.TF_VHL_VEHICLES  VLE\n" +
+                "                                     WHERE     VLE.ID = SYVE.ENTITY_ID\n" +
+                "                                           AND VLE.CHASISS_NO =\n" +
+                "                                               JSON_VALUE (\n" +
+                "                                                   VEHE.PRODUCT_DOCUMENT,\n" +
+                "                                                   '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                                   RETURNING VARCHAR2 (200)\n" +
+                "                                                   NULL ON ERROR)\n" +
+                "                                           AND SYVE.STATUS <> 'SYNCED_TO_DESTINATION')\n" +
+                "                           AND NOT EXISTS\n" +
+                "                                   (SELECT 1\n" +
+                "                                      FROM VLS_SYNC.SYNC_VEHICLE_LICENSE  SYVL,\n" +
+                "                                           TRAFFIC.TF_VHL_BOOKLETS        BKT\n" +
+                "                                     WHERE     BKT.ID = SYVL.ENTITY_ID\n" +
+                "                                           AND BKT.CHASISS_NO =\n" +
+                "                                               JSON_VALUE (\n" +
+                "                                                   VEHE.PRODUCT_DOCUMENT,\n" +
+                "                                                   '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                                   RETURNING VARCHAR2 (200)\n" +
+                "                                                   NULL ON ERROR)\n" +
+                "                                           AND SYVL.STATUS <> 'SYNCED_TO_DESTINATION')\n" +
+                "                           AND NOT EXISTS\n" +
+                "                                   (SELECT 1\n" +
+                "                                      FROM VLS_SYNC.SYNC_MORTGAGE             SYMO,\n" +
+                "                                           TRAFFIC.TF_VHL_E_MORTGAGE_RELEASE  EMR\n" +
+                "                                     WHERE     EMR.ID = SYMO.ENTITY_ID\n" +
+                "                                           AND EMR.CHASSIS_NUMBER =\n" +
+                "                                               JSON_VALUE (\n" +
+                "                                                   VEHE.PRODUCT_DOCUMENT,\n" +
+                "                                                   '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                                                   RETURNING VARCHAR2 (200)\n" +
+                "                                                   NULL ON ERROR)\n" +
+                "                                           AND SYMO.SOURCE_TABLE = 'RELEASE_MORTGAGE'\n" +
+                "                                           AND SYMO.STATUS <> 'SYNCED_TO_DESTINATION')\n" +
+                "                /*Fetch first 1 rows only;*/\n" +
+                "                 AND ROWNUM < 2";
+
+        System.out.println("dbQuery  " +dbQuery);
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery(dbQuery);
+        result.beforeFirst();
+        while (result.next()) {
+            String CHASSIS_NO = result.getString("CHASSIS_NO");
+            String RTA_UNIFIED_NO = result.getString("RTA_UNIFIED_NO");
+            String EID_NUMBER = result.getString("EID_NUMBER");
+            String VEHICLE_EXPIRY_DATE = result.getString("EXPIRY_DATE");
+            String PLATE_NO = result.getString("PLATE_NO");
+            String PLATE_CODE = result.getString("CODE");
+            String EID_EXPIRY_DATE = result.getString("EID_EXPIRY_DATE");
+
+            getValueFromDb.add(CHASSIS_NO);
+            getValueFromDb.add(RTA_UNIFIED_NO);
+            getValueFromDb.add(EID_NUMBER);
+            getValueFromDb.add(VEHICLE_EXPIRY_DATE);
+            getValueFromDb.add(PLATE_NO);
+            getValueFromDb.add(PLATE_CODE);
+            getValueFromDb.add(EID_EXPIRY_DATE);
+        }
+
+        return getValueFromDb;
+    }
+
+    public void verifyTransaction(String tnxNo, String ServiceName) throws ClassNotFoundException, SQLException, InterruptedException {
+        setConnection();
+        ResultSet result =databaseActions.executeSelectQuery("Select status from traffic.TF_STP_TRANSACTIONS where id=" + tnxNo + " and status=3");
+        result.beforeFirst();
+        while (result.next()) {
+            String status = result.getString("status");
+            int intStatus=Integer.parseInt(status);
+            Assert.assertEquals(3,intStatus);
+            log.info("========== Transaction :"+tnxNo+ " With Status :"+intStatus+" For "+ServiceName+ " Service Has Been Confirmed ============= ");
+        }
+
+    }
 }

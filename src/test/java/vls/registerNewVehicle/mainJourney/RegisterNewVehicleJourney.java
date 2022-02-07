@@ -72,7 +72,7 @@ public class RegisterNewVehicleJourney {
 
             if (hasUAEAndGCCFines.equals("true")) {
                 //need to add chassis details
-                dbQueries.addUAEAndGCCFines(rtaUnifiedNumber, chassisNo);
+                dbQueries.addUAEAndGCCANDSALIKFines(rtaUnifiedNumber, chassisNo);
             }
 
             if (hasUAEFines.equals("true")) {
