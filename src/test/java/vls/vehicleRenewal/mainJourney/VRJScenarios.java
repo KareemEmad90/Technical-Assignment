@@ -17,6 +17,7 @@ import org.testng.ITestContext;
 import org.testng.SkipException;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pages.common.ChromeCertificatePage;
 import pages.vls.LoginPage;
 import pages.vls.PaymentPage;
 import pages.vls.RenewVehiclePage;
@@ -127,14 +128,27 @@ public class VRJScenarios {
         options.addArguments("incognito");
         driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("VLSURL"));
+
         LoginPage vlsLoginPage = new LoginPage(driver);
-        PaymentPage paymentPage = new PaymentPage(driver);
 
         vlsLoginPage.login(eidNUMBER);
+
+        PaymentPage paymentPage= new PaymentPage(driver);
         paymentPage.clickOnPayNowForRenewal();
+
+        ChromeCertificatePage ChromeCertificatePage = new ChromeCertificatePage(driver);
+        ChromeCertificatePage.skipUnsafePage();
+
         String getRenewalTransactionNo = paymentPage.getRenewalTransactionNo();
+
+        System.out.println("Transaction No For  "+ TextCaseNo + "  "+getRenewalTransactionNo);
+        log.info("Transaction No For  "+ TextCaseNo + "  "+getRenewalTransactionNo);
+
         paymentPage.payUsingRms();
+        vlsLoginPage.bounceWait();
+        RenewVehiclePage  renewVehiclePage= new RenewVehiclePage(driver);
         dbQueries.verifyTransaction(getRenewalTransactionNo, getClass().getSimpleName());
+        renewVehiclePage.verifyConfirmationRenewalPage();
 
     }
 

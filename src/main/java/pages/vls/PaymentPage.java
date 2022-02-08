@@ -64,13 +64,13 @@ public class PaymentPage {
 
         if (flag.equals("true")) {
             System.out.println("Flag is true");
-            ElementActions.click(driver, rmsPayNow);
+          //  ElementActions.click(driver, rmsPayNow);
             ElementActions.type(driver, creditCardTextField, "4111111111111111");
             ElementActions.type(driver, dateMonth, "10");
             ElementActions.type(driver, dateYear, "26");
             ElementActions.type(driver, cvvField, "123");
             ElementActions.click(driver, rmsPayButton);
-            ElementActions.click(driver, sendAnyWayButton);
+          //  ElementActions.click(driver, sendAnyWayButton);
             System.out.println("am Here");
         } else {
             System.out.println("----------------Auto Payment done successfully ----------------");
