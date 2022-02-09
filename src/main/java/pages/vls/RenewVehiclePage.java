@@ -5,7 +5,6 @@ import com.shaft.validation.Assertions;
 import com.shaft.validation.Verifications;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.python.antlr.ast.Str;
 
 public class RenewVehiclePage {
     private WebDriver driver ;
@@ -62,7 +61,7 @@ public class RenewVehiclePage {
     }
 
     public void verifyConfirmationRenewalPage() {
-        ElementActions.waitForElementToBePresent(driver,viewInspectionReport,5,true);
+
        ElementActions.isElementDisplayed(driver,viewInspectionReport);
         ElementActions.isElementDisplayed(driver,registrationLicense);
         ElementActions.isElementDisplayed(driver,registraionCard);
