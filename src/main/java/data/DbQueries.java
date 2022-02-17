@@ -199,6 +199,7 @@ public class DbQueries extends DBConnections{
                 "  --- PLATE No = " + vehicle[4] + "  --- Plate Code = " + vehicle[5]+ "  --- RTA ID = " + vehicle[6]+ " --- EID ExpiryDate = " + vehicle[7]);
         return vehicle;
     }
+
     public String PaymentFlag() throws SQLException, ClassNotFoundException {
         setConnection();
         ResultSet result  = databaseActions.executeSelectQuery("select value from TF_STP_TRAFFIC_PROPERTIES where property = 'ae.rta.deg.payment.active'");
@@ -910,5 +911,33 @@ public class DbQueries extends DBConnections{
             log.info("========== Transaction :"+tnxNo+ " With Status :"+intStatus+" For "+ServiceName+ " Service Has Been Confirmed ============= ");
         }
 
+    }
+    
+    
+    public void checkVehicleRenewalStatus (String applicationNo) throws SQLException {
+        
+        setConnection();
+        ResultSet result=databaseActions.executeSelectQuery("SELECT STATUS FROM VLS_RENEW_VEHICLE.TRN_APPLICATION WHERE APPLICATION_REF_NO='"+applicationNo+"'");
+        result.beforeFirst();
+        while (result.next()) {
+           String  status = result.getString("STATUS");
+            log.info("==========Application No For Vehicle Renewal : "+applicationNo+ " With Status : "+status+" ");
+            Assert.assertEquals(status,"COMPLETED");
+
+        }
+    }
+
+
+    public String  getVehicleRenewalTransactionNo (String applicationNo) throws SQLException {
+
+        setConnection();
+        String getTransactionNo=null;
+        ResultSet result=databaseActions.executeSelectQuery("SELECT TRS_ID FROM TRAFFIC.TF_TRS_DT_PAYMENT WHERE SYSTEM_TYPE = 'VLS' \n" +
+                "AND APPLICATION_REF_NO='"+applicationNo+"'");
+        result.beforeFirst();
+        while (result.next()) {
+          getTransactionNo = result.getString("TRS_ID");
+        }
+        return getTransactionNo;
     }
 }

@@ -14,7 +14,9 @@ public class LoginPage {
     public LoginPage(WebDriver driver){this.driver=driver;}
     By eidTxt = By.id("idNationalId");
     By loginBtn = By.xpath("//button[text()='Login']");
-
+    By tradeLicenseNo=By.xpath("//input[@placeholder='Trade License Number']");
+    By tradeLicenseExpiryDate=By.id("tradeLicenseExpiryDateId");
+    By tradeLicenseSource=By.xpath("//input[@placeholder='Trade License source']");
 
 
     public void login(String EID){
@@ -23,6 +25,12 @@ public class LoginPage {
     }
 
 
+    public void corpLogin(String tradeLicense,String licenseExpiryDate , String licenseSource){
+        ElementActions.type(driver,tradeLicenseNo, tradeLicense);
+        ElementActions.type(driver,tradeLicenseExpiryDate, licenseExpiryDate);
+        ElementActions.type(driver,tradeLicenseSource, licenseSource);
+        ElementActions.click(driver,loginBtn);
+    }
 
 }
 

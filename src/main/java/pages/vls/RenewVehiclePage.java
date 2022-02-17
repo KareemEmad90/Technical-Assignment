@@ -61,11 +61,15 @@ public class RenewVehiclePage {
     }
 
     public void verifyConfirmationRenewalPage() {
-
        ElementActions.isElementDisplayed(driver,viewInspectionReport);
         ElementActions.isElementDisplayed(driver,registrationLicense);
         ElementActions.isElementDisplayed(driver,registraionCard);
         ElementActions.isElementDisplayed(driver,downloadRegistrationCard);
+    }
+
+    public void verifyConfirmationFailedRenewalPage() {
+        ElementActions.isElementDisplayed(driver,viewInspectionReport);
+
     }
 
 }

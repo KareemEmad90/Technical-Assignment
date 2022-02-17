@@ -52,13 +52,6 @@ public class PaymentPage {
         ElementActions.click(driver, renewalPayNoButton);
     }
 
-    public String getRenewalTransactionNo() {
-        ElementActions.waitForElementToBePresent(driver,transactionNoText,5,true);
-        String renewalTransactionNo = ElementActions.getText(driver, transactionNoText);
-        String[] TransactionNo = renewalTransactionNo.split("#");
-        getRenewalTransactionNo = TransactionNo[1];
-        return getRenewalTransactionNo;
-    }
 
     public void payUsingRms() {
 
@@ -72,6 +65,7 @@ public class PaymentPage {
             ElementActions.click(driver, rmsPayButton);
           //  ElementActions.click(driver, sendAnyWayButton);
             System.out.println("am Here");
+
         } else {
             System.out.println("----------------Auto Payment done successfully ----------------");
             log.info("=========================Auto Payment done successfully=======================");
