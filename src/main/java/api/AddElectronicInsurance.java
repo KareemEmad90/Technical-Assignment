@@ -14,11 +14,13 @@ import static io.restassured.RestAssured.given;
 
 public class AddElectronicInsurance {
 
-    public void elecInsuranceAPI(String rtaUnifiedNo,String chassisNo,
-                                 String PlateNo,String PlateCode) {
+    public void elecInsuranceAPI(String rtaUnifiedNo,String chassisNo) {
 
         String payload = AddElectroniceInsurancePayLoad.insourancePayLoad(rtaUnifiedNo,
-                chassisNo, PlateNo, PlateCode);
+                chassisNo);
+
+
+        System.out.println(payload);
 
     Response getElectronicInsuranceResponse;
         HashMap<String, String> headersMap = new HashMap<String, String>() ;

@@ -86,7 +86,7 @@ public class RenewVehicleLicensePassedWithFines {
 // ------------------------------------------------Add Electronic Insurance-------------------------------------------------------
 
             AddElectronicInsurance addElectronicInsurance = new AddElectronicInsurance();
-            addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNo, plate_No, plate_Code);
+            addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNo);
 
 // ------------------------------------------------Check Eligibility-------------------------------------------------------
 

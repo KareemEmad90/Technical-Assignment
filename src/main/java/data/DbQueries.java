@@ -774,7 +774,7 @@ public class DbQueries extends DBConnections{
                 "                                   '$.vehicleLicenseInfo.vehicleSummaryInfo.chassisNumber'\n" +
                 "                                   RETURNING VARCHAR2 (200)\n" +
                 "                                   NULL ON ERROR)\n" +
-                "                           AND (JSON_VALUE(VELI.PRODUCT_DOCUMENT  , '$.vehicleLicenseInfo.vehicleSummaryInfo.emptyWeight' RETURNING VARCHAR2(200) NULL ON ERROR)) between "+VehicleWeightFrom+" and "+VehicleWeightTo+"\n" +
+                "                           AND (JSON_VALUE(VEHE.PRODUCT_DOCUMENT  , '$.vehicleInfo.vehicleSpecs.grossWeight' RETURNING VARCHAR2(200) NULL ON ERROR)) between "+VehicleWeightFrom+" and "+VehicleWeightTo+"\n" +
                 "                           AND JSON_VALUE(VELI.PRODUCT_DOCUMENT  , '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code' RETURNING VARCHAR2(200) NULL ON ERROR) = '"+vehicleClassCode+"'\n" +
                 "                           AND JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.mortgage' RETURNING VARCHAR2(200) NULL ON ERROR) = '"+mortgageStatus+"'\n" +
                 "                           AND VEHE.LOCKED_BY_APPLICATION_REF_NO IS NULL \n"+
@@ -875,7 +875,7 @@ public class DbQueries extends DBConnections{
                 "                /*Fetch first 1 rows only;*/\n" +
                 "                 AND ROWNUM < 2";
 
-
+        System.out.println(dbQuery);
         setConnection();
         ResultSet result = databaseActions.executeSelectQuery(dbQuery);
         result.beforeFirst();

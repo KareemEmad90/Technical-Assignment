@@ -79,6 +79,8 @@ public class RenewVehicleLicensePassed {
             plate_No = vehicle.get(4);
             plate_Code = vehicle.get(5);
 
+            System.out.println(TextCaseNo +" "+VehicleWeightFrom +" "+ VehicleWeightTo+" "+ vehicleClassCode+" "+ mortgageStatus +"  "+ ExpiredDaysCount);
+
             dbQueries.updatelicenseexpirydate(chassisNo, ExpiredDaysCount);
             dbQueries.resetviloation(rtaUnifiedNumber, chassisNo);
 
@@ -86,7 +88,7 @@ public class RenewVehicleLicensePassed {
 // ------------------------------------------------Add Electronic Insurance-------------------------------------------------------
 
             AddElectronicInsurance addElectronicInsurance = new AddElectronicInsurance();
-            addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNo, plate_No, plate_Code);
+            addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNo);
 
 // ------------------------------------------------Check Eligibility-------------------------------------------------------
 
