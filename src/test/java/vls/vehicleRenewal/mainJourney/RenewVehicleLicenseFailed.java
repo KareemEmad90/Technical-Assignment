@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
 
-public class VRJScenarios {
+public class RenewVehicleLicenseFailed {
     String chassisNo;
     String eidNUMBER;
     String rtaUnifiedNumber;
     DbQueries dbQueries = new DbQueries();
     Response declareRes;
     String ExcelfileName, sheetname = "vehicleRenewalTestData";
-    int TotalNumberOfCols = 9;
+    int TotalNumberOfCols = 7;
     ExcelReader ER = new ExcelReader();
     Boolean toRunValue = true;
     String applicationRefNumber;
@@ -53,7 +53,7 @@ public class VRJScenarios {
     String plate_No;
     String plate_Code;
     private WebDriver driver;
-    static Logger log = Logger.getLogger(VRJScenarios.class.getName());
+    static Logger log = Logger.getLogger(RenewVehicleLicenseFailed.class.getName());
 
     @DataProvider(name = "RenewVehicleDetailsExcel")
     public Object[][] vehicleData(ITestContext context) throws IOException {
@@ -64,7 +64,7 @@ public class VRJScenarios {
     @Test(dataProvider = "RenewVehicleDetailsExcel")
     public void renewVehicle(String TextCaseNo, String VehicleWeightFrom,
                              String VehicleWeightTo, String vehicleClassCode, String mortgageStatus
-            , String InspectedStatus, String ExpiredDaysCount, String hasUAEAndGCCANDSalikFines, String toRun) throws SQLException, ParseException, ClassNotFoundException, InterruptedException {
+            ,  String ExpiredDaysCount, String toRun) throws SQLException, ParseException, ClassNotFoundException, InterruptedException {
         toRunValue = Boolean.parseBoolean(toRun);
         if (toRunValue) {
             checkEligibilityAPI = new CheckEligibilityAPI();
@@ -82,14 +82,11 @@ public class VRJScenarios {
             dbQueries.updatelicenseexpirydate(chassisNo, ExpiredDaysCount);
             dbQueries.resetviloation(rtaUnifiedNumber, chassisNo);
 
-            if (hasUAEAndGCCANDSalikFines.equals("TRUE")) {
-                dbQueries.addUAEAndGCCANDSALIKFines(rtaUnifiedNumber, chassisNo);
-            }
 
 // ------------------------------------------------Add Electronic Insurance-------------------------------------------------------
 
             AddElectronicInsurance addElectronicInsurance = new AddElectronicInsurance();
-            addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNo, plate_No, plate_Code);
+            addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNo);
 
 // ------------------------------------------------Check Eligibility-------------------------------------------------------
 
@@ -114,7 +111,7 @@ public class VRJScenarios {
 
 // ------------------------------------------------Submit Inspection Result-------------------------------------------------------
 
-            submitInspectionResultResponse = submitInspectionResultAPI.submitInspectionResult(applicationRefNumber, rtaUnifiedNumber, chassisNo, InspectedStatus);
+            submitInspectionResultResponse = submitInspectionResultAPI.submitInspectionResult(applicationRefNumber, rtaUnifiedNumber, chassisNo, "FAILED");
             Assert.assertEquals(submitInspectionResultResponse.getStatusCode(), 200);
 
         } else {
@@ -122,7 +119,7 @@ public class VRJScenarios {
             throw new SkipException("Test Case No " + TextCaseNo + " For Vehicle Renewal Service Has Ignored");
         }
 
-// ------------------------------------------------ Login And Do Payment -------------------------------------------------------
+// ------------------------------------------------ VLS Login And Do Payment -------------------------------------------------------
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("incognito");
@@ -134,21 +131,25 @@ public class VRJScenarios {
         vlsLoginPage.login(eidNUMBER);
 
         PaymentPage paymentPage= new PaymentPage(driver);
+        paymentPage.checkTotalAmount("170");
         paymentPage.clickOnPayNowForRenewal();
 
         ChromeCertificatePage ChromeCertificatePage = new ChromeCertificatePage(driver);
         ChromeCertificatePage.skipUnsafePage();
-
-        String getRenewalTransactionNo = paymentPage.getRenewalTransactionNo();
-
-        System.out.println("Transaction No For  "+ TextCaseNo + "  "+getRenewalTransactionNo);
-        log.info("Transaction No For  "+ TextCaseNo + "  "+getRenewalTransactionNo);
-
         paymentPage.payUsingRms();
-        vlsLoginPage.bounceWait();
-        RenewVehiclePage  renewVehiclePage= new RenewVehiclePage(driver);
-        dbQueries.verifyTransaction(getRenewalTransactionNo, getClass().getSimpleName());
-        renewVehiclePage.verifyConfirmationRenewalPage();
+
+        renewVehiclePage= new RenewVehiclePage(driver);
+
+        renewVehiclePage.verifyConfirmationFailedRenewalPage();
+
+        String getRenewalTransactionNo=dbQueries.getVehicleRenewalTransactionNo(applicationRefNumber);
+
+        log.info("------------------------------------------------ Verify Transaction In Traffic -------------------------------------------------------");
+        dbQueries.verifyTransaction(getRenewalTransactionNo,getClass().getSimpleName());
+
+
+        log.info("------------------------------------------------ Verify Transaction In VLS -------------------------------------------------------");
+        dbQueries.checkVehicleRenewalStatus(applicationRefNumber);
 
     }
 

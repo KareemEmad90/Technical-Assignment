@@ -7,7 +7,7 @@ import java.util.Date;
 
 public class AddElectroniceInsurancePayLoad {
 
-    public static String insourancePayLoad(String rtaUnifiedNo,String chassisNo,String PlateNo,String PlateCode) {
+    public static String insourancePayLoad(String rtaUnifiedNo,String chassisNo) {
 
         Calendar cal = Calendar.getInstance();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -36,14 +36,9 @@ public class AddElectroniceInsurancePayLoad {
                 "            <urn:policyDate>"+dateFormat.format(startInsuranceDate)+"T21:19:00.000Z</urn:policyDate>\n" +
                 "            <urn:policyExpiryDate>"+dateFormat.format(dateAfterYear)+"T21:19:00.000Z</urn:policyExpiryDate>\n" +
                 "            <urn:insuranceCompanyId>64070</urn:insuranceCompanyId>\n" +
-                "            <urn:plate>\n" +
-                "               <urn:plateNo>"+PlateNo+"</urn:plateNo>\n" +
-                "               <urn:plateCategory>Private</urn:plateCategory>\n" +
-                "               <urn:plateCode>"+PlateCode+"</urn:plateCode>\n" +
-                "            </urn:plate>\n" +
                 "            <urn:chassisNo>"+chassisNo+"</urn:chassisNo>\n" +
                 "            <urn:modelYear>2018</urn:modelYear>\n" +
-                "            <urn:transactionType>204</urn:transactionType>\n" +
+                "            <urn:transactionType>201</urn:transactionType>\n" +
                 "            <urn:trafficFileNo>"+rtaUnifiedNo+"</urn:trafficFileNo>\n" +
                 "            <urn:insuranceHolderNameAr>ESAM</urn:insuranceHolderNameAr>\n" +
                 "            <urn:insuranceHolderNameEn>عصام</urn:insuranceHolderNameEn>\n" +

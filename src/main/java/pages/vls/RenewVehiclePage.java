@@ -19,6 +19,7 @@ public class RenewVehiclePage {
     private By downloadRegistrationCardButton = By.xpath("//*[@id=\"processing\"]/div/div[2]/button");
 
     private By viewInspectionReport=By.xpath("//a[contains(text(),'VIEW INSPECTION REPORT')]");
+    private By failedInspectionMessage =By.xpath("//p[contains(text(),'inspection failed')]");
     private By registrationLicense=By.xpath("//a[contains(text(),'Download Registration vehicle license document')]");
     private By registraionCard=By.xpath("//div[@class='slick-slide slick-active slick-current']");
     private By downloadRegistrationCard=By.xpath("//button[@class='pushBTNDown']");
@@ -61,11 +62,15 @@ public class RenewVehiclePage {
     }
 
     public void verifyConfirmationRenewalPage() {
-
        ElementActions.isElementDisplayed(driver,viewInspectionReport);
         ElementActions.isElementDisplayed(driver,registrationLicense);
         ElementActions.isElementDisplayed(driver,registraionCard);
         ElementActions.isElementDisplayed(driver,downloadRegistrationCard);
+    }
+
+    public void verifyConfirmationFailedRenewalPage() {
+        ElementActions.isElementDisplayed(driver,viewInspectionReport);
+        ElementActions.isElementDisplayed(driver,failedInspectionMessage);
     }
 
 }
