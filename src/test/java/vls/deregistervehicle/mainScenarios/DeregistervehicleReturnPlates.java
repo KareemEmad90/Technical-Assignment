@@ -10,7 +10,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import pages.uaa.DxLogin;
+import pages.UMS.DxLogin;
+
 import pages.vls.ReturnPlates;
 import pages.vls.SelectVehicle;
 import pages.vls.PaymentPage;
