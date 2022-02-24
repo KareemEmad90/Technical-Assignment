@@ -10,7 +10,7 @@ import org.testng.Assert;
 
 import java.util.List;
 
-public class RegisterNewVehicleForCorpPage {
+public class VehicleInfoPage {
 
     private WebDriver driver ;
     By importCertificate = By.xpath("//label[@for='importCertificate']");
@@ -19,7 +19,8 @@ public class RegisterNewVehicleForCorpPage {
     By sellPurchase = By.xpath("//label[@for='sellPurchase']");
     By dubaiCustoms = By.xpath("//label[@for='dubaiCustoms']");
     By otherEmirateCustoms = By.xpath("//label[@for='otherEmirateCustoms']");
-    By certificateVCCNumber=By.xpath("//input[@id='certificateNumberVCCId']");
+    By certificateVCCNumber=By.id("certificateNumberVCCId");
+    By chasisVCCNumber = By.id("chassisNumberVCCId");
     By continueBtn=By.xpath("//button[@class='BtnStyle']");
     By listOfUploadedDocuments=  By.xpath("//div[@class='row fixAlignmentInRow']//div[@id]");
 
@@ -30,6 +31,9 @@ public class RegisterNewVehicleForCorpPage {
     By advertised = By.id("yesAdvertising");
     By notAdvertised = By.id("noAdvertising");
     By registeredAddVhcl = By.xpath("//button[contains(@class,'additionalVehicleBTN')]");
+    By contineBtn = By.xpath("//div[@class='btnActions']/button");
+    By transferCert = By.id("transferCertificate");
+
     By proceedToIns = By.xpath("");
     By viewDtlsBtns = By.xpath("");
     By imprtCrtBtn = By.xpath("");
@@ -37,7 +41,7 @@ public class RegisterNewVehicleForCorpPage {
 
 
 
-    public RegisterNewVehicleForCorpPage(WebDriver driver) {
+    public VehicleInfoPage(WebDriver driver) {
         this.driver = driver;
     }
 
@@ -78,12 +82,29 @@ public class RegisterNewVehicleForCorpPage {
         ElementActions.waitForElementToBePresent(driver,viewDtlsBtns,2,true);
     }
 
-    public void RegNewVhcl(){
+    public void RegNewVhcl(){}
 
+    public void importCertificate(){
+        ElementActions.click(driver,imprtCrtBtn);
     }
 
+    public void importedFromDubaiCustoms(String cert){
+        ElementActions.click(driver,dubaiCustoms);
+        ElementActions.type(driver,certificateVCCNumber,cert);
+        ElementActions.click(driver,contineBtn);
+    }
 
+    public void importedFromOtherEmirate(String Chasis){
+        ElementActions.click(driver,otherEmirateCustoms);
+        ElementActions.type(driver,chasisVCCNumber,Chasis);
+        ElementActions.click(driver,contineBtn);
+    }
 
-
+    public void transferExportCert(String Chasis){
+        ElementActions.click(driver,transferExportCertificate);
+        ElementActions.click(driver,transferCert);
+        ElementActions.type(driver,chasisVCCNumber,Chasis);
+        ElementActions.click(driver,contineBtn);
+    }
 
 }
