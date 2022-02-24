@@ -26,7 +26,7 @@ public class AddInsuranceAPI {
         JSONObject jsonObject = (JSONObject) parser.parse(AddInsourancePayLoad.insourancePayLoad(rtaUnifiedNo, chassisNo));
 
         GenerateTokenApi generateTokenApi = new GenerateTokenApi();
-        String token = generateTokenApi.generateTokenResponse(eId);
+        String token = generateTokenApi.generateTokenResponse();
 
         header.put("Authorization","Bearer "+token);
         header.put("Content-Type","application/json");

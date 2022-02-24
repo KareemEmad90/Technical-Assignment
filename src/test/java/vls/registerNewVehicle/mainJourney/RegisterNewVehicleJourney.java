@@ -25,6 +25,7 @@ import org.testng.ITestContext;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import pages.common.ChromeCertificatePage;
 import pages.vls.LoginPage;
 import pages.vls.sellVehicle.RegisterNewVehicleForCorpPage;
 import utils.ChassisGeneration;
@@ -47,9 +48,11 @@ public class RegisterNewVehicleJourney {
         options.addArguments("incognito");
         driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("VLSURL"));
-
+        ChromeCertificatePage ChromeCertificatePage = new ChromeCertificatePage(driver);
+        ChromeCertificatePage.skipUnsafePage();
         LoginPage vlsLoginPage = new LoginPage(driver);
         vlsLoginPage.corpLogin("123301","2025/08/20","DED-83");
+
         RegisterNewVehicleForCorpPage register= new RegisterNewVehicleForCorpPage(driver);
         register.importCertificateDubaiCustoms();
         register.uploadDocuments();
