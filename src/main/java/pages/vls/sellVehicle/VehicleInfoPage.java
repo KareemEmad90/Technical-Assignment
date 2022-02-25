@@ -2,6 +2,7 @@ package pages.vls.sellVehicle;
 
 import com.shaft.gui.element.ElementActions;
 import data.LoadProperties;
+import io.cucumber.java.an.E;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,7 +34,9 @@ public class VehicleInfoPage {
     By registeredAddVhcl = By.xpath("//button[contains(@class,'additionalVehicleBTN')]");
     By contineBtn = By.xpath("//div[@class='btnActions']/button");
     By transferCert = By.id("transferCertificate");
-
+    By otherEmiratCert = By.xpath("//div[@class='GC_dropZoneComponent']//input");
+    By regAddVhcl = By.xpath("//div[@class='btnActions']/button");
+    By vhcList = By.id("showVehicleListId");
     By proceedToIns = By.xpath("");
     By viewDtlsBtns = By.xpath("");
     By imprtCrtBtn = By.xpath("");
@@ -104,6 +107,11 @@ public class VehicleInfoPage {
         ElementActions.click(driver,transferExportCertificate);
         ElementActions.click(driver,transferCert);
         ElementActions.type(driver,chasisVCCNumber,Chasis);
+        ElementActions.click(driver,contineBtn);
+        ElementActions.typeFileLocationForUpload(driver,otherEmiratCert,System.getProperty("user.dir") + LoadProperties.userData.getProperty("attachmentFilePngPath"));
+        ElementActions.click(driver,regAddVhcl);
+        ElementActions.waitForElementToBePresent(driver,vhcList,2,true);
+        ElementActions.click(driver,vhcList);
         ElementActions.click(driver,contineBtn);
     }
 
