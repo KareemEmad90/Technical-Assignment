@@ -257,6 +257,51 @@ public class DbQueries extends DBConnections{
         return vehicle;
     }
 
+    public String[] getTrfFileDetails() {
+
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT\n" +
+                "F_GET_TRF_NUMBER_2 (BKT1.TRF_ID)\n" +
+                "TRF_ID,\n" +
+                "CHASISS_NO,\n" +
+                "CG.RV_ABBREVIATION\n" +
+                "FROM TF_VHL_BOOKLETS BKT1,\n" +
+                "TF_STP_TRAFFIC_FILES TRF,\n" +
+                "TF_STP_ORG_REGISTRATION_INFOS INFO,\n" +
+                "CG_REF_CODES CG\n" +
+                "WHERE CHASISS_NO IN\n" +
+                "(SELECT CHASISS_NO\n" +
+                "FROM ( SELECT CHASISS_NO, COUNT (1)\n" +
+                "FROM TF_VHL_BOOKLETS\n" +
+                "WHERE BOOKLET_STATUS in( 2,4)\n" +
+                "AND LENGTH (CHASISS_NO) = 17\n" +
+                "AND ROWNUM <20000\n" +
+                "GROUP BY (CHASISS_NO)\n" +
+                "HAVING COUNT (1) =1))\n" +
+                "AND TRS_START_DATE = (SELECT MAX (TRS_START_DATE)\n" +
+                "FROM TF_VHL_BOOKLETS BKT2\n" +
+                "WHERE BKT2.CHASISS_NO = BKT1.CHASISS_NO)\n" +
+                "AND BOOKLET_STATUS in ( 2,4 )\n" +
+                "AND BKT1.TRF_ID=TRF.ID\n" +
+                "AND TRAFFIC_NO NOT LIKE '%5000%'\n" +
+                "AND INFO.ORG_ID = TRF.ORG_ID\n" +
+                "AND INFO.TL_EXPIRY_DATE >= trunc (sysdate)\n" +
+                "AND CG.RV_DOMAIN='TF_BOOKLET_STATUS'\n" +
+                "AND CG.RV_LOW_VALUE= BKT1.BOOKLET_STATUS\n" +
+                "AND TRF.ORG_ID IS NOT NULL\n" +
+                "AND ROWNUM < 2");
+
+        try {
+            vehicle[0] = result.getString(1);
+            vehicle[1] = result.getString(2);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("trf File = " + vehicle[0] + "  --- chasisno = " + vehicle[1]);
+        return vehicle;
+    }
+
     @Step("Update Vehicle License Expiry Date")
     public void updatelicenseexpirydate(String ChassisNo, String numberOfDays) {
           setConnection();
