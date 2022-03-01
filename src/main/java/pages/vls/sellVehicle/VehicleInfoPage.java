@@ -33,7 +33,7 @@ public class VehicleInfoPage {
     By notAdvertised = By.id("noAdvertising");
     By registeredAddVhcl = By.xpath("//button[contains(@class,'additionalVehicleBTN')]");
     By contineBtn = By.xpath("//div[@class='btnActions']/button");
-    By transferCert = By.id("transferCertificate");
+    By transferCert = By.xpath("//input[@id='transferCertificate']/following-sibling::label");
     By otherEmiratCert = By.xpath("//div[@class='GC_dropZoneComponent']//input");
     By regAddVhcl = By.xpath("//div[@class='btnActions']/button");
     By vhcList = By.id("showVehicleListId");

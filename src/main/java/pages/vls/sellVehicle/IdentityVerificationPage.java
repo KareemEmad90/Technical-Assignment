@@ -1,9 +1,11 @@
 package pages.vls.sellVehicle;
 
 import com.shaft.gui.element.ElementActions;
+import com.shaft.tools.support.JavaScriptHelper;
 import data.LoadProperties;
 import org.apache.xpath.operations.Bool;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 
 public class IdentityVerificationPage {
@@ -13,7 +15,7 @@ public class IdentityVerificationPage {
         this.driver = driver;
     }
 
-    By orgOwnerBtn = By.id("OrganizationOwner");
+    By orgOwnerBtn = By.xpath("//input[@id='OrganizationOwner']/following-sibling::label");
     By authOwnerBtn = By.id("AuthorizedOwner");
     By applicationRefNum = By.name("registeredMobile");
     By authIssuedBtn = By.id("yes");
@@ -22,8 +24,8 @@ public class IdentityVerificationPage {
     By orgTradeLicenseUpload = By.xpath("//div[@id='uploaderAuthorised']//input"); //id missing
     By proceedToInfo = By.xpath("//div[@class='btnActions']/button"); //id missing
 
-    private void proceedOrgOwner() {
-        ElementActions.click(driver, orgOwnerBtn);
+    private void proceedOrgOwner() throws InterruptedException {
+        ElementActions.click(driver,orgOwnerBtn);
     }
 
     private void authOwner() {
@@ -54,7 +56,7 @@ public class IdentityVerificationPage {
         ElementActions.click(driver, proceedToInfo);
     }
 
-    public void OrgOwnerFlow(String RefNumber) {
+    public void OrgOwnerFlow(String RefNumber) throws InterruptedException {
         ElementActions.waitForElementToBePresent(driver, orgOwnerBtn, 2, true);
         proceedOrgOwner();
         writeAssociateRefNUm(RefNumber);

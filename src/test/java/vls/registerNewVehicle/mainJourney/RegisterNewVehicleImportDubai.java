@@ -17,17 +17,21 @@ import pages.vls.sellVehicle.VehicleInspectionPage;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
-public class RegisterNewVehicleJourney {
+public class RegisterNewVehicleImportDubai {
 
     private WebDriver driver;
-    static Logger log = Logger.getLogger(RegisterNewVehicleJourney.class.getName());
+    static Logger log = Logger.getLogger(RegisterNewVehicleImportDubai.class.getName());
     ChromeOptions options;
     LoginPage vlsLoginPage;
     VehicleInfoPage vehicleInfoPage;
     IdentityVerificationPage identityVerificationPage;
     VehicleInspectionPage vehicleInspectionPage;
-    String AssocRefNum = "27/1/2021";
+    String AssocRefNum = "2712021";
     String chassisNum = "6T153SK10V9171004";
+    String tradeLicense = "505282";
+    String licenseExp = "2022/04/28";
+    String licenseSource = "DED-83";
+    String Certs = "27/1/2021";
 
     @BeforeMethod
     public void setup() {
@@ -41,20 +45,21 @@ public class RegisterNewVehicleJourney {
         vehicleInfoPage = new VehicleInfoPage(driver);
         identityVerificationPage = new IdentityVerificationPage(driver);
         vehicleInfoPage = new VehicleInfoPage(driver);
+        vehicleInspectionPage = new VehicleInspectionPage(driver);
     }
 
     @Step(" Vehicle Test case")
     @Test()
-    public void declareVehicleAPITestCase() throws InterruptedException {
-        vlsLoginPage.corpLogin("123301", "2025/08/20", "DED-83");
+    public void ImportDubaiCustoms() throws InterruptedException {
+        vlsLoginPage.corpLogin(tradeLicense, licenseExp, licenseSource);
         identityVerificationPage.OrgOwnerFlow(AssocRefNum);
         vehicleInfoPage.transferExportCert(chassisNum);
+        vehicleInfoPage.importedFromDubaiCustoms(Certs);
         vehicleInspectionPage.selectAvailbleAppointment();
+
 //        vehicleInfoPage.uploadDocuments();
 //        Thread.sleep(10000);
     }
-
-
 
 
 }
