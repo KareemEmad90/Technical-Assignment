@@ -985,4 +985,10 @@ public class DbQueries extends DBConnections{
         }
         return getTransactionNo;
     }
+
+    @Step("Add Vehicle Inspection From VLS Procedures")
+    public void addInspectionVls(String ChassisNo ) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN VLS_INSPECTION.P_ADD_INSPECTION('"+ChassisNo+"', 'VCL_ID_3', 'VDS_ID_2', 1500);END;");
+    }
 }
