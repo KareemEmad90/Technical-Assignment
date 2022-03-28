@@ -40,8 +40,8 @@ public class AddElectroniceInsurancePayLoad {
                 "            <urn:modelYear>2018</urn:modelYear>\n" +
                 "            <urn:transactionType>201</urn:transactionType>\n" +
                 "            <urn:trafficFileNo>"+rtaUnifiedNo+"</urn:trafficFileNo>\n" +
-                "            <urn:insuranceHolderNameAr>ESAM</urn:insuranceHolderNameAr>\n" +
-                "            <urn:insuranceHolderNameEn>عصام</urn:insuranceHolderNameEn>\n" +
+                "           <urn:insuranceHolderNameEn>Test Oriental</urn:insuranceHolderNameEn>\n" +
+                "           <urn:isCoveredFamilyEmployees>1</urn:isCoveredFamilyEmployees>\n" +
                 "            <urn:geographicCoverage>\n" +
                 "               <urn:countryCode>AE</urn:countryCode>\n" +
                 "            </urn:geographicCoverage>\n" +

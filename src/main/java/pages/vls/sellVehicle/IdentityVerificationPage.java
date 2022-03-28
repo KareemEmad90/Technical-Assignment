@@ -28,7 +28,10 @@ public class IdentityVerificationPage {
     By advertisingYes = By.xpath("//label[@for='yesAdvertising']");
     By cancelActiveJourney = By.xpath("//label[@for='no']");
     By complatelActiveJourney = By.xpath("//label[@for='yes']");
-    By continiueCancelJourney = By.xpath("//*[@id='app-view-container']/main/div/div/div/div[2]/button");
+    By continueCancelJourneyBtn = By.xpath("//*[@id='app-view-container']/main/div/div/div/div[2]/button");
+
+
+
 
     private void proceedOrgOwner() throws InterruptedException {
         ElementActions.click(driver,orgOwnerBtn);
@@ -88,17 +91,31 @@ public class IdentityVerificationPage {
 
     }
 
-    public void cancelActiveJourney(Boolean journeyStatus) throws InterruptedException {
+/*    public void cancelActiveJourney(Boolean journeyStatus) throws InterruptedException {
         if (journeyStatus) {
             ElementActions.click(driver, cancelActiveJourney);
             ElementActions.click(driver, continiueCancelJourney);
+
 
         }
         else
             ElementActions.click(driver,complatelActiveJourney);
             ElementActions.click(driver, continiueCancelJourney);
-    }
+    }*/
 
+
+
+    public void cancelActiveJourney(WebDriver driver) throws InterruptedException {
+
+        Thread.sleep(3000);
+        if (driver.getPageSource().contains("Would you like to proceed with it?")) {
+            ElementActions.click(driver, cancelActiveJourney);
+            ElementActions.click(driver, continueCancelJourneyBtn);
+        }
+        else
+            System.out.println("No Active Journey");
+
+    }
 
 
 

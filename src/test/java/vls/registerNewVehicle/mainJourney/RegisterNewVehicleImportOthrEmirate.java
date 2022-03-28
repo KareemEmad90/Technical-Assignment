@@ -1,5 +1,6 @@
 package vls.registerNewVehicle.mainJourney;
 
+import api.AddElectronicInsurance;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
 import com.shaft.validation.Assertions;
@@ -14,10 +15,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import pages.common.ChromeCertificatePage;
 import pages.vls.LoginPage;
-import pages.vls.sellVehicle.IdentityVerificationPage;
-import pages.vls.sellVehicle.VehicleInfoPage;
-import pages.vls.sellVehicle.VehicleInspectionPage;
-import pages.vls.sellVehicle.VehicleInsurancePage;
+import pages.vls.sellVehicle.*;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
@@ -30,11 +28,13 @@ public class RegisterNewVehicleImportOthrEmirate {
     IdentityVerificationPage identityVerificationPage;
     VehicleInspectionPage vehicleInspectionPage;
     VehicleInsurancePage vehicleInsurancePage;
+    VehicleNumberPlatePage VehicleNumberPlatePage;
     String AssocRefNum = "2712021";
     String chassisNum = "VLSAUTOMATION1111";
     String tradeLicense = "185217";
     String licenseExp = "2025/08/20";
     String licenseSource = "TRF-5";
+    String rtaUnifiedNumber = "50152098";
 
     @BeforeMethod
     public void setup() {
@@ -54,8 +54,13 @@ public class RegisterNewVehicleImportOthrEmirate {
 
     @BeforeTest
     public void beforeTest() {
+
         DbQueries getQueries = new DbQueries();
+        getQueries.deleteActiveInspectionFromVls(chassisNum);
         getQueries.addInspectionVls(chassisNum);
+
+        AddElectronicInsurance addElectronicInsurance = new AddElectronicInsurance();
+        addElectronicInsurance.elecInsuranceAPI(rtaUnifiedNumber, chassisNum);
 
     }
 
@@ -64,7 +69,7 @@ public class RegisterNewVehicleImportOthrEmirate {
     @Test()
     public void ImportOtherEmirate() throws InterruptedException {
         vlsLoginPage.corpLogin(tradeLicense, licenseExp, licenseSource);
-        //identityVerificationPage.cancelActiveJourney(true);
+        identityVerificationPage.cancelActiveJourney(driver);
         identityVerificationPage.authOwnerFlow();
         vehicleInfoPage.transferExportCert(chassisNum);
         vehicleInfoPage.certificatesInformationsDetails();
@@ -73,10 +78,10 @@ public class RegisterNewVehicleImportOthrEmirate {
         vehicleInfoPage.openVehiclesList();
         vehicleInfoPage.proceedWithListedVehicle();
         vehicleInfoPage.requiredNOCDocuments();
-        //vehicleInfoPage.importedFromOtherEmirate(chassisNum);
-        //vehicleInspectionPage.selectAvailbleAppointment();
-        //Assertions.assertTrue(vehicleInsurancePage.verifyChasisInsurance(chassisNum));
-//        vehicleInfoPage.uploadDocuments();
-//        Thread.sleep(10000);
+        Thread.sleep(3000);
+        VehicleNumberPlatePage selectVehiclePlatesFromRTA= new VehicleNumberPlatePage(driver);
+        selectVehiclePlatesFromRTA.selectVehiclePlatesFromRTA();
+
+
     }
 }
