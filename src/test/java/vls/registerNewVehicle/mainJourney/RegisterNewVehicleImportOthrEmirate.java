@@ -29,6 +29,7 @@ public class RegisterNewVehicleImportOthrEmirate {
     VehicleInspectionPage vehicleInspectionPage;
     VehicleInsurancePage vehicleInsurancePage;
     VehicleNumberPlatePage VehicleNumberPlatePage;
+    DbQueries getQueries = new DbQueries();
     String AssocRefNum = "2712021";
     String chassisNum = "VLSAUTOMATION1111";
     String tradeLicense = "185217";
@@ -36,26 +37,24 @@ public class RegisterNewVehicleImportOthrEmirate {
     String licenseSource = "TRF-5";
     String rtaUnifiedNumber = "50152098";
 
-    @BeforeMethod
+
+
     public void setup() {
         options = new ChromeOptions();
         options.addArguments("incognito");
         driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("VLSURL"));
         vlsLoginPage = new LoginPage(driver);
-        vehicleInfoPage = new VehicleInfoPage(driver);
-        identityVerificationPage = new IdentityVerificationPage(driver);
-        vehicleInfoPage = new VehicleInfoPage(driver);
-        vehicleInspectionPage = new VehicleInspectionPage(driver);
-        vehicleInsurancePage = new VehicleInsurancePage(driver);
 
 
     }
 
+
+
     @BeforeTest
     public void beforeTest() {
 
-        DbQueries getQueries = new DbQueries();
+
         getQueries.deleteActiveInspectionFromVls(chassisNum);
         getQueries.addInspectionVls(chassisNum);
 
@@ -68,6 +67,12 @@ public class RegisterNewVehicleImportOthrEmirate {
     @Step(" Vehicle Test case")
     @Test()
     public void ImportOtherEmirate() throws InterruptedException {
+        setup();
+        vehicleInfoPage = new VehicleInfoPage(driver);
+        identityVerificationPage = new IdentityVerificationPage(driver);
+        vehicleInfoPage = new VehicleInfoPage(driver);
+        vehicleInspectionPage = new VehicleInspectionPage(driver);
+        vehicleInsurancePage = new VehicleInsurancePage(driver);
         vlsLoginPage.corpLogin(tradeLicense, licenseExp, licenseSource);
         identityVerificationPage.cancelActiveJourney(driver);
         identityVerificationPage.authOwnerFlow();
@@ -79,8 +84,25 @@ public class RegisterNewVehicleImportOthrEmirate {
         vehicleInfoPage.proceedWithListedVehicle();
         vehicleInfoPage.requiredNOCDocuments();
         Thread.sleep(3000);
+
         VehicleNumberPlatePage selectVehiclePlatesFromRTA= new VehicleNumberPlatePage(driver);
         selectVehiclePlatesFromRTA.selectVehiclePlatesFromRTA();
+
+        SelectCenterPage selectCenter = new SelectCenterPage(driver);
+        selectCenter.selectCollectPlateCenter();
+        String getAppNumber = selectCenter.getAppRefNo();
+        getQueries.updateJourneyStatus(getAppNumber);
+
+        driver.close();
+        setup();
+        vlsLoginPage.corpLogin(tradeLicense, licenseExp, licenseSource);
+
+        identityVerificationPage.continueActiveJourney(driver);
+
+
+
+
+
 
 
     }

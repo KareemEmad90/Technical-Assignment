@@ -992,12 +992,20 @@ public class DbQueries extends DBConnections{
         databaseActions.executeUpdateQuery("BEGIN VLS_INSPECTION.P_ADD_INSPECTION('"+ChassisNo+"', 'VCL_ID_3', 'VDS_ID_2', 1500);END;");
     }
 
-    @Step("Add Vehicle Inspection From VLS Procedures")
+    @Step("Delete Active Journey")
     public void deleteActiveInspectionFromVls(String ChassisNo ) {
         setConnection();
         databaseActions.executeUpdateQuery("BEGIN\n" +
                 "DELETE FROM VLS_INSPECTION.PRD_INSPECTION\n" +
                 "where JSON_VALUE(\"PRODUCT_DOCUMENT\" FORMAT JSON , '$.vehicleSpecs.chassisNumber' RETURNING VARCHAR2(200) NULL ON ERROR) = '"+ChassisNo+"';\n" +
                 "END;");
+    }
+
+    @Step("Update Journey Status")
+    public void updateJourneyStatus(String getApplicationRefNo ) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN UPDATE VLS_BUY_NEW_VEHICLE.TRN_BASKET\n" +
+                "SET ACTIVE_PHASE = 'READY_FOR_PAYMENT'\n" +
+                "WHERE BASKET_REF_NO = '"+ getApplicationRefNo +"'END;");
     }
 }

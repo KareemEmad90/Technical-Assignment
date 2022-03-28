@@ -117,6 +117,18 @@ public class IdentityVerificationPage {
 
     }
 
+    public void continueActiveJourney(WebDriver driver) throws InterruptedException {
+
+        Thread.sleep(3000);
+        if (driver.getPageSource().contains("Would you like to proceed with it?")) {
+            ElementActions.click(driver, complatelActiveJourney);
+            ElementActions.click(driver, continueCancelJourneyBtn);
+        }
+        else
+            System.out.println("No Active Journey");
+
+    }
+
 
 
 }
