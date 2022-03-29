@@ -52,7 +52,7 @@ public class RegisterNewVehicleImportDubai {
     @Test()
     public void ImportDubaiCustoms() throws InterruptedException {
         vlsLoginPage.corpLogin(tradeLicense, licenseExp, licenseSource);
-        identityVerificationPage.OrgOwnerFlow(AssocRefNum);
+        identityVerificationPage.OrgOwnerFlow();
         vehicleInfoPage.transferExportCert(chassisNum);
         vehicleInfoPage.importedFromDubaiCustoms(Certs);
         vehicleInspectionPage.selectAvailbleAppointment();
