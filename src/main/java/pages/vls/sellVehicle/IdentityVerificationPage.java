@@ -16,16 +16,28 @@ public class IdentityVerificationPage {
     }
 
     By orgOwnerBtn = By.xpath("//input[@id='OrganizationOwner']/following-sibling::label");
-    By authOwnerBtn = By.id("AuthorizedOwner");
+    By authOwnerBtn = By.xpath("//label[@for='AuthorizedOwner']");
     By applicationRefNum = By.name("registeredMobile");
     By authIssuedBtn = By.id("yes");
     By authNotIssuedBtn = By.id("no");
     By associationRefNum = By.xpath("//div[@class='GC_infoIcon']/parent::label/following-sibling::input");   //id missing
     By orgTradeLicenseUpload = By.xpath("//div[@id='uploaderAuthorised']//input"); //id missing
     By proceedToInfo = By.xpath("//div[@class='btnActions']/button"); //id missing
+    By continueBTN = By.xpath("//*[@id=\"processing\"]/div/div/div[2]/button");
+    By advertisingNo = By.xpath("//label[@for='noAdvertising']");
+    By advertisingYes = By.xpath("//label[@for='yesAdvertising']");
+    By cancelActiveJourney = By.xpath("//label[@for='no']");
+    By complatelActiveJourney = By.xpath("//label[@for='yes']");
+    By continueCancelJourneyBtn = By.xpath("//*[@id='app-view-container']/main/div/div/div/div[2]/button");
+
+
+
 
     private void proceedOrgOwner() throws InterruptedException {
         ElementActions.click(driver,orgOwnerBtn);
+    }
+    private void clickOnContinueButton() throws InterruptedException {
+        ElementActions.click(driver,continueBTN);
     }
 
     private void authOwner() {
@@ -37,7 +49,7 @@ public class IdentityVerificationPage {
     }
 
     private void authIsIssued() {
-        ElementActions.click(driver, authIssuedBtn);
+        ElementActions.click(driver, authOwnerBtn);
     }
 
     private void authIsNotIssued() {
@@ -56,15 +68,13 @@ public class IdentityVerificationPage {
         ElementActions.click(driver, proceedToInfo);
     }
 
-    public void OrgOwnerFlow(String RefNumber) throws InterruptedException {
+    public void OrgOwnerFlow() throws InterruptedException {
         ElementActions.waitForElementToBePresent(driver, orgOwnerBtn, 2, true);
         proceedOrgOwner();
-        writeAssociateRefNUm(RefNumber);
-        proceedToInfo();
-        proceedToInfo();
+        clickOnContinueButton();
     }
 
-    public void authOwnerFlow(Boolean isIssuedByDubaiCourt, String RefNumber) {
+/*    public void authOwnerFlow(Boolean isIssuedByDubaiCourt, String RefNumber) {
         if (isIssuedByDubaiCourt) {
             authIsIssued();
             writeAssociateRefNUm(RefNumber);
@@ -73,7 +83,52 @@ public class IdentityVerificationPage {
             writeAssociateRefNUm(RefNumber);
             uploadOrgTrade();
         }
+    }*/
+
+    public void authOwnerFlow() throws InterruptedException {
+        authIsIssued();
+        clickOnContinueButton();
+
     }
+
+/*    public void cancelActiveJourney(Boolean journeyStatus) throws InterruptedException {
+        if (journeyStatus) {
+            ElementActions.click(driver, cancelActiveJourney);
+            ElementActions.click(driver, continiueCancelJourney);
+
+
+        }
+        else
+            ElementActions.click(driver,complatelActiveJourney);
+            ElementActions.click(driver, continiueCancelJourney);
+    }*/
+
+
+
+    public void cancelActiveJourney(WebDriver driver) throws InterruptedException {
+
+        Thread.sleep(3000);
+        if (driver.getPageSource().contains("Would you like to proceed with it?")) {
+            ElementActions.click(driver, cancelActiveJourney);
+            ElementActions.click(driver, continueCancelJourneyBtn);
+        }
+        else
+            System.out.println("No Active Journey");
+
+    }
+
+    public void continueActiveJourney(WebDriver driver) throws InterruptedException {
+
+        Thread.sleep(3000);
+        if (driver.getPageSource().contains("Would you like to proceed with it?")) {
+            ElementActions.click(driver, complatelActiveJourney);
+            ElementActions.click(driver, continueCancelJourneyBtn);
+        }
+        else
+            System.out.println("No Active Journey");
+
+    }
+
 
 
 }

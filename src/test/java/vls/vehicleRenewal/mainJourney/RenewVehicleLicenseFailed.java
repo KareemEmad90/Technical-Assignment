@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
+import static com.shaft.driver.DriverFactory.DriverType.*;
 
 
 public class RenewVehicleLicenseFailed {
@@ -123,7 +123,8 @@ public class RenewVehicleLicenseFailed {
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("incognito");
-        driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
+        //driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
+        driver = BrowserFactory.getBrowser(DESKTOP_FIREFOX, options);
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("VLSURL"));
 
         LoginPage vlsLoginPage = new LoginPage(driver);

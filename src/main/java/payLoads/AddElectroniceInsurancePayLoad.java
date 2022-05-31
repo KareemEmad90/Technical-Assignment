@@ -40,14 +40,14 @@ public class AddElectroniceInsurancePayLoad {
                 "            <urn:modelYear>2018</urn:modelYear>\n" +
                 "            <urn:transactionType>201</urn:transactionType>\n" +
                 "            <urn:trafficFileNo>"+rtaUnifiedNo+"</urn:trafficFileNo>\n" +
-                "            <urn:insuranceHolderNameAr>ESAM</urn:insuranceHolderNameAr>\n" +
-                "            <urn:insuranceHolderNameEn>عصام</urn:insuranceHolderNameEn>\n" +
+                "           <urn:insuranceHolderNameEn>Test Oriental</urn:insuranceHolderNameEn>\n" +
+                "           <urn:isCoveredFamilyEmployees>2</urn:isCoveredFamilyEmployees>\n" +
                 "            <urn:geographicCoverage>\n" +
                 "               <urn:countryCode>AE</urn:countryCode>\n" +
                 "            </urn:geographicCoverage>\n" +
                 "            <urn:vehicleValue>50000</urn:vehicleValue>\n" +
                 "            <urn:insuranceAmount>1500</urn:insuranceAmount>\n" +
-                "            <urn:isCoveredDriver>1</urn:isCoveredDriver>\n" +
+                "            <urn:isCoveredDriver>2</urn:isCoveredDriver>\n" +
                 "         </urn:insuranceInfo>\n" +
                 "      </urn:addVehicleInsurance>\n" +
                 "   </soapenv:Body>\n" +
