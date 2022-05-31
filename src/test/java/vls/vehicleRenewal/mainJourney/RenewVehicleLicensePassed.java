@@ -67,6 +67,7 @@ public class RenewVehicleLicensePassed {
             , String ExpiredDaysCount,  String toRun) throws SQLException, ParseException, ClassNotFoundException, InterruptedException {
         toRunValue = Boolean.parseBoolean(toRun);
         if (toRunValue) {
+            System.out.println("TRUEEEEEEEEEEEEEEE");
             checkEligibilityAPI = new CheckEligibilityAPI();
             initiateRenewVehicleJourneyAPI = new InitiateRenewVehicleJourney();
             submitInspectionResultAPI = new SubmitInspectionResult();

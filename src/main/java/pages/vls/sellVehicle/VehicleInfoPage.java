@@ -9,6 +9,8 @@ import org.openqa.selenium.WebElement;
 import org.python.modules._locale._locale;
 import org.testng.Assert;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class VehicleInfoPage {
@@ -49,8 +51,29 @@ public class VehicleInfoPage {
 
     By requiredNOCLink =By.xpath("//*[@id=\"processing\"]/div/div/div[2]/div/div/table/tbody/tr/td[4]/button");
     By submitBtn =By.xpath("//*[@id=\"processing\"]/div/div[2]/div/div[2]/button[1]");
+    By plateSourceList=By.id("plateSource");
+    By selectPlateDetails=By.xpath("//ul//li[@role='option'][1]");
+    By plateTypeList=By.id("plateType");
+    By logoList=By.id("logo");
+    By frontPlat=By.id("frontPlate");
+    By backPlate=By.id("backPlate");
+    By submitPlateBtn=By.xpath("//button[@class='BtnStyle submitAddPlateBTN']");
+
+    By selectPlateCenterTxt=By.xpath("//input[@placeholder='Search by name or location']");
+    By selectCenter=By.xpath("//li//span[contains(text(),'Shamil Qusais')]");
+
+    By applicationUnderReview=By.xpath("//div[@class='requestUnderReview']");
+    By getAppRefNo= By.xpath("//div//span[contains(text(),'RVB')]");
 
 
+    public void applicationUnderReview(){
+        ElementActions.isElementDisplayed(driver,applicationUnderReview);
+    }
+
+    public String getAppRefNo(){
+        String returnAppRefNo=ElementActions.getText(driver,getAppRefNo);
+        return returnAppRefNo;
+    }
 
     public VehicleInfoPage(WebDriver driver) {
         this.driver = driver;
@@ -70,12 +93,9 @@ public class VehicleInfoPage {
         if (elements.isEmpty()){
             Assert.fail("No Documents Found To Upload");
         }
-
         for (WebElement element:elements){
-
             element.sendKeys(System.getProperty("user.dir") + LoadProperties.userData.getProperty("attachmentFilePngPath"));
         }
-
     }
 
     public void isAdvertised(Boolean adevertisd){
@@ -93,7 +113,6 @@ public class VehicleInfoPage {
         ElementActions.waitForElementToBePresent(driver,viewDtlsBtns,2,true);
     }
 
-    public void RegNewVhcl(){}
 
     public void importCertificate(){
         ElementActions.click(driver,imprtCrtBtn);
@@ -111,22 +130,59 @@ public class VehicleInfoPage {
         ElementActions.click(driver,contineBtn);
     }
 
-    public void transferExportCert(String Chasis){
+    public void transferExportCert(String Chasiss){
         ElementActions.click(driver,transferExportCertificate);
         ElementActions.click(driver,transferCert);
-        ElementActions.type(driver,chasisVCCNumber,Chasis);
+        ElementActions.type(driver,chasisVCCNumber,Chasiss);
         ElementActions.click(driver,contineBtn);
-        ElementActions.typeFileLocationForUpload(driver,otherEmiratCert,System.getProperty("user.dir") + LoadProperties.userData.getProperty("attachmentFilePngPath"));
-/*        ElementActions.click(driver,regAddVhcl);
-        ElementActions.waitForElementToBePresent(driver,vhcList,2,true);
+        certificatesInformationsDetails();
+        isAdvertised(false);
+        uploadDocuments();
+        ElementActions.click(driver,continueBtn);
+    }
+
+    public void selectPlateDetails(){
+        ElementActions.click(driver,plateSourceList);
+        ElementActions.click(driver,selectPlateDetails);
+
+        ElementActions.click(driver,plateTypeList);
+        ElementActions.click(driver,selectPlateDetails);
+
+        ElementActions.click(driver,logoList);
+        ElementActions.click(driver,selectPlateDetails);
+
+        ElementActions.click(driver,frontPlat);
+        ElementActions.click(driver,selectPlateDetails);
+
+        ElementActions.click(driver,backPlate);
+        ElementActions.click(driver,selectPlateDetails);
+
+        ElementActions.click(driver,submitPlateBtn);
+        ElementActions.click(driver,continueBtn);
+    }
+
+    public void selectPlateCenter(){
+        ElementActions.type(driver,selectPlateCenterTxt,"Shamil Qusais");
+        ElementActions.click(driver,selectCenter);
+        ElementActions.click(driver,continueBtn);
+    }
+
+    public void showAndProceedListedVehicle(){
         ElementActions.click(driver,vhcList);
-        ElementActions.click(driver,contineBtn);*/
+        ElementActions.click(driver,continueBtn);
+
+    }
+
+    public String getCurrentDate(){
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/YYYY");
+        LocalDateTime now = LocalDateTime.now();
+        String currentDate=dtf.format(now);
+        return currentDate;
     }
 
     public void certificatesInformationsDetails(){
-
         ElementActions.type(driver,sourceRefNumberTxt,"123456");
-        ElementActions.type(driver,sourceIssueDateTxt,"01/02/2022");
+        ElementActions.type(driver,sourceIssueDateTxt,getCurrentDate());
         //ElementActions.select(driver,emirateList,"Sharjah" );
         ElementActions.click(driver,emirateList);
         ElementActions.click(driver,selectEmirates);

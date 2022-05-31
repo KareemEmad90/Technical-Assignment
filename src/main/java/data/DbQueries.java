@@ -920,7 +920,7 @@ public class DbQueries extends DBConnections{
                 "                /*Fetch first 1 rows only;*/\n" +
                 "                 AND ROWNUM < 2";
 
-        System.out.println(dbQuery);
+       // System.out.println(dbQuery);
         setConnection();
         ResultSet result = databaseActions.executeSelectQuery(dbQuery);
         result.beforeFirst();
