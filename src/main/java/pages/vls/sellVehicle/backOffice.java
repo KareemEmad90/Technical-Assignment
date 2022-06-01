@@ -48,6 +48,7 @@ public class backOffice {
             }
 
         }
+        Thread.sleep(2000);
         ElementActions.click(driver,submitApplication);
         ElementActions.click(driver,confirmSubmitApplication);
 
@@ -75,7 +76,7 @@ public class backOffice {
 
 
     public void selectApplication(String appRefNo) throws InterruptedException {
-       By selectApplication=  By.xpath("//td//div[@class='referenceCol ' and  contains(text(),'"+appRefNo+"')]");
+       By selectApplication=  By.xpath("//td//div[contains(text(),'"+appRefNo+"')]");
        ElementActions.click(driver,selectApplication);
        Thread.sleep(3000);
     }
