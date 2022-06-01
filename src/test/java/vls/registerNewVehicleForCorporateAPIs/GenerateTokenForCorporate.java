@@ -1,7 +1,7 @@
 package vls.registerNewVehicleForCorporateAPIs;
 
 
-import api.registerNewVehicleForCorporateAPIs.DocumentMatrixAPI;
+//import api.registerNewVehicleForCorporateAPIs.DocumentMatrixAPI;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
@@ -22,8 +22,8 @@ public class GenerateTokenForCorporate {
         //String Token = RestActions.getResponseJSONValue(response , "access_token");
         //System.out.println("apiToken  >>> "+Token);
 
-        DocumentMatrixAPI GetResponse = new DocumentMatrixAPI();
-        Response response=GetResponse.DocumentMatrixResponse();
+        //DocumentMatrixAPI GetResponse = new DocumentMatrixAPI();
+        //Response response=GetResponse.DocumentMatrixResponse();
 
     }
 
