@@ -1008,4 +1008,85 @@ public class DbQueries extends DBConnections{
                 "SET ACTIVE_PHASE = 'READY_FOR_PAYMENT'\n" +
                 "WHERE BASKET_REF_NO = '"+ getApplicationRefNo +"'END;");
     }
+
+    public String[] getVehiclesReadyForRenewal() {
+
+        setConnection();
+        ResultSet result = databaseActions.executeSelectQuery("SELECT JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                   '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                   RETURNING VARCHAR2 (200)\n" +
+                "                   NULL ON ERROR)\n" +
+                "          CHASSIS_NO,\n" +
+                "       JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                   '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                   RETURNING NUMBER (15, 0)\n" +
+                "                       NULL ON ERROR)\n" +
+                "               RTA_UNIFIED_NO,\n" +
+                "           JSON_VALUE (\n" +
+                "               VELI.PRODUCT_DOCUMENT,\n" +
+                "               '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateNumber'\n" +
+                "               RETURNING VARCHAR2 (200)\n" +
+                "               NULL ON ERROR)\n" +
+                "               Plate,\n" +
+                "           JSON_VALUE (\n" +
+                "               VELI.PRODUCT_DOCUMENT,\n" +
+                "               '$.vehicleLicenseInfo.plateSummaryInfo.plateNumberDetails.plateCategory.plateCode.code'\n" +
+                "               RETURNING VARCHAR2 (200)\n" +
+                "               NULL ON ERROR)\n" +
+                "               Code,\n" +
+                "               SUBSTR(JSON_VALUE(\"PROFILE_DOCUMENT\" FORMAT JSON , '$.summaryInfo.mobile' RETURNING VARCHAR2(255) NULL ON ERROR), 5,12) MOBILE\n" +
+                "      FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "           VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
+                "           VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
+                "     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                           '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                           RETURNING NUMBER (15, 0)\n" +
+                "                           NULL ON ERROR) =\n" +
+                "               JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                           '$.customerInfo.rtaUnifiedNo'\n" +
+                "                           RETURNING NUMBER (15, 0)\n" +
+                "                           NULL ON ERROR)\n" +
+                "           AND JSON_VALUE (VEHE.PRODUCT_DOCUMENT,\n" +
+                "                           '$.vehicleInfo.vehicleSpecs.chassisNumber'\n" +
+                "                           RETURNING VARCHAR2 (200)\n" +
+                "                           NULL ON ERROR) =\n" +
+                "               JSON_VALUE (\n" +
+                "                   VELI.PRODUCT_DOCUMENT,\n" +
+                "                   '$.vehicleLicenseInfo.vehicleSummaryInfo.chassisNumber'\n" +
+                "                   RETURNING VARCHAR2 (200)\n" +
+                "                   NULL ON ERROR)\n" +
+                "           --AND TO_DATE(JSON_VALUE(VELI.PRODUCT_DOCUMENT  , '$.vehicleLicenseInfo.expiryDate' RETURNING VARCHAR2(200) NULL ON ERROR),'DD-MM-YYYY') < TRUNC(SYSDATE)\n" +
+                "           --AND JSON_VALUE(VEHE.PRODUCT_DOCUMENT  , '$.vehicleInfo.vehicleSpecs.chassisNumber' RETURNING VARCHAR2(200) NULL ON ERROR) = 'JN8AY2NY3G9156793'\n" +
+                "           AND TO_DATE (JSON_value (VELI.PRODUCT_DOCUMENT,\n" +
+                "                                    '$.vehicleLicenseInfo.expiryDate'\n" +
+                "                                    RETURNING VARCHAR2 (200)\n" +
+                "                                    NULL ON ERROR),\n" +
+                "                        'yyyy-mm-dd') < SYSDATE\n" +
+                "           AND NOT EXISTS\n" +
+                "                   (SELECT 1\n" +
+                "                      FROM VLS_RENEW_VEHICLE.TRN_APPLICATION TRN\n" +
+                "                     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
+                "                                           '$.summaryInfo.rtaUnifiedNo'\n" +
+                "                                           RETURNING NUMBER (15, 0)\n" +
+                "                                           NULL ON ERROR) =\n" +
+                "                               JSON_VALUE (TRN.CUSTOMER_INFO,\n" +
+                "                                           '$.rtaUnifiedNo'\n" +
+                "                                           RETURNING VARCHAR2 (200)\n" +
+                "                                           NULL ON ERROR)\n" +
+                "                           AND STATUS NOT IN ('COMPLETED'))\n" +
+                " AND ROWNUM < 2");
+
+        try {
+            vehicle[0] = result.getString(1);
+            vehicle[1] = result.getString(2);
+            vehicle[2] = result.getString(3);
+            vehicle[3] = result.getString(4);
+            vehicle[4] = result.getString(5);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Chassis_No = " + vehicle[0] + "  --- Traffic_No = " + vehicle[1]+ "  --- Plate_Code = " + vehicle[2]+ "  --- Plate_No = " + vehicle[3]+ "  --- Mobile_No = " + vehicle[4]);
+        return vehicle;
+    }
 }
