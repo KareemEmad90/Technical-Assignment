@@ -14,6 +14,7 @@ import pages.vls.LoginPage;
 import pages.vls.sellVehicle.IdentityVerificationPage;
 import pages.vls.sellVehicle.VehicleInfoPage;
 import pages.vls.sellVehicle.VehicleInspectionPage;
+import utils.ChassisGeneration;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
@@ -27,7 +28,7 @@ public class RegisterNewVehicleImportDubai {
     IdentityVerificationPage identityVerificationPage;
     VehicleInspectionPage vehicleInspectionPage;
     String AssocRefNum = "2712021";
-    String chassisNum = "6T153SK10V9171004";
+    String chassisNum ;
     String tradeLicense = "505282";
     String licenseExp = "2022/04/28";
     String licenseSource = "DED-83";
@@ -52,7 +53,9 @@ public class RegisterNewVehicleImportDubai {
     @Test()
     public void ImportDubaiCustoms() throws InterruptedException {
         vlsLoginPage.corpLogin(tradeLicense, licenseExp, licenseSource);
-        identityVerificationPage.OrgOwnerFlow();
+        identityVerificationPage.proceedOrgOwner();
+        identityVerificationPage.clickOnContinueButton();
+        chassisNum=ChassisGeneration.ChassisNo();
         vehicleInfoPage.transferExportCert(chassisNum);
         vehicleInfoPage.importedFromDubaiCustoms(Certs);
         vehicleInspectionPage.selectAvailbleAppointment();

@@ -29,16 +29,17 @@ public class IdentityVerificationPage {
     By cancelActiveJourney = By.xpath("//label[@for='no']");
     By complatelActiveJourney = By.xpath("//label[@for='yes']");
     By continueCancelJourneyBtn = By.xpath("//*[@id='app-view-container']/main/div/div/div/div[2]/button");
+    By OrgOwner= By.xpath("//label[@for='OrganizationOwner']");
 
 
 
-
-    private void proceedOrgOwner() throws InterruptedException {
+    public void proceedOrgOwner() {
         ElementActions.click(driver,orgOwnerBtn);
     }
-    private void clickOnContinueButton() throws InterruptedException {
+    public void clickOnContinueButton(){
         ElementActions.click(driver,continueBTN);
     }
+
 
     private void authOwner() {
         ElementActions.click(driver, authOwnerBtn);

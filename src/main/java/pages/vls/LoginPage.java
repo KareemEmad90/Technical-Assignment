@@ -24,6 +24,7 @@ public class LoginPage {
     By tradeLicenseSource=By.xpath("//input[@placeholder='Trade License source']");
     By serviceDDL = By.xpath("//div[contains(@class,'GC_Dropdown')]/div");
     By selectedServiceOption = By.xpath("//div[contains(@class,'GC_Dropdown')]//div[contains(@class,'item-value')]");
+
     By serviceDDLOption(String option){return By.xpath("//li[@aria-label='"+option+"']");}
 
 
@@ -59,6 +60,8 @@ public class LoginPage {
 
 
     public void login(String EID){
+        ElementActions.click(driver,selectedServiceOption);
+        ElementActions.click(driver,serviceDDLOption("Renew Vehicle"));
         ElementActions.type(driver,eidTxt, EID);
         ElementActions.click(driver,loginBtn);
     }

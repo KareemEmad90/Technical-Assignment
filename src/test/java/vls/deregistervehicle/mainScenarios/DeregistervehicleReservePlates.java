@@ -13,7 +13,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 
-import pages.uaa.DxLogin;
+import pages.UMS.DxLogin;
 import pages.vls.ReturnPlates;
 import pages.vls.SelectVehicle;
 import pages.vls.PaymentPage;
@@ -33,7 +33,7 @@ public class DeregistervehicleReservePlates {  DbQueries dbQueries = new DbQueri
 
     @Step("DeRegester Vehicle Test case")
     @Test
-    public void deregistervehicleTestCase() throws ParseException, SQLException, ClassNotFoundException {
+    public void deregistervehicleTestCase() throws ParseException, SQLException, ClassNotFoundException, InterruptedException {
         DxLogin dxLogin = new DxLogin(driver);
         dxLogin.fillUserEIDInfo(eidNUMBER.substring(3), DateFormatter.dateFormat(eidExpiryDate));
         dxLogin.verifyOTP("correct");

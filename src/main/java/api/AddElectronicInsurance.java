@@ -19,9 +19,6 @@ public class AddElectronicInsurance {
         String payload = AddElectroniceInsurancePayLoad.insourancePayLoad(rtaUnifiedNo,
                 chassisNo);
 
-
-        System.out.println(payload);
-
     Response getElectronicInsuranceResponse;
         HashMap<String, String> headersMap = new HashMap<String, String>() ;
         headersMap.put("Content-Type","text/xml");
