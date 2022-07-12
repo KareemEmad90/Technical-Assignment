@@ -9,7 +9,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.Individual.IndividualDashboardPage;
-import pages.UMS.DashBoard;
 import pages.common.ChromeCertificatePage;
 import pages.common.OnlineLogin;
 import pages.vls.platesBox.PlateMainPage;
@@ -27,7 +26,6 @@ public class RenewReservedPlate {
     RenewPlatePage renewPlatePage;
     PlateMainPage plateMainPage;
     String trfNo="13961366";
-    String plateNo="90387";
 
     @BeforeMethod
     public void setup() {
