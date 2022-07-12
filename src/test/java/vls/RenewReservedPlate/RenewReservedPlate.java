@@ -31,7 +31,7 @@ public class RenewReservedPlate {
 
     @BeforeMethod
     public void setup() {
-        options = new ChromeOptions();
+        options = new  ChromeOptions();
         options.addArguments("incognito");
         driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("test_Login"));
