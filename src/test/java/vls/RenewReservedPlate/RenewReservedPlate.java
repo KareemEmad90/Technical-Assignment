@@ -8,6 +8,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import pages.Individual.IndividualDashboardPage;
 import pages.UMS.DashBoard;
 import pages.common.ChromeCertificatePage;
 import pages.common.OnlineLogin;
@@ -22,7 +23,7 @@ public class RenewReservedPlate {
     static Logger log = Logger.getLogger(RenewReservedPlate.class.getName());
     ChromeOptions options;
     OnlineLogin onlineLogin;
-    DashBoard dashBoard;
+    IndividualDashboardPage individualDashboardPage;
     RenewPlatePage renewPlatePage;
     PlateMainPage plateMainPage;
     String trfNo="13961366";
@@ -43,12 +44,12 @@ public class RenewReservedPlate {
 
     @Test
     public void renewReservedPlate() throws InterruptedException {
-        dashBoard= new DashBoard(driver);
+        individualDashboardPage= new IndividualDashboardPage(driver);
         plateMainPage = new PlateMainPage(driver);
         renewPlatePage= new RenewPlatePage(driver);
 
-        dashBoard.verifyBoxsDisplayed();
-        dashBoard.clickPlatesBox();
+        individualDashboardPage.verifyBoxsDisplayed();
+        individualDashboardPage.clickPlatesBox();
 
         plateMainPage.verifySwitchDisplayed();
         plateMainPage.switchOwnedOff();
