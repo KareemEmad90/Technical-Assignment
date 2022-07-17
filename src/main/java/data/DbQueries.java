@@ -58,7 +58,7 @@ public class DbQueries extends DBConnections{
                 "                       NULL ON ERROR)\n" +
                 "               EID_EXPIRY_DATE\n" +
                 "                                                     --,VCL_TYPE\n" +
-                "      FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "      FROM LS_UMS.UM_INDIVIDUAL_PROFILE             INPR,\n" +
                 "           VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
                 "           VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
                 "     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
@@ -220,7 +220,7 @@ public class DbQueries extends DBConnections{
                 "JSON_VALUE(VELI.PRODUCT_DOCUMENT FORMAT JSON , '$.vehicleLicenseInfo.vehicleSummaryInfo.class.code' RETURNING VARCHAR2(200) NULL ON ERROR) VCL_TYPE," +
                 "JSON_VALUE(\"PROFILE_DOCUMENT\" FORMAT JSON , '$.customerInfo.categoryInfo.eidExpiryDate' RETURNING VARCHAR2(200) NULL ON ERROR) EID_ExpiryDate\n" +
                 "\n" +
-                "FROM LS_UAA.UM_INDIVIDUAL_PROFILE INPR,\n" +
+                "FROM LS_UMS.UM_INDIVIDUAL_PROFILE INPR,\n" +
                 "VLS_VEHICLE.REP_VEHICLE VEHE,\n" +
                 "VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE VELI\n" +
                 "WHERE JSON_VALUE(INPR.PROFILE_DOCUMENT FORMAT JSON , '$.summaryInfo.rtaUnifiedNo' RETURNING NUMBER(15,0) NULL ON ERROR) =\n" +
@@ -333,6 +333,11 @@ public class DbQueries extends DBConnections{
     public void resetviloation(String traffic_no, String chassisNo) {
           setConnection();
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_RESET_VIOLATIONS(" + traffic_no + ", '"+chassisNo + "');END;");
+    }
+    @Step("Remove Blocker")
+    public void removeBlocker(String traffic_no) {
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_ADDING_VIOLATIONS.P_REMOVE_BLOCKER(" + traffic_no + ");END;");
     }
 
     @Step("ADD Electronic Insurance")
@@ -448,6 +453,13 @@ public class DbQueries extends DBConnections{
     public void addunpayablefines(String traffic_no, String ChassisNo) {
           setConnection();
         databaseActions.executeUpdateQuery("BEGIN QC_USERS.Add_UnPayable_Fines(" + traffic_no + ",'" + ChassisNo + "');END;");
+    }
+
+    @Step("Add Test")
+    public void addTest(String chassis) throws SQLException, ClassNotFoundException {
+
+        setConnection();
+        databaseActions.executeUpdateQuery("BEGIN QC_USERS.PKG_VHL_AUTOMTION.P_ADD_TEST(" + "'" + chassis + "'" + "); END ;");
     }
 
     @Step("ADDING_VEHICLE_CONFISCATION")
@@ -626,7 +638,7 @@ public class DbQueries extends DBConnections{
 
         ResultSet result = databaseActions.executeSelectQuery("SELECT JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') rtaUnifiedNo,\n" +
                 "       JSON_VALUE (PROFILE_DOCUMENT,'$.customerInfo.categoryInfo.eidNumber') eid\n" +
-                "  FROM LS_UAA.UM_INDIVIDUAL_PROFILE UM\n" +
+                "  FROM LS_UMS.UM_INDIVIDUAL_PROFILE UM\n" +
                 " WHERE JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.eidExpiryDate' ) "+eIdStatus+" to_char (sysdate+60,'yyyy-mm-dd')\n" +
                 " and JSON_VALUE (UM.PROFILE_DOCUMENT , '$.summaryInfo.rtaUnifiedNo') is not null\n" +
                 " AND JSON_VALUE (UM.PROFILE_DOCUMENT , '$.customerInfo.categoryInfo.category')='DXB_RESIDENT'\n" +
@@ -691,7 +703,7 @@ public class DbQueries extends DBConnections{
                 "                   NULL ON ERROR)\n" +
                 "           EID_EXPIRY_DATE\n" +
                 "  --,VCL_TYPE\n" +
-                "  FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "  FROM LS_UMS.UM_INDIVIDUAL_PROFILE             INPR,\n" +
                 "       VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
                 "       VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
                 " WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
@@ -799,7 +811,7 @@ public class DbQueries extends DBConnections{
                 "                                      RETURNING VARCHAR2 (200)\n" +
                 "                                       NULL ON ERROR)\n" +
                 "                               EID_EXPIRY_DATE\n" +
-                "                      FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "                      FROM LS_UMS.UM_INDIVIDUAL_PROFILE             INPR,\n" +
                 "                           VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
                 "                           VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
                 "                     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
@@ -1035,7 +1047,7 @@ public class DbQueries extends DBConnections{
                 "               NULL ON ERROR)\n" +
                 "               Code,\n" +
                 "               SUBSTR(JSON_VALUE(\"PROFILE_DOCUMENT\" FORMAT JSON , '$.summaryInfo.mobile' RETURNING VARCHAR2(255) NULL ON ERROR), 5,12) MOBILE\n" +
-                "      FROM LS_UAA.UM_INDIVIDUAL_PROFILE             INPR,\n" +
+                "      FROM LS_UMS.UM_INDIVIDUAL_PROFILE             INPR,\n" +
                 "           VLS_VEHICLE.REP_VEHICLE                  VEHE,\n" +
                 "           VLS_VEHICLE_LICENSE.PRD_VEHICLE_LICENSE  VELI\n" +
                 "     WHERE     JSON_VALUE (INPR.PROFILE_DOCUMENT,\n" +
