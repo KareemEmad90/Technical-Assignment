@@ -85,6 +85,7 @@ public class VehicleRenewalTest {
         vehicleNumberPlate.vehicleNumberPlatepage();
         ReviewAndPayment reviewPayment = new ReviewAndPayment(driver);
         reviewPayment.selectDigitalDelivery();
+        reviewPayment.acceptTermsAndConditions();
         reviewPayment.reviewAndPaymentPage();
         RenewalConfirmationPage renewalConfirmationPage = new RenewalConfirmationPage(driver);
         renewalConfirmationPage.downloadProducts();
