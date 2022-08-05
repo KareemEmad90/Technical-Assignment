@@ -16,7 +16,8 @@ public class ReviewAndPayment {
     By DigitalCoptBTN=By.xpath("//label[@for='digitalSelection']");
     By NextBTN=By.xpath("//button[text() = 'Next']");
     By PayNowBTN=By.xpath("//button[text() = 'Pay now']");
-    By totalAmount = By.xpath("//*[@id='processing']/div/div/div[1]/div/div[10]/div[2]");
+    By totalAmount = By.xpath("//*[@class='row TFooter']/div[2]");
+
 
 
     @Step("Select digital copy as delivery option")
