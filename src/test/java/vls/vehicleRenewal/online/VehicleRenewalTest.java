@@ -16,6 +16,7 @@ import pages.Dashboard.Corporate.CorporateDashboardPage;
 import pages.Individual.IndividualDashboardPage;
 import pages.common.ChromeCertificatePage;
 import pages.serviceDelivery.CourierDeliveryTypesPage;
+import pages.vls.RenewalConfirmationPage;
 import pages.vls.VehicleDetailsPage;
 import pages.vls.VehiclesPage;
 import pages.vls.publicVehicleRenewal.ReviewAndPayment;
@@ -85,6 +86,8 @@ public class VehicleRenewalTest {
         ReviewAndPayment reviewPayment = new ReviewAndPayment(driver);
         reviewPayment.selectDigitalDelivery();
         reviewPayment.reviewAndPaymentPage();
+        RenewalConfirmationPage renewalConfirmationPage = new RenewalConfirmationPage(driver);
+        renewalConfirmationPage.downloadProducts();
 
     }
 
