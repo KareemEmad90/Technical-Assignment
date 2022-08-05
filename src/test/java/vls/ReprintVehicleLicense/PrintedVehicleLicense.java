@@ -8,12 +8,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import pages.UMS.DxLogin;
-import pages.common.ChromeCertificatePage;
-import pages.corporate.AddOwnerOrPartnerPage;
-import pages.vls.LoginPage;
-import pages.vls.sellVehicle.IdentityVerificationPage;
-import pages.vls.sellVehicle.VehicleInfoPage;
-import pages.vls.sellVehicle.VehicleInspectionPage;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
@@ -36,7 +30,7 @@ public class PrintedVehicleLicense {
 
     @Test
     public void TestLogin() throws InterruptedException {
-        dxLogin.LoginWithEid(emiratesIDNumber,emiratesIDExpiryDate);
+      //  dxLogin.LoginWithEid(emiratesIDNumber,emiratesIDExpiryDate);
         Thread.sleep(10000);
 
     }
