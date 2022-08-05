@@ -1,4 +1,4 @@
-package vls.publicVehicleRenewalJourney;
+package vls.vehicleRenewal.publicAccess.publicVehicleRenewalJourney;
 
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
