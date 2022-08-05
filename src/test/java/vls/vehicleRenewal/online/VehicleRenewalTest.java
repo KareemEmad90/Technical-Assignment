@@ -1,11 +1,13 @@
-package vls.servicedelivery;
+package vls.vehicleRenewal.online;
 
 import api.AddElectronicInsurance;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
 import data.DbQueries;
+import data.ExcelReader;
 import data.LoadProperties;
 import org.openqa.selenium.WebDriver;
+import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.DataProvider;
@@ -16,12 +18,14 @@ import pages.common.ChromeCertificatePage;
 import pages.serviceDelivery.CourierDeliveryTypesPage;
 import pages.vls.VehicleDetailsPage;
 import pages.vls.VehiclesPage;
+import pages.vls.publicVehicleRenewal.ReviewAndPayment;
 import pages.vls.publicVehicleRenewal.VehicleInformation;
 import pages.vls.publicVehicleRenewal.VehicleNumberPlate;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
-public class ServiceDeliveryTest {
+public class VehicleRenewalTest {
     WebDriver driver;
     CorporateDashboardPage corporateDashboardPage;
     ChromeCertificatePage chromeCertificatePage;
@@ -29,32 +33,47 @@ public class ServiceDeliveryTest {
     VehiclesPage vehiclesPage ;
     VehicleDetailsPage vehicleDetailsPage ;
     CourierDeliveryTypesPage courierDeliveryTypesPage ;
-    String chassisNo,rtaUnifiedNo,eidNo,eidExpiryDate,vehicleExpiryDate,plateNo,plateCode,mobileNo,vehicleEmptyWeight,profileCategory;
+    String chassisNo,rtaUnifiedNo;
     @BeforeMethod
     public void beforeTest() throws SQLException, ClassNotFoundException {
         driver = BrowserFactory.getBrowser();
         chromeCertificatePage = new ChromeCertificatePage(driver);
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("test_Login"));
+
+
+        courierDeliveryTypesPage = new CourierDeliveryTypesPage(driver);
+    }
+
+
+    @DataProvider(name = "vehicleInfo")
+    public Object[][] vehicleData(ITestContext context) throws IOException {
+        int TotalNumberOfCols = 6;
+        ExcelReader ER = new ExcelReader();
+        String sheetName = "vehicleRenewal";
+        String excelFileName = LoadProperties.userData.getProperty("vehicleRenewal");
+        return ER.getExcelData(excelFileName, sheetName, TotalNumberOfCols);
+    }
+
+
+
+    @Test(dataProvider="vehicleInfo")
+    public void vehicleRenewalDigitalTest(String vehicle_Class,String plateCategory , String vehicleMinWeight,String vehicleMaxWeight,String mortgageStatus, String profileClassification) throws InterruptedException, SQLException, ClassNotFoundException {
+        DbQueries dbQueries = new DbQueries();
+        String[] vehicle = dbQueries.getExpiredVehicle( vehicle_Class, plateCategory ,  vehicleMinWeight, vehicleMaxWeight, mortgageStatus,  profileClassification);
+        chassisNo =vehicle[0];
+        rtaUnifiedNo=vehicle[1];
         corporateDashboardPage = new CorporateDashboardPage(driver);
         individualDashboardPage = new IndividualDashboardPage(driver);
         chromeCertificatePage.skipUnsafePage();
-
-        DbQueries dbQueries = new DbQueries();
-        String[] vehicle = dbQueries.getVehiclesReadyForRenewal();
-        String ChassisNo = "19XFB2642EE900908";//vehicle[0];
-        String TrafficCodeNumber = "10108442";//vehicle[1];
-        String  PlateNumber= vehicle[2];
-        String  PlateCode = vehicle[3];
-        String  MobileNumber = vehicle[4];
         AddElectronicInsurance insurance= new AddElectronicInsurance();
-        insurance.elecInsuranceAPI(TrafficCodeNumber,ChassisNo);
-        dbQueries.addTest(ChassisNo);
-        dbQueries.resetviloation(TrafficCodeNumber, ChassisNo);
-        dbQueries.removeBlocker(TrafficCodeNumber);
-        corporateDashboardPage.sddiLogin(TrafficCodeNumber);
+        insurance.elecInsuranceAPI(rtaUnifiedNo,chassisNo);
+        dbQueries.addTest(chassisNo);
+        dbQueries.resetviloation(rtaUnifiedNo, chassisNo);
+        dbQueries.removeBlocker(rtaUnifiedNo);
+        corporateDashboardPage.sddiLogin(rtaUnifiedNo);
         individualDashboardPage.clickVehiclesBox();
         vehiclesPage = new VehiclesPage(driver);
-        vehiclesPage.searchForVehicle(ChassisNo);
+        vehiclesPage.searchForVehicle(chassisNo);
         vehiclesPage.selectVehicle();
         vehicleDetailsPage = new VehicleDetailsPage(driver);
         vehicleDetailsPage.selectService("renew");
@@ -63,40 +82,9 @@ public class ServiceDeliveryTest {
         vehicleInformation.vehicleInformationPage();
         VehicleNumberPlate vehicleNumberPlate = new VehicleNumberPlate(driver);
         vehicleNumberPlate.vehicleNumberPlatepage();
-
-        courierDeliveryTypesPage = new CourierDeliveryTypesPage(driver);
-    }
-    @Test
-    public void premiumDeliveryTest() throws InterruptedException {
-        DbQueries dbQueries = new DbQueries();
-        String[] vehicle = dbQueries.getVehiclesReadyForRenewal();
-        chassisNo =vehicle[0];,rtaUnifiedNo,eidNo,eidExpiryDate,vehicleExpiryDate,plateNo,plateCode,mobileNo,vehicleEmptyWeight,profileCategory
-
-        courierDeliveryTypesPage.selectDeliveryType("PREMIUM");
-        /*ReviewAndPayment reviewPayment = new ReviewAndPayment(driver);
-        reviewPayment.reviewAndPaymentPage();*/
-    }
-    @Test
-    public void sameDayDeliveryTest(){
-        courierDeliveryTypesPage.selectDeliveryType("SAME_DAY");
-
-    }
-
-
-    @Test
-    public void standardDeliveryTest(){
-        courierDeliveryTypesPage.selectDeliveryType("STANDARD");
-    }
-
-    @Test
-    public void internationalDeliveryTest(){
-        courierDeliveryTypesPage.selectDeliveryType("INTERNATIONAL");
-
-    }
-
-    private void getVehicle(String vehicle_Class,String plateCategory , String vehicleMinWeight,String vehicleMaxWeight,String mortgageStatus, String profileClassification){
-        DbQueries dbQueries = new DbQueries();
-        String[] vehicle = dbQueries.getExpiredVehicle( vehicle_Class, plateCategory ,  vehicleMinWeight, vehicleMaxWeight, mortgageStatus,  profileClassification);
+        ReviewAndPayment reviewPayment = new ReviewAndPayment(driver);
+        reviewPayment.selectDigitalDelivery();
+        reviewPayment.reviewAndPaymentPage();
 
     }
 
