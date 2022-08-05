@@ -8,6 +8,7 @@ import data.LoadProperties;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import pages.Dashboard.Corporate.CorporateDashboardPage;
 import pages.Individual.IndividualDashboardPage;
@@ -28,6 +29,7 @@ public class ServiceDeliveryTest {
     VehiclesPage vehiclesPage ;
     VehicleDetailsPage vehicleDetailsPage ;
     CourierDeliveryTypesPage courierDeliveryTypesPage ;
+    String chassisNo,rtaUnifiedNo,eidNo,eidExpiryDate,vehicleExpiryDate,plateNo,plateCode,mobileNo,vehicleEmptyWeight,profileCategory;
     @BeforeMethod
     public void beforeTest() throws SQLException, ClassNotFoundException {
         driver = BrowserFactory.getBrowser();
@@ -36,6 +38,7 @@ public class ServiceDeliveryTest {
         corporateDashboardPage = new CorporateDashboardPage(driver);
         individualDashboardPage = new IndividualDashboardPage(driver);
         chromeCertificatePage.skipUnsafePage();
+
         DbQueries dbQueries = new DbQueries();
         String[] vehicle = dbQueries.getVehiclesReadyForRenewal();
         String ChassisNo = "19XFB2642EE900908";//vehicle[0];
@@ -65,6 +68,10 @@ public class ServiceDeliveryTest {
     }
     @Test
     public void premiumDeliveryTest() throws InterruptedException {
+        DbQueries dbQueries = new DbQueries();
+        String[] vehicle = dbQueries.getVehiclesReadyForRenewal();
+        chassisNo =vehicle[0];
+
         courierDeliveryTypesPage.selectDeliveryType("PREMIUM");
         /*ReviewAndPayment reviewPayment = new ReviewAndPayment(driver);
         reviewPayment.reviewAndPaymentPage();*/
@@ -87,6 +94,11 @@ public class ServiceDeliveryTest {
 
     }
 
+    private void getVehicle(String vehicle_Class,String plateCategory , String vehicleMinWeight,String vehicleMaxWeight,String mortgageStatus, String profileClassification){
+        DbQueries dbQueries = new DbQueries();
+        String[] vehicle = dbQueries.getExpiredVehicle( vehicle_Class, plateCategory ,  vehicleMinWeight, vehicleMaxWeight, mortgageStatus,  profileClassification);
+
+    }
 
 
     @AfterMethod

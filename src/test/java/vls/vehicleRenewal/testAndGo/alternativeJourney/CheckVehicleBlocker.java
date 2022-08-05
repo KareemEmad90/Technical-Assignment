@@ -1,4 +1,4 @@
-package vls.vehicleRenewal.alternativeJourney;
+package vls.vehicleRenewal.testAndGo.alternativeJourney;
 
 import api.*;
 import com.shaft.api.RestActions;
