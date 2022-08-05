@@ -1,6 +1,7 @@
 package pages.vls.publicVehicleRenewal;
 
 import com.shaft.gui.element.ElementActions;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import pages.common.ChromeCertificatePage;
@@ -18,12 +19,16 @@ public class ReviewAndPayment {
     By totalAmount = By.xpath("//*[@id='processing']/div/div/div[1]/div/div[10]/div[2]");
 
 
-
-
-    public void reviewAndPaymentPage() throws InterruptedException {
+    @Step("Select digital copy as delivery option")
+    public void selectDigitalDelivery(){
 
         ElementActions.click(driver , DigitalCoptBTN);
         ElementActions.click(driver , NextBTN);
+    }
+
+    @Step("Pay journey")
+    public void reviewAndPaymentPage() throws InterruptedException {
+
         ElementActions.waitForElementToBePresent(driver , totalAmount, 3 ,true);
         ElementActions.click(driver , PayNowBTN);
         ChromeCertificatePage ChromeCertificatePage = new ChromeCertificatePage(driver);

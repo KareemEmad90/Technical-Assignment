@@ -1,6 +1,5 @@
 package vls.publicVehicleRenewalJourney;
 
-import api.AddElectronicInsurance;
 import com.shaft.gui.browser.BrowserActions;
 import com.shaft.gui.browser.BrowserFactory;
 import data.LoadProperties;
@@ -9,17 +8,12 @@ import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import pages.common.ChromeCertificatePage;
-import pages.vls.LoginPage;
 import pages.vls.publicVehicleRenewal.IdentityVerification;
 import pages.vls.publicVehicleRenewal.ReviewAndPayment;
 import pages.vls.publicVehicleRenewal.VehicleInformation;
 import pages.vls.publicVehicleRenewal.VehicleNumberPlate;
-import pages.vls.sellVehicle.IdentityVerificationPage;
-import pages.vls.sellVehicle.VehicleInfoPage;
-import pages.vls.sellVehicle.VehicleInspectionPage;
 
 import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
 
@@ -61,6 +55,7 @@ public class RenewPrivateVehicle {
         vehicleNumberPlate.vehicleNumberPlatepage();
 
         ReviewAndPayment reviewPayment = new ReviewAndPayment(driver);
+        reviewPayment.selectDigitalDelivery();
         reviewPayment.reviewAndPaymentPage();
 
 
