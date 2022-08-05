@@ -17,6 +17,7 @@ public class ReviewAndPayment {
     By NextBTN=By.xpath("//button[text() = 'Next']");
     By PayNowBTN=By.xpath("//button[text() = 'Pay now']");
     By totalAmount = By.xpath("//*[@class='row TFooter']/div[2]");
+    By termsAndConfitions = By.xpath("//span[@class='checkmark']");
 
 
 
@@ -24,9 +25,14 @@ public class ReviewAndPayment {
     public void selectDigitalDelivery(){
 
         ElementActions.click(driver , DigitalCoptBTN);
-        ElementActions.click(driver , NextBTN);
+
     }
 
+    @Step("Accept terms and conditions")
+    public void acceptTermsAndConditions(){
+        ElementActions.click(driver,termsAndConfitions);
+        ElementActions.click(driver , NextBTN);
+    }
     @Step("Pay journey")
     public void reviewAndPaymentPage() throws InterruptedException {
 
