@@ -25,8 +25,12 @@ public class VehicleDetailsPage {
     }
     @Step("Select cancel journey ")
     public void cancelJourney(){
-        ElementActions.click(pdriver,noBtn);
-        ElementActions.click(pdriver,continueBtn);
+        boolean isJourneyExists = ElementActions.isElementDisplayed(pdriver,noBtn);
+
+        if (isJourneyExists==true) {
+            ElementActions.click(pdriver, noBtn);
+            ElementActions.click(pdriver, continueBtn);
+        }
     }
 
     public VehicleDetailsPage(WebDriver driver){
