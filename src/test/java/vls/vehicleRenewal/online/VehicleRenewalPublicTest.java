@@ -7,6 +7,7 @@ import data.DbQueries;
 import data.ExcelReader;
 import data.LoadProperties;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.testng.ITestContext;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -18,11 +19,15 @@ import pages.common.ChromeCertificatePage;
 import pages.serviceDelivery.CourierDeliveryTypesPage;
 import pages.vls.VehicleDetailsPage;
 import pages.vls.VehiclesPage;
+import pages.vls.publicVehicleRenewal.IdentityVerification;
+import pages.vls.publicVehicleRenewal.VehicleInformation;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
-public class VehicleRenewalTest {
+import static com.shaft.driver.DriverFactory.DriverType.DESKTOP_CHROME;
+
+public class VehicleRenewalPublicTest {
     WebDriver driver;
     CorporateDashboardPage corporateDashboardPage;
     ChromeCertificatePage chromeCertificatePage;
@@ -33,10 +38,12 @@ public class VehicleRenewalTest {
     String chassisNo,rtaUnifiedNo;
     @BeforeMethod
     public void beforeTest() throws SQLException, ClassNotFoundException {
-        driver = BrowserFactory.getBrowser();
-        chromeCertificatePage = new ChromeCertificatePage(driver);
-        BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("test_Login"));
-        courierDeliveryTypesPage = new CourierDeliveryTypesPage(driver);
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("incognito");
+        driver = BrowserFactory.getBrowser(DESKTOP_CHROME, options);
+        BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("VLSRenewalURL"));
+        ChromeCertificatePage ChromeCertificatePage = new ChromeCertificatePage(driver);
+
     }
 
 
@@ -65,6 +72,11 @@ public class VehicleRenewalTest {
         dbQueries.addTest(chassisNo);
         dbQueries.resetviloation(rtaUnifiedNo, chassisNo);
         dbQueries.removeBlocker(rtaUnifiedNo);
+        VehicleInformation vehicleInformation = new VehicleInformation(driver);
+        IdentityVerification identityVerification = new IdentityVerification(driver);
+        identityVerification.searchForVehicle();
+        identityVerification.checkMobileNumber();
+        identityVerification.verifyOTP();
        /* corporateDashboardPage.sddiLogin(rtaUnifiedNo);
         individualDashboardPage.clickVehiclesBox();
         vehiclesPage = new VehiclesPage(driver);
@@ -73,7 +85,7 @@ public class VehicleRenewalTest {
         vehicleDetailsPage = new VehicleDetailsPage(driver);
         vehicleDetailsPage.selectService("renew");
         vehicleDetailsPage.cancelJourney();
-        VehicleInformation vehicleInformation = new VehicleInformation(driver);
+
         vehicleInformation.vehicleInformationPage();
         VehicleNumberPlate vehicleNumberPlate = new VehicleNumberPlate(driver);
         vehicleNumberPlate.vehicleNumberPlatepage();
