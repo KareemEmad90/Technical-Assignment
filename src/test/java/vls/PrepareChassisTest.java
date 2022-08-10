@@ -27,7 +27,7 @@ public class PrepareChassisTest {
         AddElectronicInsurance insurance= new AddElectronicInsurance();
         insurance.elecInsuranceAPI(rtaUnifiedNo,chassisNum);
         DbQueries dbQueries= new DbQueries();
-        dbQueries.addTest(chassisNum);
+        //dbQueries.addTest(chassisNum);
         dbQueries.resetviloation(rtaUnifiedNo, chassisNum);
         dbQueries.removeBlocker(rtaUnifiedNo);
     }
