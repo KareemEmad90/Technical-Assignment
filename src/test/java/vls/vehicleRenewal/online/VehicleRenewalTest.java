@@ -16,8 +16,12 @@ import pages.Dashboard.Corporate.CorporateDashboardPage;
 import pages.Individual.IndividualDashboardPage;
 import pages.common.ChromeCertificatePage;
 import pages.serviceDelivery.CourierDeliveryTypesPage;
+import pages.vls.RenewalConfirmationPage;
 import pages.vls.VehicleDetailsPage;
 import pages.vls.VehiclesPage;
+import pages.vls.publicVehicleRenewal.ReviewAndPayment;
+import pages.vls.publicVehicleRenewal.VehicleInformation;
+import pages.vls.publicVehicleRenewal.VehicleNumberPlate;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -65,7 +69,7 @@ public class VehicleRenewalTest {
         dbQueries.addTest(chassisNo);
         dbQueries.resetviloation(rtaUnifiedNo, chassisNo);
         dbQueries.removeBlocker(rtaUnifiedNo);
-       /* corporateDashboardPage.sddiLogin(rtaUnifiedNo);
+        corporateDashboardPage.sddiLogin(rtaUnifiedNo);
         individualDashboardPage.clickVehiclesBox();
         vehiclesPage = new VehiclesPage(driver);
         vehiclesPage.searchForVehicle(chassisNo);
@@ -83,8 +87,6 @@ public class VehicleRenewalTest {
         reviewPayment.reviewAndPaymentPage();
         RenewalConfirmationPage renewalConfirmationPage = new RenewalConfirmationPage(driver);
         renewalConfirmationPage.downloadProducts();
-
-        */
 
     }
 
