@@ -25,7 +25,6 @@ public class AddProductTest {
         driver = BrowserFactory.getBrowser();
         BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("openWebSite"));
 
-
     }
 
 
