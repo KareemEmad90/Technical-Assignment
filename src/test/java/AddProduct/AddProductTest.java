@@ -8,9 +8,9 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
-import pages.competethemes.AddProductItems;
-import pages.competethemes.CheckoutProduct;
-import pages.competethemes.Product;
+import pages.sauceDemoPage.AddProductItems;
+import pages.sauceDemoPage.CheckoutProduct;
+import pages.sauceDemoPage.LoginPage;
 
 import java.sql.SQLException;
 
@@ -23,30 +23,27 @@ public class AddProductTest {
     @BeforeMethod
     public void beforeTest() throws SQLException, ClassNotFoundException {
         driver = BrowserFactory.getBrowser();
-        BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("openWebSite"));
+        BrowserActions.navigateToURL(driver, LoadProperties.userData.getProperty("navigateURL"));
 
     }
 
 
-    @Step("Search For Product on Women Category and add items to cart")
+    @Step("Search For Product and add items to cart")
     @Test
-    public void buyNewWomenItems() throws InterruptedException {
-        Product searchProduct = new Product(driver);
-        searchProduct.selectWomenCategory();
-        searchProduct.filterProductByRating();
+    public void buyNewItem() throws InterruptedException {
+
+        LoginPage login = new LoginPage(driver);
+        login.enterLoginInfo();
+
 
         AddProductItems addProduct = new AddProductItems(driver);
-        addProduct.getPriceInFilteredPage("67");
-        addProduct.openFirstItemes();
-        addProduct.getPriceInProductDetailsPage("67");
         addProduct.addProductToCart();
 
+
         CheckoutProduct checkoutproduct = new CheckoutProduct(driver);
-        checkoutproduct.viewCartDetails();
-        checkoutproduct.verifySubtotal("134");
-        checkoutproduct.verifyItemsCount("2");
-        checkoutproduct.changeAddress();
-        checkoutproduct.checkoutProducts();
+        checkoutproduct.enterCustomerDetails();
+        checkoutproduct.assertThanksMessage("Thank you for your order!");
+
 
 
     }
